@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +94,7 @@ public class SecurityConfig {
 //    }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, CorsConfigurationSource corsConfigurationSource) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable) //Vulnerabildiad explotada en formularios
                 //Usado para authentication basica de user y pass
@@ -114,6 +115,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //Sesion sin estado, no manejamos la sesion internamente, si no con tokens por ejemplo
                 //Agregamos el filtro del JWT creado, y se pone antes del filtro de authentication
                 .addFilterBefore(new JWTTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .build();
     }
 
