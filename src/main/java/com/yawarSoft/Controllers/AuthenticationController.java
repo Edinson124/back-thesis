@@ -4,6 +4,7 @@ import com.yawarSoft.Controllers.Dto.AuthCreateUserRequest;
 import com.yawarSoft.Controllers.Dto.AuthLoginRequest;
 import com.yawarSoft.Controllers.Dto.AuthResponse;
 import com.yawarSoft.Services.UserDetailServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -34,7 +35,7 @@ public class AuthenticationController {
         return new ResponseEntity<>(userDetailService.loginUser(userRequest), HttpStatus.OK);
     }
 
-        @PostMapping("/loginCookie")
+    @PostMapping("/loginCookie")
     public ResponseEntity<?> loginCookie(@RequestBody @Valid AuthLoginRequest userRequest){
         AuthResponse authResponse = userDetailService.loginUser(userRequest);
         String token = authResponse.jwt();
@@ -51,5 +52,20 @@ public class AuthenticationController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString()) // Enviar la cookie en el header
                 .body(Map.of("username", authResponse.username())); // Enviar solo el username en el body
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        // Crear una cookie con el mismo nombre pero vacía y expirada
+        ResponseCookie expiredCookie = ResponseCookie.from("jwt", "")
+                .httpOnly(true)
+//                .secure(true)
+                .sameSite("Strict")
+                .path("/")
+                .maxAge(0)  // Expira inmediatamente
+                .build();
+
+        response.setHeader(HttpHeaders.SET_COOKIE, expiredCookie.toString());
+        return ResponseEntity.noContent().build(); // Devuelve 204 No Content
     }
 }
