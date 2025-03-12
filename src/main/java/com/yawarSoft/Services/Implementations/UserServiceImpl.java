@@ -1,6 +1,8 @@
 package com.yawarSoft.Services.Implementations;
+import com.yawarSoft.Dto.UserDTO;
 import com.yawarSoft.Entities.RoleEntity;
 import com.yawarSoft.Entities.UserEntity;
+import com.yawarSoft.Mappers.UserMapper;
 import com.yawarSoft.Repositories.RoleRepository;
 import com.yawarSoft.Repositories.UserRepository;
 import com.yawarSoft.Services.Interfaces.UserService;
@@ -19,20 +21,30 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final UserMapper userMapper;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,RoleRepository roleRepository) {
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.userMapper = userMapper;
     }
 
     @Override
-    public Page<UserEntity> getUsersPaginated(int page, int size) {
+    public Page<UserDTO> getUsersPaginated(int page, int size, String search, String role, String status) {
         Pageable pageable = PageRequest.of(page, size);
-        return userRepository.findAll(pageable);
+
+        // Si los parámetros son vacíos (""), los convertimos en null
+        search = (search != null && !search.isBlank()) ? search : null;
+        role = (role != null && !role.isBlank()) ? role : null;
+        status = (status != null && !status.isBlank()) ? status : null;
+
+        return userRepository.findByFilters(search, role, status, pageable)
+                .map(userMapper::toDto);
     }
 
     @Override

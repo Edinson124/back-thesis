@@ -1,6 +1,7 @@
 package com.yawarSoft.Controllers;
 
 import com.yawarSoft.Controllers.Dto.UserRequest;
+import com.yawarSoft.Dto.UserDTO;
 import com.yawarSoft.Entities.UserEntity;
 import com.yawarSoft.Services.Interfaces.UserService;
 import org.springframework.data.domain.Page;
@@ -18,9 +19,12 @@ public class UserController {
 
     @GetMapping("/paginated")
     @PreAuthorize("hasRole('ADMIN')")
-    public Page<UserEntity> getUsers(@RequestParam(defaultValue = "0") int page,
-                                     @RequestParam(defaultValue = "5") int size) {
-        return userService.getUsersPaginated(page, size);
+    public Page<UserDTO> getUsers(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "5") int size,
+                                  @RequestParam(required = false) String search,
+                                  @RequestParam(required = false) String role,
+                                  @RequestParam(required = false) String status) {
+        return userService.getUsersPaginated(page, size, search, role, status);
     }
 
     @GetMapping("/{id}")

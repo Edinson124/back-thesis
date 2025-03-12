@@ -11,6 +11,6 @@ import java.util.Optional;
 public interface RoleRepository extends JpaRepository<RoleEntity,Long> {
 
     //Se envia listado de string y se retorna solo los que conincidan en la base de datos
-    List<RoleEntity> findRoleEntitiesByRoleEnumIn(List<String> rolesName);
+    List<RoleEntity> findRoleEntitiesByNameIn(List<String> rolesName);
     Optional<RoleEntity> findById(Long id);
 }

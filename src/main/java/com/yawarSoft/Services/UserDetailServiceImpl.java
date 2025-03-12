@@ -93,7 +93,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         List<String> rolesRequest = authCreateUserRequest.roleRequest().roleListName();
 
         // Validar los roles (que esten en BD)
-        Set<RoleEntity> roleEntitySet = new HashSet<>(roleRepository.findRoleEntitiesByRoleEnumIn(rolesRequest));
+        Set<RoleEntity> roleEntitySet = new HashSet<>(roleRepository.findRoleEntitiesByNameIn(rolesRequest));
 
         //Si no coincide con un rol se tira excepcion
         if(roleEntitySet.isEmpty()){
@@ -123,7 +123,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     private List<SimpleGrantedAuthority> getAuthoritiesOfUserEntity(UserEntity userEntity){
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-        userEntity.getRoles().forEach(role-> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
+        userEntity.getRoles().forEach(role-> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getName()))));
         userEntity.getRoles().stream()
                 .flatMap(role->role.getPermissionList().stream())
                 .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
