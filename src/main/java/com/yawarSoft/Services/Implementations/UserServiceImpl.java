@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
-            user.setStatus(user.getStatus() == UserStatus.ACTIVO ? UserStatus.INACTIVO : UserStatus.ACTIVO);
+            user.setStatus(user.getStatus() == UserStatus.ACTIVE ? UserStatus.INACTIVE : UserStatus.ACTIVE);
             UserEntity updatedUser = userRepository.save(user);
             return userMapper.toDto(updatedUser);
         } else {
