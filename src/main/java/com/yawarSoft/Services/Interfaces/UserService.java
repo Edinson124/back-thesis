@@ -12,5 +12,5 @@ public interface UserService {
     UserEntity getUserById(Long id);
     UserEntity updateUser(Long id, UserEntity userDetails);
     UserEntity createUser(UserEntity user, Set<Long> roleIds);
-    void deactivateUser(Long userId);
+    UserDTO changeStatus(Long userId);
 }

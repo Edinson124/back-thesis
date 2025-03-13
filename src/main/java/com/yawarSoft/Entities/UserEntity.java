@@ -1,5 +1,6 @@
 package com.yawarSoft.Entities;
 
+import com.yawarSoft.Enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,7 +42,8 @@ public class UserEntity {
     private String email;
     private String phone;
     private String address;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
 
     //Atributos de configuracion para SpringSecurity
 

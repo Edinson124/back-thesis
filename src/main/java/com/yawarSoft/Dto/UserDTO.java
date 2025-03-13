@@ -1,5 +1,6 @@
 package com.yawarSoft.Dto;
 
+import com.yawarSoft.Enums.UserStatus;
 import lombok.*;
 
 @Getter
@@ -17,6 +18,6 @@ public class UserDTO {
     private String email;
     private String phone;
     private String address;
-    private String status;
+    private UserStatus status;
     private String role;
 }

@@ -2,6 +2,7 @@ package com.yawarSoft.Services.Implementations;
 import com.yawarSoft.Dto.UserDTO;
 import com.yawarSoft.Entities.RoleEntity;
 import com.yawarSoft.Entities.UserEntity;
+import com.yawarSoft.Enums.UserStatus;
 import com.yawarSoft.Mappers.UserMapper;
 import com.yawarSoft.Repositories.RoleRepository;
 import com.yawarSoft.Repositories.UserRepository;
@@ -81,12 +82,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deactivateUser(Long userId) {
+    public UserDTO changeStatus(Long userId) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
-            user.setStatus("INACTIVO"); // Cambiar estado
-            userRepository.save(user);
+            user.setStatus(user.getStatus() == UserStatus.ACTIVO ? UserStatus.INACTIVO : UserStatus.ACTIVO);
+            UserEntity updatedUser = userRepository.save(user);
+            return userMapper.toDto(updatedUser);
         } else {
             throw new RuntimeException("Usuario no encontrado con ID: " + userId);
         }

@@ -49,11 +49,10 @@ public class UserController {
         return userService.createUser(userRequest.getUser(), userRequest.getRoleIds());
     }
 
-    @DeleteMapping("/{userId}")
+    @PatchMapping("status/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deactivateUser(@PathVariable Long userId) {
-        userService.deactivateUser(userId);
-        return "Usuario con ID " + userId + " ha sido desactivado.";
+    public UserDTO changeStatus(@PathVariable Long userId) {
+        return userService.changeStatus(userId);
     }
 
     @GetMapping("/status")
