@@ -15,7 +15,7 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowedOriginPatterns(List.of("*")); // Permitir cualquier origen
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
+        config.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
         config.setAllowedHeaders(List.of("Authorization", "Content-Type")); // Permitir Authorization para JWT
         config.setExposedHeaders(List.of("Authorization")); // Permitir que el front lea el token si es necesario
         config.setAllowCredentials(true); // Permitir envío de credenciales (JWT en headers)
