@@ -1,6 +1,7 @@
 package com.yawarSoft.Repositories;
 
 import com.yawarSoft.Entities.UserEntity;
+import com.yawarSoft.Enums.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,7 +19,7 @@ public interface UserRepository extends JpaRepository<UserEntity,Long> {
             "(:status IS NULL OR u.status = :status) " +
             "ORDER BY u.firstNames ASC")
     Page<UserEntity > findByFilters(@Param("search") String search, @Param("role") String role,
-                             @Param("status") String status, Pageable pageable);
+                                    @Param("status") UserStatus status, Pageable pageable);
 
     Optional<UserEntity> findUserEntityByUsername(String username);
     Page<UserEntity> findAll(Pageable pageable);

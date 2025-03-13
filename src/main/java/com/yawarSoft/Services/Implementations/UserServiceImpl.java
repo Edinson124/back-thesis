@@ -41,9 +41,8 @@ public class UserServiceImpl implements UserService {
         // Si los parámetros son vacíos (""), los convertimos en null
         search = (search != null && !search.isBlank()) ? search : null;
         role = (role != null && !role.isBlank()) ? role : null;
-        status = (status != null && !status.isBlank()) ? status : null;
-
-        return userRepository.findByFilters(search, role, status, pageable)
+        UserStatus userStatus = (status != null && !status.isBlank()) ? UserStatus.valueOf(status) : null;
+        return userRepository.findByFilters(search, role, userStatus, pageable)
                 .map(userMapper::toDto);
     }
 
