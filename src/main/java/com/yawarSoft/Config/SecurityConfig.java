@@ -102,6 +102,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(http -> {
                     // EndPoints publicos
                     http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/ubication/**").permitAll();
+
 //                    // EndPoints Privados
 //                    http.requestMatchers(HttpMethod.GET, "/method/get").hasAuthority("READ");
 //                    http.requestMatchers(HttpMethod.POST, "/method/post").hasAuthority("CREATE");
