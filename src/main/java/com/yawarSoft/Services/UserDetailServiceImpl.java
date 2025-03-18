@@ -1,12 +1,11 @@
 package com.yawarSoft.Services;
 
-import com.yawarSoft.Controllers.Dto.AuthCreateUserRequest;
+
 import com.yawarSoft.Controllers.Dto.AuthLoginRequest;
 import com.yawarSoft.Controllers.Dto.AuthResponse;
-import com.yawarSoft.Entities.RoleEntity;
+import com.yawarSoft.Entities.AuthEntity;
 import com.yawarSoft.Entities.UserEntity;
-import com.yawarSoft.Repositories.RoleRepository;
-import com.yawarSoft.Repositories.UserRepository;
+import com.yawarSoft.Repositories.AuthRepository;
 import com.yawarSoft.Utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,9 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 //Se crea userDetailService personalizado para obtener usuarios de BD, se requiere implementar UserDetailsService de spring security
@@ -37,17 +34,17 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private JwtUtils jwtUtils;
 
     @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
+    private AuthRepository authRepository;
 
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //Obteniendo userEntity de Base de datos
-        UserEntity userEntity = userRepository
-                .findUserEntityByUsername(username)
+        AuthEntity authEntity = authRepository
+                .findByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException("Usuario no existe"));
+
+        UserEntity userEntity = authEntity.getUser();
 
         //Mapeando a User de Spring Security (clase que implementa interfaz UserDetails)
 
@@ -56,9 +53,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
         List<SimpleGrantedAuthority> authorityList = getAuthoritiesOfUserEntity(userEntity);
 
         //Se retorna y arma el objeto User de spring security
-        return new User(userEntity.getUsername(), userEntity.getPassword(),
-                userEntity.isEnabled(),userEntity.isAccountNoExpired(),userEntity.isCredentialNoExpired(),
-                userEntity.isAccountNoLocked(),authorityList);
+        return new User(authEntity.getUsername(), authEntity.getPassword(),
+                authEntity.isEnabled(),authEntity.isAccountNoExpired(),authEntity.isCredentialNoExpired(),
+                authEntity.isAccountNoLocked(),authorityList);
     }
 
     public AuthResponse loginUser(AuthLoginRequest authLoginRequest){
@@ -87,40 +84,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
             throw new BadCredentialsException("Usuario o contraseña inválidos");
         }
     }
-
-    public AuthResponse createUser(AuthCreateUserRequest authCreateUserRequest){
-        String username = authCreateUserRequest.username();
-        String pass = authCreateUserRequest.password();
-        List<String> rolesRequest = authCreateUserRequest.roleRequest().roleListName();
-
-        // Validar los roles (que esten en BD)
-        Set<RoleEntity> roleEntitySet = new HashSet<>(roleRepository.findRoleEntitiesByNameIn(rolesRequest));
-
-        //Si no coincide con un rol se tira excepcion
-        if(roleEntitySet.isEmpty()){
-            throw new IllegalArgumentException("Roles especificados no existen");
-        }
-
-        UserEntity userEntity = UserEntity
-                .builder()
-                .username(username)
-                .password(passwordEncoder.encode(pass))
-                .roles(roleEntitySet)
-                .isEnabled(true)
-                .accountNoExpired(true)
-                .accountNoLocked(true)
-                .credentialNoExpired(true)
-                .build();
-
-        UserEntity userCreated = userRepository.save(userEntity);
-
-        List<SimpleGrantedAuthority> authorityList = getAuthoritiesOfUserEntity(userCreated);
-
-        Authentication authentication = new UsernamePasswordAuthenticationToken(userCreated.getUsername(),userCreated.getPassword(),authorityList);
-        String token = jwtUtils.createToken(authentication);
-        return new AuthResponse(userCreated.getUsername(),"Usuario creado exitosamente",token,true);
-    }
-
 
     private List<SimpleGrantedAuthority> getAuthoritiesOfUserEntity(UserEntity userEntity){
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();

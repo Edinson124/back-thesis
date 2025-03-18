@@ -2,6 +2,7 @@ package com.yawarSoft;
 
 import com.yawarSoft.Entities.*;
 import com.yawarSoft.Enums.UserStatus;
+import com.yawarSoft.Repositories.AuthRepository;
 import com.yawarSoft.Repositories.BloodBankRepository;
 import com.yawarSoft.Repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -21,7 +22,7 @@ public class YawarSoftApplication {
 		SpringApplication.run(YawarSoftApplication.class, args);
 	}
 //	@Bean
-//	CommandLineRunner init(UserRepository userRepository, BloodBankRepository bloodBankRepository){
+//	CommandLineRunner init(UserRepository userRepository, BloodBankRepository bloodBankRepository, AuthRepository authRepository){
 //		return args -> {
 //			BloodBankEntity bloodBank1 = BloodBankEntity.builder()
 //					.type("Tipo B")
@@ -93,8 +94,6 @@ public class YawarSoftApplication {
 //
 //			/* CREATE USERS */
 //			UserEntity userSantiago = UserEntity.builder()
-//					.username("santiago")
-//					.password("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6")
 //					.documentType("DNI")
 //					.documentNumber("07590665")
 //					.email("santiago@gmail.com")
@@ -104,10 +103,7 @@ public class YawarSoftApplication {
 //					.lastName("Perez")
 //					.secondLastName("Pinasco")
 //					.status(UserStatus.ACTIVE)
-//					.isEnabled(true)
-//					.accountNoExpired(true)
-//					.accountNoLocked(true)
-//					.credentialNoExpired(true)
+//
 //					.region("LIMA")
 //					.province("LIMA")
 //					.district("LIMA")
@@ -117,8 +113,6 @@ public class YawarSoftApplication {
 //					.build();
 //
 //			UserEntity userDaniel = UserEntity.builder()
-//					.username("daniel")
-//					.password("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6")
 //					.documentType("DNI")
 //					.documentNumber("77590111")
 //					.email("daniel@gmail.com")
@@ -128,10 +122,6 @@ public class YawarSoftApplication {
 //					.lastName("Suarez")
 //					.secondLastName("Abad")
 //					.status(UserStatus.ACTIVE)
-//					.isEnabled(true)
-//					.accountNoExpired(true)
-//					.accountNoLocked(true)
-//					.credentialNoExpired(true)
 //					.roles(Set.of(roleUser))
 //					.region("LIMA")
 //					.province("LIMA")
@@ -141,8 +131,6 @@ public class YawarSoftApplication {
 //					.build();
 //
 //			UserEntity userAndrea = UserEntity.builder()
-//					.username("andrea")
-//					.password("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6")
 //					.documentType("DNI")
 //					.documentNumber("76689201")
 //					.email("andrea@gmail.com")
@@ -152,10 +140,6 @@ public class YawarSoftApplication {
 //					.lastName("Oslo")
 //					.secondLastName("Rondon")
 //					.status(UserStatus.ACTIVE)
-//					.isEnabled(true)
-//					.accountNoExpired(true)
-//					.accountNoLocked(true)
-//					.credentialNoExpired(true)
 //					.roles(Set.of(roleInvited))
 //					.region("LIMA")
 //					.province("LIMA")
@@ -165,8 +149,6 @@ public class YawarSoftApplication {
 //					.build();
 //
 //			UserEntity userAnyi = UserEntity.builder()
-//					.username("anyi")
-//					.password("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6")
 //					.documentType("CE")
 //					.documentNumber("001043328")
 //					.email("anyi@gmail.com")
@@ -176,10 +158,6 @@ public class YawarSoftApplication {
 //					.lastName("Pando")
 //					.secondLastName("Alvarado")
 //					.status(UserStatus.ACTIVE)
-//					.isEnabled(true)
-//					.accountNoExpired(true)
-//					.accountNoLocked(true)
-//					.credentialNoExpired(true)
 //					.roles(Set.of(roleDeveloper))
 //					.region("LIMA")
 //					.province("LIMA")
@@ -188,7 +166,51 @@ public class YawarSoftApplication {
 //					.bloodBank(bloodBank2Saved)
 //					.build();
 //
-//			userRepository.saveAll(List.of(userSantiago, userDaniel, userAndrea, userAnyi));
+//			List<UserEntity> userEntitiesSaved = userRepository.saveAll(List.of(userSantiago, userDaniel, userAndrea, userAnyi));
+//			/* CREATE USERS */
+//			UserEntity userEntitiesSaved1 = userEntitiesSaved.get(0);
+//			UserEntity userEntitiesSaved2 = userEntitiesSaved.get(1);
+//			UserEntity userEntitiesSaved3 = userEntitiesSaved.get(2);
+//			UserEntity userEntitiesSaved4 = userEntitiesSaved.get(3);
+//
+//			AuthEntity authEntity1 = AuthEntity.builder()
+//					.username("santiago")
+//					.password("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6")
+//					.isEnabled(true)
+//					.accountNoExpired(true)
+//					.accountNoLocked(true)
+//					.credentialNoExpired(true)
+//					.user(userEntitiesSaved1)
+//					.build();
+//			AuthEntity authEntity2 = AuthEntity.builder()
+//					.username("daniel")
+//					.password("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6")
+//					.isEnabled(true)
+//					.accountNoExpired(true)
+//					.accountNoLocked(true)
+//					.credentialNoExpired(true)
+//					.user(userEntitiesSaved2)
+//					.build();
+//			AuthEntity authEntity3 = AuthEntity.builder()
+//					.username("andrea")
+//					.password("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6")
+//					.isEnabled(true)
+//					.accountNoExpired(true)
+//					.accountNoLocked(true)
+//					.credentialNoExpired(true)
+//					.user(userEntitiesSaved3)
+//					.build();
+//			AuthEntity authEntity4 = AuthEntity.builder()
+//					.username("anyi")
+//					.password("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6")
+//					.isEnabled(true)
+//					.accountNoExpired(true)
+//					.accountNoLocked(true)
+//					.credentialNoExpired(true)
+//					.user(userEntitiesSaved4)
+//					.build();
+//
+//			authRepository.saveAll(List.of(authEntity1, authEntity2, authEntity3, authEntity4));
 //		};
 //	}
 

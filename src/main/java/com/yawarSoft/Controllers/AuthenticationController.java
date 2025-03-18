@@ -25,11 +25,6 @@ public class AuthenticationController {
     @Autowired
     private UserDetailServiceImpl userDetailService;
 
-    @PostMapping("/sign-up")
-    public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthCreateUserRequest authCreateUserRequest){
-        return new ResponseEntity<>(userDetailService.createUser(authCreateUserRequest),HttpStatus.CREATED);
-    }
-
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest){
         return new ResponseEntity<>(userDetailService.loginUser(userRequest), HttpStatus.OK);

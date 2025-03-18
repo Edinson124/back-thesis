@@ -31,9 +31,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse> handleGenericException(Exception ex, HttpServletRequest request) throws Exception {
-//        if (ex instanceof AuthenticationException || ex instanceof AccessDeniedException) {
-//            throw ex; // Dejar que SecurityFilterChain maneje la excepción
-//        }
 
         log.error("Error interno del servidor", ex);
         ApiResponse response = new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor");

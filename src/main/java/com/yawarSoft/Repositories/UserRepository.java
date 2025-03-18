@@ -21,6 +21,5 @@ public interface UserRepository extends JpaRepository<UserEntity,Long> {
     Page<UserEntity > findByFilters(@Param("search") String search, @Param("role") String role,
                                     @Param("status") UserStatus status, Pageable pageable);
 
-    Optional<UserEntity> findUserEntityByUsername(String username);
     Page<UserEntity> findAll(Pageable pageable);
 }
