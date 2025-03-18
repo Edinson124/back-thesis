@@ -9,6 +9,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,8 +30,8 @@ public class UserEntity {
     private String username;
     private String password;
 
-    @Column(name = "first_names")
-    private String firstNames;
+    @Column(name = "first_name")
+    private String firstName;
     @Column(name = "last_name")
     private String lastName;
     @Column(name = "second_last_name")
@@ -39,9 +40,17 @@ public class UserEntity {
     private String documentType;
     @Column(name = "document_number")
     private String documentNumber;
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
     private String email;
     private String phone;
     private String address;
+    @Column(name = "birth_date", nullable = false)
+    private LocalDate birthDate;
+    private String region;
+    private String province;
+    private String district;
+
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
@@ -59,4 +68,8 @@ public class UserEntity {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name ="role_id"))
     private Set<RoleEntity> roles = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "id_blood_bank", nullable = false)
+    private BloodBankEntity bloodBank;
 }

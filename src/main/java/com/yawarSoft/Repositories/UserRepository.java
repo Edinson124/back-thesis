@@ -14,10 +14,10 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity,Long> {
     @Query("SELECT DISTINCT u FROM UserEntity u JOIN u.roles r WHERE " +
-            "(:search IS NULL OR :search = '' OR u.firstNames LIKE CONCAT('%', :search, '%') OR u.documentNumber LIKE CONCAT('%', :search, '%')) AND " +
+            "(:search IS NULL OR :search = '' OR u.firstName LIKE CONCAT('%', :search, '%') OR u.documentNumber LIKE CONCAT('%', :search, '%')) AND " +
             "(:role IS NULL OR r.name = :role) AND " +
             "(:status IS NULL OR u.status = :status) " +
-            "ORDER BY u.firstNames ASC")
+            "ORDER BY u.firstName ASC")
     Page<UserEntity > findByFilters(@Param("search") String search, @Param("role") String role,
                                     @Param("status") UserStatus status, Pageable pageable);
 

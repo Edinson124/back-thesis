@@ -1,14 +1,19 @@
 package com.yawarSoft.Controllers;
 
 import com.yawarSoft.Controllers.Dto.UserRequest;
+import com.yawarSoft.Dto.ApiResponse;
 import com.yawarSoft.Dto.UserDTO;
 import com.yawarSoft.Entities.UserEntity;
 import com.yawarSoft.Enums.UserStatus;
 import com.yawarSoft.Services.Interfaces.UserService;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +62,25 @@ public class UserController {
 
     @GetMapping("/status")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<UserStatus> getUserStatuses() {
+    public List<UserStatus> getUserStatus() {
         return Arrays.asList(UserStatus.values());
+    }
+
+    @PostMapping("img-profile/{idUser}")
+    public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Long idUser,
+                                                     @RequestParam("image") MultipartFile file) {
+        try {
+            String message = userService.updateUserProfileImage(idUser, file);
+            return ResponseEntity.ok().body(new ApiResponse(HttpStatus.OK,message));
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR,
+                            "Error al subir la imagen: " + e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("img-profile/{idUser}")
+    public ResponseEntity<ApiResponse> deleteProfileImage(@PathVariable Long idUser) {
+        return userService.deleteUserProfileImage(idUser);
     }
 }
