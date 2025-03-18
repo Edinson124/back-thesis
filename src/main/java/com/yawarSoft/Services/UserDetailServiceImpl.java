@@ -75,16 +75,17 @@ public class UserDetailServiceImpl implements UserDetailsService {
     }
 
     private Authentication authenticate(String user, String pass){
-        UserDetails userDetails = this.loadUserByUsername(user);
-        if(userDetails == null){
-            throw new BadCredentialsException("Usuario o contraseña invalidos");
-        }
+        try{
+            UserDetails userDetails = this.loadUserByUsername(user);
 
-        if(!passwordEncoder.matches(pass,userDetails.getPassword())){
-            throw new BadCredentialsException("Usuario o contraseña invalidos");
-        }
+            if(!passwordEncoder.matches(pass,userDetails.getPassword())){
+                throw new BadCredentialsException("Usuario o contraseña invalidos");
+            }
 
-        return new UsernamePasswordAuthenticationToken(user,userDetails.getPassword(),userDetails.getAuthorities());
+            return new UsernamePasswordAuthenticationToken(user,userDetails.getPassword(),userDetails.getAuthorities());
+        } catch (Exception e) {
+            throw new BadCredentialsException("Usuario o contraseña inválidos");
+        }
     }
 
     public AuthResponse createUser(AuthCreateUserRequest authCreateUserRequest){

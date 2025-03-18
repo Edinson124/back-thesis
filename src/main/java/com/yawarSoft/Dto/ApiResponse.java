@@ -12,7 +12,7 @@ public class ApiResponse {
     @JsonProperty("status")
     private HttpStatus status;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     @JsonProperty("timestamp")
     private LocalDateTime timestamp;
 
