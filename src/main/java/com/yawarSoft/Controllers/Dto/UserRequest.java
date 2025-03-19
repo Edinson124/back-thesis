@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class UserRequest {
     private UserEntity user;
-    private Set<Long> roleIds;
+    private Set<Integer> roleIds;
 
     // Getters y Setters
     public UserEntity getUser() {
@@ -17,11 +17,11 @@ public class UserRequest {
         this.user = user;
     }
 
-    public Set<Long> getRoleIds() {
+    public Set<Integer> getRoleIds() {
         return roleIds;
     }
 
-    public void setRoleIds(Set<Long> roleIds) {
+    public void setRoleIds(Set<Integer> roleIds) {
         this.roleIds = roleIds;
     }
 }

@@ -27,7 +27,7 @@ public interface UserMapper {
     }
 
     @Named("mapBloodBank")
-    default BloodBankEntity mapBloodBank(Long bloodBankId) {
+    default BloodBankEntity mapBloodBank(Integer bloodBankId) {
         if (bloodBankId == null) return null;
         BloodBankEntity bloodBank = new BloodBankEntity();
         bloodBank.setId(bloodBankId);

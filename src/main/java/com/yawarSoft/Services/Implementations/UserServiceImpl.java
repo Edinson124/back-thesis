@@ -55,13 +55,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity getUserById(Long id) {
+    public UserEntity getUserById(Integer id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
     }
 
     @Override
-    public UserEntity updateUser(Long id, UserEntity userDetails) {
+    public UserEntity updateUser(Integer id, UserEntity userDetails) {
         return userRepository.findById(id).map(user -> {
             user.setDocumentType(userDetails.getDocumentType());
             user.setDocumentNumber(userDetails.getDocumentNumber());
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity createUser(UserEntity user, Set<Long> roleIds) {
+    public UserEntity createUser(UserEntity user, Set<Integer> roleIds) {
         Set<RoleEntity> roles = new HashSet<>(roleRepository.findAllById(roleIds));
         if (roles.isEmpty()) {
             throw new RuntimeException("Error: No se encontraron roles válidos.");
@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO changeStatus(Long userId) {
+    public UserDTO changeStatus(Integer userId) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String updateUserProfileImage(Long userId, MultipartFile profileImage) throws IOException {
+    public String updateUserProfileImage(Integer userId, MultipartFile profileImage) throws IOException {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
 
         if (userOptional.isPresent()) {
@@ -120,7 +120,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<ApiResponse> deleteUserProfileImage(Long userId) {
+    public ResponseEntity<ApiResponse> deleteUserProfileImage(Integer userId) {
         // Buscar al usuario en la base de datos
         Optional<UserEntity> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {

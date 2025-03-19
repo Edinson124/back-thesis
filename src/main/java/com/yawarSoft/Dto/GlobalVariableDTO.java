@@ -7,9 +7,12 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoleDTO {
+public class GlobalVariableDTO {
+
     private Integer id;
+    private String groupName;
     private String name;
-    private String description;
-    private String typeBloodBank;
+    private String code;
+    private String dataType;
+    private String value;
 }

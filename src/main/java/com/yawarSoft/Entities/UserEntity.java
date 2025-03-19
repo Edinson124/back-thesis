@@ -51,10 +51,10 @@ public class UserEntity {
     private UserStatus status;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name ="role_id"))
+    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name ="id_role"))
     private Set<RoleEntity> roles = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "id_blood_bank", nullable = false)
+    @JoinColumn(name = "id_blood_bank")
     private BloodBankEntity bloodBank;
 }

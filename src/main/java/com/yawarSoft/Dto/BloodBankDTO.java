@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class BloodBankDTO {
 
-    private Long id;
+    private Integer id;
     private String name;
     private String region;
     private String province;

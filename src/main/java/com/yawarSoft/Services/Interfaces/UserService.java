@@ -13,10 +13,10 @@ import java.util.Set;
 
 public interface UserService {
     Page<UserDTO> getUsersPaginated(int page, int size, String search, String role, String status);
-    UserEntity getUserById(Long id);
-    UserEntity updateUser(Long id, UserEntity userDetails);
-    UserEntity createUser(UserEntity user, Set<Long> roleIds);
-    UserDTO changeStatus(Long userId);
-    String updateUserProfileImage(Long userId, MultipartFile profileImage) throws IOException;
-    ResponseEntity<ApiResponse> deleteUserProfileImage(Long userId);
+    UserEntity getUserById(Integer id);
+    UserEntity updateUser(Integer id, UserEntity userDetails);
+    UserEntity createUser(UserEntity user, Set<Integer> roleIds);
+    UserDTO changeStatus(Integer userId);
+    String updateUserProfileImage(Integer userId, MultipartFile profileImage) throws IOException;
+    ResponseEntity<ApiResponse> deleteUserProfileImage(Integer userId);
 }

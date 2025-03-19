@@ -15,7 +15,7 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     private static final String IMAGE_UPLOAD_DIR = "src/main/resources/img_profile/";
 
     @Override
-    public String storeImage(Long idUser, MultipartFile file) throws IOException {
+    public String storeImage(Integer idUser, MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             throw new IOException("El archivo está vacío.");
         }

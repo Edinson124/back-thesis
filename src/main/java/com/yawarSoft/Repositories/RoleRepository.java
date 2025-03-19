@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RoleRepository extends JpaRepository<RoleEntity,Long> {
+public interface RoleRepository extends JpaRepository<RoleEntity,Integer> {
 
     //Se envia listado de string y se retorna solo los que conincidan en la base de datos
     List<RoleEntity> findRoleEntitiesByNameIn(List<String> rolesName);

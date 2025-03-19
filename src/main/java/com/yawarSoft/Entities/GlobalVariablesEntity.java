@@ -1,6 +1,5 @@
 package com.yawarSoft.Entities;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,18 +9,18 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "permissions")
-public class PermissionEntity {
+@Table(name = "global_variables")
+public class GlobalVariablesEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "group_name")
+    private String groupName;
     private String name;
-
-    @Column(unique = true)
-    private String description;
-
-
+    private String code;
+    @Column(name = "data_type")
+    private String dataType;
+    private String value;
 }

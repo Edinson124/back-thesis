@@ -38,13 +38,13 @@ public class UserController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public UserEntity getUserById(@PathVariable Long id) {
+    public UserEntity getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public UserEntity updateUser(@PathVariable Long id, @RequestBody UserEntity userDetails) {
+    public UserEntity updateUser(@PathVariable Integer id, @RequestBody UserEntity userDetails) {
         return userService.updateUser(id, userDetails);
     }
 
@@ -56,7 +56,7 @@ public class UserController {
 
     @PatchMapping("status/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public UserDTO changeStatus(@PathVariable Long userId) {
+    public UserDTO changeStatus(@PathVariable Integer userId) {
         return userService.changeStatus(userId);
     }
 
@@ -67,7 +67,7 @@ public class UserController {
     }
 
     @PostMapping("img-profile/{idUser}")
-    public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Long idUser,
+    public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Integer idUser,
                                                      @RequestParam("image") MultipartFile file) {
         try {
             String message = userService.updateUserProfileImage(idUser, file);
@@ -80,7 +80,7 @@ public class UserController {
     }
 
     @DeleteMapping("img-profile/{idUser}")
-    public ResponseEntity<ApiResponse> deleteProfileImage(@PathVariable Long idUser) {
+    public ResponseEntity<ApiResponse> deleteProfileImage(@PathVariable Integer idUser) {
         return userService.deleteUserProfileImage(idUser);
     }
 }
