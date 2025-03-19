@@ -43,6 +43,11 @@ public class JWTTokenValidator extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         try {
+            // Si la solicitud es para logout, no validar el token y continuar
+            if (request.getRequestURI().equals("/auth/logout")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             //Obtenemos token del header del request Authorization
             String jwtToken = null;
             if (request.getCookies() != null) {
