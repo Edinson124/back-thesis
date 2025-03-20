@@ -1,7 +1,7 @@
 package com.yawarSoft.Services.Implementations;
 
 import com.yawarSoft.Dto.GlobalVariableDTO;
-import com.yawarSoft.Dto.GroupedVariablesResponse;
+import com.yawarSoft.Dto.GroupedVariablesDTO;
 import com.yawarSoft.Entities.GlobalVariablesEntity;
 import com.yawarSoft.Mappers.GlobalVariableMapper;
 import com.yawarSoft.Repositories.GlobalVariableRepository;
@@ -24,13 +24,21 @@ public class GlobalVariableImpl implements GlobalVariableService {
     }
 
     @Override
-    public GroupedVariablesResponse getAllGlobalVariablesGrouped() {
+    public GroupedVariablesDTO getAllGlobalVariablesGrouped() {
         List<GlobalVariablesEntity> variables = globalVariableRepository.findAll();
 
         Map<String, List<GlobalVariableDTO>> groupedVariables = variables.stream()
                 .map(globalVariableMapper::toDTO)
                 .collect(Collectors.groupingBy(GlobalVariableDTO::getGroupName));
 
-        return new GroupedVariablesResponse(groupedVariables);
+        return new GroupedVariablesDTO(groupedVariables);
+    }
+
+    @Override
+    public GlobalVariableDTO editGlobalVariable(Integer id, String value) {
+        GlobalVariablesEntity variable = globalVariableRepository.findById(id).get();
+        variable.setValue(value);
+        globalVariableRepository.save(variable);
+        return globalVariableMapper.toDTO(variable);
     }
 }

@@ -10,6 +10,6 @@ import java.util.Map;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupedVariablesResponse {
+public class GroupedVariablesDTO {
     private Map<String, List<GlobalVariableDTO>> groupedVariables;
 }
