@@ -1,6 +1,5 @@
 package com.yawarSoft.Dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.yawarSoft.Enums.UserStatus;
 import lombok.*;
 
@@ -22,7 +21,6 @@ public class UserDTO {
     private String email;
     private String phone;
     private String address;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate birthDate;
     private String region;
     private String province;
