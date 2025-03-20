@@ -8,6 +8,7 @@ import com.yawarSoft.Services.Interfaces.RoleService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,5 +27,10 @@ public class RoleServiceImpl implements RoleService {
         return roles.stream()
                 .map(roleMapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RoleEntity> getRolesByIds(Set<Integer> roleIds) {
+        return roleRepository.findAllById(roleIds);
     }
 }

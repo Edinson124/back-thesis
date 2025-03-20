@@ -4,14 +4,13 @@ import com.yawarSoft.Enums.UserStatus;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Set;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class UserListDTO {
     private Long id;
     private String firstName;
     private String lastName;
@@ -28,6 +27,6 @@ public class UserDTO {
     private String province;
     private String district;
     private UserStatus status;
-    private Set<Integer> roles;
+    private String role;
     private Integer bloodBankId;
 }

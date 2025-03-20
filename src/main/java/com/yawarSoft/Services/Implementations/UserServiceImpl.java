@@ -1,13 +1,16 @@
 package com.yawarSoft.Services.Implementations;
 import com.yawarSoft.Dto.ApiResponse;
 import com.yawarSoft.Dto.UserDTO;
+import com.yawarSoft.Dto.UserListDTO;
+import com.yawarSoft.Entities.BloodBankEntity;
 import com.yawarSoft.Entities.RoleEntity;
 import com.yawarSoft.Entities.UserEntity;
 import com.yawarSoft.Enums.UserStatus;
 import com.yawarSoft.Mappers.UserMapper;
-import com.yawarSoft.Repositories.RoleRepository;
 import com.yawarSoft.Repositories.UserRepository;
+import com.yawarSoft.Services.Interfaces.BloodBankService;
 import com.yawarSoft.Services.Interfaces.ImageStorageService;
+import com.yawarSoft.Services.Interfaces.RoleService;
 import com.yawarSoft.Services.Interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,79 +32,117 @@ public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final RoleService roleService;
+    private final BloodBankService bloodBankService;
     private final UserMapper userMapper;
     private final ImageStorageService imageStorageService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserMapper userMapper, ImageStorageService imageStorageService) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                           RoleService roleService, UserMapper userMapper,
+                           BloodBankService bloodBankService,
+                           ImageStorageService imageStorageService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
+        this.roleService = roleService;
+        this.bloodBankService = bloodBankService;
         this.userMapper = userMapper;
         this.imageStorageService = imageStorageService;
     }
 
     @Override
-    public Page<UserDTO> getUsersPaginated(int page, int size, String search, String role, String status) {
+    public Page<UserListDTO> getUsersPaginated(int page, int size, String search, String role, String status) {
         Pageable pageable = PageRequest.of(page, size);
 
-        // Si los parámetros son vacíos (""), los convertimos en null
         search = (search != null && !search.isBlank()) ? search : null;
         role = (role != null && !role.isBlank()) ? role : null;
         UserStatus userStatus = (status != null && !status.isBlank()) ? UserStatus.valueOf(status) : null;
         return userRepository.findByFilters(search, role, userStatus, pageable)
-                .map(userMapper::toDto);
+                .map(userMapper::toListDto);
     }
 
     @Override
-    public UserEntity getUserById(Integer id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+    public UserDTO getUserById(Integer id) {
+        UserEntity userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+
+        return userMapper.toUserDto(userEntity);
     }
 
     @Override
-    public UserEntity updateUser(Integer id, UserEntity userDetails) {
-        if (userRepository.existsByDocumentNumberAndIdNot(userDetails.getDocumentNumber(), id)) {
-            throw new RuntimeException("El número de documento ya está registrado con otro usuario.");
+    public UserDTO updateUser(Integer id, UserDTO userDto) {
+        UserEntity existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
+
+        if (!existingUser.getDocumentNumber().equals(userDto.getDocumentNumber()) &&
+                userRepository.existsByDocumentNumber(userDto.getDocumentNumber())) {
+            throw new IllegalArgumentException("El número de documento ya está registrado con otro usuario.");
         }
-        return userRepository.findById(id).map(user -> {
-            user.setDocumentType(userDetails.getDocumentType());
-            user.setDocumentNumber(userDetails.getDocumentNumber());
-            user.setFirstName(userDetails.getFirstName());
-            user.setLastName(userDetails.getLastName());
-            user.setSecondLastName(userDetails.getSecondLastName());
-            user.setEmail(userDetails.getEmail());
-            user.setPhone(userDetails.getPhone());
-            user.setAddress(userDetails.getAddress());
-            user.setStatus(userDetails.getStatus());
-            user.setBirthDate(userDetails.getBirthDate());
-            user.setDistrict(userDetails.getDistrict());
-            user.setRegion(userDetails.getRegion());
-            user.setProvince(userDetails.getProvince());
-            user.setGender(userDetails.getGender());
-            return userRepository.save(user);
-        }).orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
-    }
 
-    @Override
-    public UserEntity createUser(UserEntity user, Set<Integer> roleIds) {
-        Set<RoleEntity> roles = new HashSet<>(roleRepository.findAllById(roleIds));
-        if (roles.isEmpty()) {
-            throw new RuntimeException("Error: No se encontraron roles válidos.");
+        if (userDto.getBloodBankId() == null) {
+            existingUser.setBloodBank(null);
+        } else {
+            BloodBankEntity bloodBank = bloodBankService.getBloodBankEntityById(userDto.getBloodBankId())
+                    .orElseThrow(() -> new IllegalArgumentException("Banco de sangre no encontrado."));
+            existingUser.setBloodBank(bloodBank);
         }
-        user.setRoles(roles);
-        return userRepository.save(user);
+
+        verifyRoles(userDto, existingUser);
+
+        existingUser.setDocumentType(userDto.getDocumentType());
+        existingUser.setDocumentNumber(userDto.getDocumentNumber());
+        existingUser.setFirstName(userDto.getFirstName());
+        existingUser.setLastName(userDto.getLastName());
+        existingUser.setSecondLastName(userDto.getSecondLastName());
+        existingUser.setEmail(userDto.getEmail());
+        existingUser.setPhone(userDto.getPhone());
+        existingUser.setAddress(userDto.getAddress());
+        existingUser.setStatus(userDto.getStatus());
+        existingUser.setBirthDate(userDto.getBirthDate());
+        existingUser.setDistrict(userDto.getDistrict());
+        existingUser.setRegion(userDto.getRegion());
+        existingUser.setProvince(userDto.getProvince());
+        existingUser.setGender(userDto.getGender());
+        userRepository.save(existingUser);
+
+        userDto.setId(existingUser.getId());
+        return userDto;
+
     }
 
     @Override
-    public UserDTO changeStatus(Integer userId) {
+    public UserDTO createUser(UserDTO userDto) {
+
+
+        if (userRepository.existsByDocumentNumber(userDto.getDocumentNumber())) {
+            throw new IllegalArgumentException("El número de documento ya está registrado con otro usuario.");
+        }
+
+        UserEntity user = userMapper.toEntityByUserDTO(userDto);
+        verifyRoles(userDto, user);
+
+        if (userDto.getBloodBankId() == null) {
+            user.setBloodBank(null);
+        } else {
+            BloodBankEntity bloodBank = bloodBankService.getBloodBankEntityById(userDto.getBloodBankId())
+                    .orElseThrow(() -> new IllegalArgumentException("Banco de sangre no encontrado."));
+            user.setBloodBank(bloodBank);
+        }
+        UserEntity userSaved = userRepository.save(user);
+        userDto.setId(userSaved.getId());
+        return userDto;
+    }
+
+
+
+    @Override
+    public UserListDTO changeStatus(Integer userId) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             UserEntity user = userOptional.get();
             user.setStatus(user.getStatus() == UserStatus.ACTIVE ? UserStatus.INACTIVE : UserStatus.ACTIVE);
             UserEntity updatedUser = userRepository.save(user);
-            return userMapper.toDto(updatedUser);
+            return userMapper.toListDto(updatedUser);
         } else {
             throw new RuntimeException("Usuario no encontrado con ID: " + userId);
         }
@@ -156,5 +197,17 @@ public class UserServiceImpl implements UserService {
 
         return ResponseEntity
                 .ok(new ApiResponse(HttpStatus.OK,"Imagen eliminada y perfil actualizado correctamente."));
+    }
+
+    private void verifyRoles(UserDTO userDto, UserEntity user) {
+        if (userDto.getRoles() == null || userDto.getRoles().isEmpty()) {
+            user.setRoles(null);
+        } else {
+            Set<RoleEntity> roles = new HashSet<>(roleService.getRolesByIds(userDto.getRoles()));
+            if (roles.isEmpty()) {
+                throw new IllegalArgumentException("Error: No se encontraron roles válidos.");
+            }
+            user.setRoles(roles);
+        }
     }
 }

@@ -25,8 +25,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ApiResponse> handleUnauthorizedException(AuthenticationException ex) {
         log.error("Error de credenciales invalidos", ex);
-        ApiResponse response = new ApiResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        ApiResponse response = new ApiResponse(HttpStatus.UNAUTHORIZED, "Credenciales invalidos");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse> handleIllegalArgumentException(Exception ex) {
+
+        log.error("Error IllegalArgumentException", ex);
+        ApiResponse response = new ApiResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(Exception.class)

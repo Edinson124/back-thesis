@@ -3,6 +3,7 @@ package com.yawarSoft.Controllers;
 import com.yawarSoft.Controllers.Dto.UserRequest;
 import com.yawarSoft.Dto.ApiResponse;
 import com.yawarSoft.Dto.UserDTO;
+import com.yawarSoft.Dto.UserListDTO;
 import com.yawarSoft.Entities.UserEntity;
 import com.yawarSoft.Enums.UserStatus;
 import com.yawarSoft.Services.Interfaces.UserService;
@@ -28,35 +29,35 @@ public class UserController {
 
     @GetMapping("/paginated")
     @PreAuthorize("hasRole('ADMIN')")
-    public Page<UserDTO> getUsers(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "5") int size,
-                                  @RequestParam(required = false) String search,
-                                  @RequestParam(required = false) String role,
-                                  @RequestParam(required = false) String status) {
+    public Page<UserListDTO> getUsers(@RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "5") int size,
+                                      @RequestParam(required = false) String search,
+                                      @RequestParam(required = false) String role,
+                                      @RequestParam(required = false) String status) {
         return userService.getUsersPaginated(page, size, search, role, status);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public UserEntity getUserById(@PathVariable Integer id) {
+    public UserDTO getUserById(@PathVariable Integer id) {
         return userService.getUserById(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public UserEntity updateUser(@PathVariable Integer id, @RequestBody UserEntity userDetails) {
-        return userService.updateUser(id, userDetails);
+    public UserDTO updateUser(@PathVariable Integer id, @RequestBody UserDTO userDTO) {
+        return userService.updateUser(id, userDTO);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public UserEntity createUser(@RequestBody UserRequest userRequest) {
-        return userService.createUser(userRequest.getUser(), userRequest.getRoleIds());
+    public UserDTO createUser(@RequestBody UserDTO userDTO) {
+        return userService.createUser(userDTO);
     }
 
     @PatchMapping("status/{userId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public UserDTO changeStatus(@PathVariable Integer userId) {
+    public UserListDTO changeStatus(@PathVariable Integer userId) {
         return userService.changeStatus(userId);
     }
 
