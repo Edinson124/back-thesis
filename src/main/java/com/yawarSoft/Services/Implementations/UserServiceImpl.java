@@ -62,6 +62,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity updateUser(Integer id, UserEntity userDetails) {
+        if (userRepository.existsByDocumentNumberAndIdNot(userDetails.getDocumentNumber(), id)) {
+            throw new RuntimeException("El número de documento ya está registrado con otro usuario.");
+        }
         return userRepository.findById(id).map(user -> {
             user.setDocumentType(userDetails.getDocumentType());
             user.setDocumentNumber(userDetails.getDocumentNumber());
@@ -72,7 +75,11 @@ public class UserServiceImpl implements UserService {
             user.setPhone(userDetails.getPhone());
             user.setAddress(userDetails.getAddress());
             user.setStatus(userDetails.getStatus());
-
+            user.setBirthDate(userDetails.getBirthDate());
+            user.setDistrict(userDetails.getDistrict());
+            user.setRegion(userDetails.getRegion());
+            user.setProvince(userDetails.getProvince());
+            user.setGender(userDetails.getGender());
             return userRepository.save(user);
         }).orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
     }

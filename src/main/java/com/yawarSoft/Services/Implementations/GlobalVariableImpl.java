@@ -25,7 +25,7 @@ public class GlobalVariableImpl implements GlobalVariableService {
 
     @Override
     public GroupedVariablesDTO getAllGlobalVariablesGrouped() {
-        List<GlobalVariablesEntity> variables = globalVariableRepository.findAll();
+        List<GlobalVariablesEntity> variables = globalVariableRepository.findAllByOrderByIdAsc();
 
         Map<String, List<GlobalVariableDTO>> groupedVariables = variables.stream()
                 .map(globalVariableMapper::toDTO)

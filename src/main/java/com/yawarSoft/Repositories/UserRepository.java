@@ -22,4 +22,5 @@ public interface UserRepository extends JpaRepository<UserEntity,Integer> {
                                     @Param("status") UserStatus status, Pageable pageable);
 
     Page<UserEntity> findAll(Pageable pageable);
+    boolean existsByDocumentNumberAndIdNot(String documentNumber, Integer id);
 }

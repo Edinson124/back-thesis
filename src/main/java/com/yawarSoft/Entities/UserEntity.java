@@ -40,6 +40,7 @@ public class UserEntity {
     private String profileImageUrl;
     private String email;
     private String phone;
+    private String gender;
     private String address;
     @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;

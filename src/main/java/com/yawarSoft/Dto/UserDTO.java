@@ -20,6 +20,7 @@ public class UserDTO {
     private String profileImageUrl;
     private String email;
     private String phone;
+    private String gender;
     private String address;
     private LocalDate birthDate;
     private String region;
