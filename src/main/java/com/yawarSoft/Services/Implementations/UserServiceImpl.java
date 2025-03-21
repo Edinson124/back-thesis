@@ -2,16 +2,17 @@ package com.yawarSoft.Services.Implementations;
 import com.yawarSoft.Dto.ApiResponse;
 import com.yawarSoft.Dto.UserDTO;
 import com.yawarSoft.Dto.UserListDTO;
+import com.yawarSoft.Entities.AuthEntity;
 import com.yawarSoft.Entities.BloodBankEntity;
 import com.yawarSoft.Entities.RoleEntity;
 import com.yawarSoft.Entities.UserEntity;
 import com.yawarSoft.Enums.UserStatus;
 import com.yawarSoft.Mappers.UserMapper;
 import com.yawarSoft.Repositories.UserRepository;
-import com.yawarSoft.Services.Interfaces.BloodBankService;
-import com.yawarSoft.Services.Interfaces.ImageStorageService;
-import com.yawarSoft.Services.Interfaces.RoleService;
-import com.yawarSoft.Services.Interfaces.UserService;
+import com.yawarSoft.Services.Interfaces.*;
+import com.yawarSoft.Utils.PasswordGenerator;
+import com.yawarSoft.Utils.UserUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,17 +35,19 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final BloodBankService bloodBankService;
+    private final AuthService authService;
     private final UserMapper userMapper;
     private final ImageStorageService imageStorageService;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                           RoleService roleService, UserMapper userMapper,
+                           RoleService roleService, AuthService authService, UserMapper userMapper,
                            BloodBankService bloodBankService,
                            ImageStorageService imageStorageService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
+        this.authService = authService;
         this.bloodBankService = bloodBankService;
         this.userMapper = userMapper;
         this.imageStorageService = imageStorageService;
@@ -71,6 +74,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(Integer id, UserDTO userDto) {
+        Long userId = UserUtils.getAuthenticatedUserId();
         UserEntity existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
 
@@ -111,8 +115,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDTO createUser(UserDTO userDto) {
-
 
         if (userRepository.existsByDocumentNumber(userDto.getDocumentNumber())) {
             throw new IllegalArgumentException("El número de documento ya está registrado con otro usuario.");
@@ -130,6 +134,18 @@ public class UserServiceImpl implements UserService {
         }
         UserEntity userSaved = userRepository.save(user);
         userDto.setId(userSaved.getId());
+
+        String randomPassword = PasswordGenerator.generateRandomPassword();
+
+        AuthEntity auth = new AuthEntity();
+        auth.setUsername(user.getDocumentNumber()); // Usar número de documento como username
+        // TODO: cambiar a randomPassword
+        //auth.setPassword(passwordEncoder.encode(randomPassword));
+        //Por el momento se pondrá 1234 - para desarrollo
+        auth.setPassword(passwordEncoder.encode("1234"));
+        auth.setUser(userSaved);
+        authService.saveAuth(auth);
+
         return userDto;
     }
 

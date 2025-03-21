@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.yawarSoft.Models.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,7 +35,9 @@ public class JwtUtils {
     public String createToken(Authentication authentication){
         Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
-        String username = authentication.getPrincipal().toString();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String username = userDetails.getUsername();
+        Long userId = userDetails.getId();
 
         String authorities = authentication.getAuthorities()
                 .stream()
@@ -43,7 +46,8 @@ public class JwtUtils {
 
         String JWTToken = JWT.create()
                 .withIssuer(this.userGenerator)  // Usuario generador de token, No estoy seguro si estrictamente necesario, validar
-                .withSubject(username)   // Usuario al que se crea el token
+                .withSubject(username)
+                .withClaim("id", userId)// Usuario al que se crea el token
                 .withClaim("authorities",authorities)  //Uso de claims para poner permisos
                 .withIssuedAt(new Date())    //Fecha en la que se generó el token
                 .withExpiresAt(new Date(System.currentTimeMillis()+1800000)) //Tiempo de expiración

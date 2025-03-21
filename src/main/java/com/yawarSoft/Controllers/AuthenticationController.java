@@ -1,14 +1,12 @@
 package com.yawarSoft.Controllers;
 
-import com.yawarSoft.Controllers.Dto.AuthCreateUserRequest;
 import com.yawarSoft.Controllers.Dto.AuthLoginRequest;
 import com.yawarSoft.Controllers.Dto.AuthResponse;
-import com.yawarSoft.Services.UserDetailServiceImpl;
+import com.yawarSoft.Services.Implementations.UserDetailServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

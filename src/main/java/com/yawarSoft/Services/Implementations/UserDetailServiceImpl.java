@@ -1,10 +1,11 @@
-package com.yawarSoft.Services;
+package com.yawarSoft.Services.Implementations;
 
 
 import com.yawarSoft.Controllers.Dto.AuthLoginRequest;
 import com.yawarSoft.Controllers.Dto.AuthResponse;
 import com.yawarSoft.Entities.AuthEntity;
 import com.yawarSoft.Entities.UserEntity;
+import com.yawarSoft.Models.CustomUserDetails;
 import com.yawarSoft.Repositories.AuthRepository;
 import com.yawarSoft.Utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,9 +53,16 @@ public class UserDetailServiceImpl implements UserDetailsService {
         List<SimpleGrantedAuthority> authorityList = getAuthoritiesOfUserEntity(userEntity);
 
         //Se retorna y arma el objeto User de spring security
-        return new User(authEntity.getUsername(), authEntity.getPassword(),
-                authEntity.isEnabled(),authEntity.isAccountNoExpired(),authEntity.isCredentialNoExpired(),
-                authEntity.isAccountNoLocked(),authorityList);
+        return new CustomUserDetails(
+                userEntity.getId(),  // Aquí pasamos el ID del usuario
+                authEntity.getUsername(),
+                authEntity.getPassword(),
+                authEntity.isEnabled(),
+                authEntity.isAccountNoExpired(),
+                authEntity.isCredentialNoExpired(),
+                authEntity.isAccountNoLocked(),
+                authorityList
+        );
     }
 
     public AuthResponse loginUser(AuthLoginRequest authLoginRequest){
@@ -73,13 +80,13 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     private Authentication authenticate(String user, String pass){
         try{
-            UserDetails userDetails = this.loadUserByUsername(user);
+            CustomUserDetails userDetails = (CustomUserDetails) loadUserByUsername(user);
 
             if(!passwordEncoder.matches(pass,userDetails.getPassword())){
                 throw new BadCredentialsException("Usuario o contraseña invalidos");
             }
 
-            return new UsernamePasswordAuthenticationToken(user,userDetails.getPassword(),userDetails.getAuthorities());
+            return new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
         } catch (Exception e) {
             throw new BadCredentialsException("Usuario o contraseña inválidos");
         }

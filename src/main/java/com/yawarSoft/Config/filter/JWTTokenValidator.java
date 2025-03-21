@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yawarSoft.Dto.ApiResponse;
+import com.yawarSoft.Models.CustomUserDetails;
 import com.yawarSoft.Utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -67,14 +68,13 @@ public class JWTTokenValidator extends OncePerRequestFilter {
                 String userName = jwtUtils.extractUserName(decodedJWT);
                 //obtenemos authorities en un string separado por comas, esto es por como lo hemos programado
                 String authoritiesString = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
+                Long userId = jwtUtils.getSpecificClaim(decodedJWT, "id").asLong();
 
                 //Se usa AuthorityUtils de spring security que devuelve un collection de Authorities a partir del string separado por comas
                 Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(authoritiesString);
 
                 //Se obtiene el contexto, y se inserta la authentication en el SecurityContextHolder
-                SecurityContext context = SecurityContextHolder.getContext();
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userName, null, authorities);
-                context.setAuthentication(authentication);
+                SecurityContext context = setSecurityContext(userId, userName, authorities);
                 SecurityContextHolder.setContext(context);
 
             }
@@ -91,5 +91,26 @@ public class JWTTokenValidator extends OncePerRequestFilter {
             response.getWriter().write("{\"error\": \"Error interno en autorización\"}");
         }
 
+    }
+
+    private static SecurityContext setSecurityContext(Long userId, String userName, Collection<? extends GrantedAuthority> authorities) {
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        // Valores por defecto ya que el JWT no los tiene
+        boolean enabled = true;
+        boolean accountNonExpired = true;
+        boolean credentialsNonExpired = true;
+        boolean accountNonLocked = true;
+
+        //Crear un objeto de autenticación con el ID dentro del principal
+        CustomUserDetails userDetails = new CustomUserDetails(
+                userId, userName, null, // El password es null porque no lo necesitamos en este punto
+                enabled, accountNonExpired, credentialsNonExpired, accountNonLocked,
+                authorities
+        );
+
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
+        context.setAuthentication(authentication);
+        return context;
     }
 }

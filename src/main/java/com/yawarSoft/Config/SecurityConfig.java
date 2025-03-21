@@ -1,7 +1,7 @@
 package com.yawarSoft.Config;
 
 import com.yawarSoft.Config.filter.JWTTokenValidator;
-import com.yawarSoft.Services.UserDetailServiceImpl;
+import com.yawarSoft.Services.Implementations.UserDetailServiceImpl;
 import com.yawarSoft.Utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
