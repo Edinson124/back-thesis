@@ -1,6 +1,7 @@
 package com.yawarSoft.Dto;
 
 public interface BloodBankProjection {
-    Long getId();
+    Integer getId();
     String getName();
+    Integer getBloodBankTypeId();
 }

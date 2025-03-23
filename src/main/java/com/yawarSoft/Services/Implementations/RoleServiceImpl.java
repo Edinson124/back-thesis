@@ -30,6 +30,14 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public List<RoleDTO> getRolesByBloodBankTypeId(Integer bloodBankTypeId) {
+        List<RoleEntity> roles = roleRepository.findRolesByBloodBankTypeId(bloodBankTypeId);
+        return roles.stream()
+                .map(roleMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<RoleEntity> getRolesByIds(Set<Integer> roleIds) {
         return roleRepository.findAllById(roleIds);
     }

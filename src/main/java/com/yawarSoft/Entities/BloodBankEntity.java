@@ -21,8 +21,11 @@ public class BloodBankEntity {
     private String province;
     private String district;
     private String address;
-    private String type;
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "id_blood_bank_type", nullable = false)
+    private BloodBankTypeEntity bloodBankType;
 //
 //    @ManyToOne
 //    @JoinColumn(name = "id_coordinator", nullable = false)

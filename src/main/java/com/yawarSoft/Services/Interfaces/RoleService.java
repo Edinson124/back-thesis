@@ -9,5 +9,6 @@ import java.util.Set;
 
 public interface RoleService {
     List<RoleDTO> getAllRoles();
+    List<RoleDTO> getRolesByBloodBankTypeId(Integer bloodBankTypeId);
     List<RoleEntity> getRolesByIds( Set<Integer> roleIds);
 }

@@ -24,8 +24,9 @@ public class RoleEntity {
 
     private String description;
 
-    @Column(name = "type_blood_bank")
-    private String typeBloodBank;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_blood_bank_type", nullable = false)
+    private BloodBankTypeEntity bloodBankType;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "roles_permissions", joinColumns = @JoinColumn(name = "id_role"), inverseJoinColumns = @JoinColumn(name ="id_permission"))
