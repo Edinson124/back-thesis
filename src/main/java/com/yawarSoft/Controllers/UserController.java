@@ -1,10 +1,8 @@
 package com.yawarSoft.Controllers;
 
-import com.yawarSoft.Controllers.Dto.UserRequest;
 import com.yawarSoft.Dto.ApiResponse;
 import com.yawarSoft.Dto.UserDTO;
 import com.yawarSoft.Dto.UserListDTO;
-import com.yawarSoft.Entities.UserEntity;
 import com.yawarSoft.Enums.UserStatus;
 import com.yawarSoft.Services.Interfaces.UserService;
 import org.springframework.data.domain.Page;

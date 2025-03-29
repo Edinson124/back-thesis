@@ -2,7 +2,6 @@ package com.yawarSoft.Services.Implementations;
 
 import com.yawarSoft.Dto.BloodBankProjection;
 import com.yawarSoft.Entities.BloodBankEntity;
-import com.yawarSoft.Mappers.RoleMapper;
 import com.yawarSoft.Repositories.BloodBankRepository;
 import com.yawarSoft.Services.Interfaces.BloodBankService;
 import org.springframework.stereotype.Service;
@@ -15,9 +14,10 @@ public class BloodBankServiceImpl implements BloodBankService {
 
     private final BloodBankRepository bloodBankRepository;
 
-    public BloodBankServiceImpl(BloodBankRepository bloodBankRepository, RoleMapper roleMapper) {
+    public BloodBankServiceImpl(BloodBankRepository bloodBankRepository) {
         this.bloodBankRepository = bloodBankRepository;
     }
+
     @Override
     public List<BloodBankProjection> getBloodBankSelector() {
         return bloodBankRepository.getBloodBankSelect();

@@ -26,8 +26,8 @@ public class BloodBankEntity {
     @ManyToOne
     @JoinColumn(name = "id_blood_bank_type", nullable = false)
     private BloodBankTypeEntity bloodBankType;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "id_coordinator", nullable = false)
-//    private Coordinator coordinator;
+
+    @ManyToOne
+    @JoinColumn(name = "id_coordinator", nullable = false)
+    private UserEntity coordinator;
 }

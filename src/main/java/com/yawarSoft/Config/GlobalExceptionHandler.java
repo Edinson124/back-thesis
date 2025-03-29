@@ -1,5 +1,6 @@
 package com.yawarSoft.Config;
 
+import com.yawarSoft.Config.errors.ResourceNotFoundException;
 import com.yawarSoft.Dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,14 @@ public class GlobalExceptionHandler {
         log.error("Error IllegalArgumentException", ex);
         ApiResponse response = new ApiResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse> handleNotFoundException(Exception ex) {
+
+        log.error("Error IllegalArgumentException", ex);
+        ApiResponse response = new ApiResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @ExceptionHandler(Exception.class)
