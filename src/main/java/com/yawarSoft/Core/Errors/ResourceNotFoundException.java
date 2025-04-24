@@ -1,4 +1,4 @@
-package com.yawarSoft.Config.errors;
+package com.yawarSoft.Core.Config.errors;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {

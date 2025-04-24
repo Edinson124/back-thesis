@@ -1,10 +1,10 @@
-package com.yawarSoft.Services.Implementations;
+package com.yawarSoft.Modules.Login.Services;
 
 
-import com.yawarSoft.Controllers.Dto.AuthLoginRequest;
-import com.yawarSoft.Controllers.Dto.AuthResponse;
-import com.yawarSoft.Entities.AuthEntity;
-import com.yawarSoft.Entities.UserEntity;
+import com.yawarSoft.Modules.Login.Dto.AuthLoginRequest;
+import com.yawarSoft.Modules.Login.Dto.AuthResponse;
+import com.yawarSoft.Core.Entities.AuthEntity;
+import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Models.CustomUserDetails;
 import com.yawarSoft.Repositories.AuthRepository;
 import com.yawarSoft.Utils.JwtUtils;

@@ -1,6 +1,6 @@
 package com.yawarSoft.Services.Interfaces;
 
-import com.yawarSoft.Entities.AuthEntity;
+import com.yawarSoft.Core.Entities.AuthEntity;
 
 public interface AuthService {
     void saveAuth (AuthEntity authEntity);

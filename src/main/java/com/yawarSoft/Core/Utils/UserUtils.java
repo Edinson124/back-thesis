@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserUtils {
 
-    public static Long getAuthenticatedUserId() {
+    public static Integer getAuthenticatedUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
