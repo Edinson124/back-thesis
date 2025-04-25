@@ -10,7 +10,7 @@ import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Mappers.BBNetworkMapper;
 import com.yawarSoft.Repositories.BBNetworkRepository;
 import com.yawarSoft.Services.Interfaces.BBNetworkService;
-import com.yawarSoft.Services.Interfaces.BloodBankService;
+import com.yawarSoft.Modules.Admin.Services.Interfaces.BloodBankService;
 import com.yawarSoft.Core.Utils.UserUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

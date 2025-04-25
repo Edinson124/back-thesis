@@ -1,7 +1,7 @@
 package com.yawarSoft.Core.Config;
 
 import com.yawarSoft.Core.Errors.ResourceNotFoundException;
-import com.yawarSoft.Dto.ApiResponse;
+import com.yawarSoft.Core.Dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

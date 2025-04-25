@@ -1,6 +1,6 @@
 package com.yawarSoft.Core.Entities;
 
-import com.yawarSoft.Enums.UserStatus;
+import com.yawarSoft.Modules.Admin.Enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

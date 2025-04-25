@@ -1,6 +1,6 @@
 package com.yawarSoft.Controllers;
 
-import com.yawarSoft.Dto.ApiResponse;
+import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Dto.NetworkDTO;
 import com.yawarSoft.Services.Interfaces.BBNetworkService;
 import org.springframework.data.domain.Page;
