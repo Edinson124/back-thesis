@@ -1,4 +1,4 @@
-package com.yawarSoft.Services.Interfaces;
+package com.yawarSoft.Core.Services.Interfaces;
 
 import org.springframework.web.multipart.MultipartFile;
 

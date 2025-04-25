@@ -1,9 +1,8 @@
 package com.yawarSoft.Services.Interfaces;
 
 import com.yawarSoft.Dto.RoleDTO;
-import com.yawarSoft.Entities.RoleEntity;
+import com.yawarSoft.Core.Entities.RoleEntity;
 
-import javax.management.relation.Role;
 import java.util.List;
 import java.util.Set;
 

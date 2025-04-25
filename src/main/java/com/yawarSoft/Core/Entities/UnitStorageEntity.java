@@ -1,4 +1,4 @@
-package com.yawarSoft.Entities;
+package com.yawarSoft.Core.Entities;
 
 import lombok.*;
 import jakarta.persistence.*;

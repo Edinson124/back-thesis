@@ -3,13 +3,11 @@ package com.yawarSoft.Services.Interfaces;
 import com.yawarSoft.Dto.ApiResponse;
 import com.yawarSoft.Dto.UserDTO;
 import com.yawarSoft.Dto.UserListDTO;
-import com.yawarSoft.Entities.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Set;
 
 
 public interface UserService {

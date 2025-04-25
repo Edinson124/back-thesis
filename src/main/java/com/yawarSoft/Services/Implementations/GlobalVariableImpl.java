@@ -2,7 +2,7 @@ package com.yawarSoft.Services.Implementations;
 
 import com.yawarSoft.Dto.GlobalVariableDTO;
 import com.yawarSoft.Dto.GroupedVariablesDTO;
-import com.yawarSoft.Entities.GlobalVariablesEntity;
+import com.yawarSoft.Core.Entities.GlobalVariablesEntity;
 import com.yawarSoft.Mappers.GlobalVariableMapper;
 import com.yawarSoft.Repositories.GlobalVariableRepository;
 import com.yawarSoft.Services.Interfaces.GlobalVariableService;

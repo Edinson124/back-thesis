@@ -1,17 +1,19 @@
 package com.yawarSoft.Services.Implementations;
+import com.yawarSoft.Core.Services.Interfaces.ImageStorageService;
 import com.yawarSoft.Dto.ApiResponse;
 import com.yawarSoft.Dto.UserDTO;
 import com.yawarSoft.Dto.UserListDTO;
-import com.yawarSoft.Entities.AuthEntity;
-import com.yawarSoft.Entities.BloodBankEntity;
-import com.yawarSoft.Entities.RoleEntity;
-import com.yawarSoft.Entities.UserEntity;
+import com.yawarSoft.Core.Entities.AuthEntity;
+import com.yawarSoft.Core.Entities.BloodBankEntity;
+import com.yawarSoft.Core.Entities.RoleEntity;
+import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Enums.UserStatus;
 import com.yawarSoft.Mappers.UserMapper;
+import com.yawarSoft.Modules.Login.Services.Interfaces.AuthService;
 import com.yawarSoft.Repositories.UserRepository;
 import com.yawarSoft.Services.Interfaces.*;
-import com.yawarSoft.Utils.PasswordGenerator;
-import com.yawarSoft.Utils.UserUtils;
+import com.yawarSoft.Core.Utils.PasswordGenerator;
+import com.yawarSoft.Core.Utils.UserUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -74,7 +77,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(Integer id, UserDTO userDto) {
-        Long userId = UserUtils.getAuthenticatedUserId();
+        Integer userId = UserUtils.getAuthenticatedUserId();
         UserEntity existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
 
@@ -216,14 +219,14 @@ public class UserServiceImpl implements UserService {
     }
 
     private void verifyRoles(UserDTO userDto, UserEntity user) {
-        if (userDto.getRoles() == null || userDto.getRoles().isEmpty()) {
-            user.setRoles(null);
+        if (userDto.getRoleId() == null) {
+            user.setRole(null);
         } else {
-            Set<RoleEntity> roles = new HashSet<>(roleService.getRolesByIds(userDto.getRoles()));
+            Set<RoleEntity> roles = new HashSet<>(roleService.getRolesByIds(Collections.singleton(userDto.getRoleId())));
             if (roles.isEmpty()) {
                 throw new IllegalArgumentException("Error: No se encontraron roles válidos.");
             }
-            user.setRoles(roles);
+            user.setRole(roles.iterator().next());
         }
     }
 }

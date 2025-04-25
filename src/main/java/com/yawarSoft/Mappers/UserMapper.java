@@ -2,9 +2,9 @@ package com.yawarSoft.Mappers;
 
 import com.yawarSoft.Dto.UserDTO;
 import com.yawarSoft.Dto.UserListDTO;
-import com.yawarSoft.Entities.BloodBankEntity;
-import com.yawarSoft.Entities.UserEntity;
-import com.yawarSoft.Entities.RoleEntity;
+import com.yawarSoft.Core.Entities.BloodBankEntity;
+import com.yawarSoft.Core.Entities.UserEntity;
+import com.yawarSoft.Core.Entities.RoleEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -17,43 +17,28 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
 
-    @Mapping(target = "role", source = "roles", qualifiedByName = "getFirstRole")
+    @Mapping(target = "role", source = "role.name")
     @Mapping(target = "bloodBankId", source = "bloodBank.id")
     UserListDTO toListDto(UserEntity userEntity);
 
     @Mapping(target = "bloodBank", source = "bloodBankId", qualifiedByName = "mapBloodBank")
+    @Mapping(target = "role", source = "role", qualifiedByName = "mapRole")
     UserEntity toEntityByListDTO(UserListDTO userListDTO);
 
-    @Named("getFirstRole")
-    default String getFirstRole(Set<RoleEntity> roles) {
-        return roles.stream().findFirst().map(RoleEntity::getName).orElse(null);
-    }
-
-    @Mapping(target = "roles", source = "roles", qualifiedByName = "getSetIdRoles")
+    @Mapping(target = "roleId", source = "role.id")
     @Mapping(target = "bloodBankId", source = "bloodBank.id")
     UserDTO toUserDto(UserEntity userEntity);
 
     @Mapping(target = "bloodBank", source = "bloodBankId", qualifiedByName = "mapBloodBank")
-    @Mapping(target = "roles", source = "roles", qualifiedByName = "mapRoles")
+    @Mapping(target = "role", source = "roleId", qualifiedByName = "mapRole")
     UserEntity toEntityByUserDTO(UserDTO userDTO);
 
-    @Named("getSetIdRoles")
-    default Set<Integer> getSetIdRoles(Set<RoleEntity> roles) {
-        return roles.stream().map(RoleEntity::getId).collect(Collectors.toSet());
-    }
-
-    @Named("mapRoles")
-    default Set<RoleEntity> mapRoles(Set<Integer> roleIds) {
-        if (roleIds == null) {
-            return new HashSet<>();
-        }
-        return roleIds.stream()
-                .map(id -> {
-                    RoleEntity role = new RoleEntity();
-                    role.setId(id);
-                    return role;
-                })
-                .collect(Collectors.toSet());
+    @Named("mapRole")
+    default RoleEntity mapRole(Integer roleId) {
+        if (roleId == null) return null;
+        RoleEntity role = new RoleEntity();
+        role.setId(roleId);
+        return role;
     }
 
     @Named("mapBloodBank")

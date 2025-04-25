@@ -1,7 +1,7 @@
 package com.yawarSoft.Services.Implementations;
 
 import com.yawarSoft.Dto.RoleDTO;
-import com.yawarSoft.Entities.RoleEntity;
+import com.yawarSoft.Core.Entities.RoleEntity;
 import com.yawarSoft.Mappers.RoleMapper;
 import com.yawarSoft.Repositories.RoleRepository;
 import com.yawarSoft.Services.Interfaces.RoleService;

@@ -1,7 +1,7 @@
 package com.yawarSoft.Mappers;
 
 import com.yawarSoft.Dto.RoleDTO;
-import com.yawarSoft.Entities.RoleEntity;
+import com.yawarSoft.Core.Entities.RoleEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

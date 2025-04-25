@@ -1,6 +1,6 @@
 package com.yawarSoft.Repositories;
 
-import com.yawarSoft.Entities.GlobalVariablesEntity;
+import com.yawarSoft.Core.Entities.GlobalVariablesEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

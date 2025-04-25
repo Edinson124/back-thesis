@@ -1,8 +1,8 @@
-package com.yawarSoft.Services.Implementations;
+package com.yawarSoft.Modules.Login.Services.Implementations;
 
 import com.yawarSoft.Core.Entities.AuthEntity;
-import com.yawarSoft.Repositories.AuthRepository;
-import com.yawarSoft.Services.Interfaces.AuthService;
+import com.yawarSoft.Modules.Login.Repositories.AuthRepository;
+import com.yawarSoft.Modules.Login.Services.Interfaces.AuthService;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -1,6 +1,6 @@
 package com.yawarSoft.Repositories;
 
-import com.yawarSoft.Entities.NetworkEntity;
+import com.yawarSoft.Core.Entities.NetworkEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

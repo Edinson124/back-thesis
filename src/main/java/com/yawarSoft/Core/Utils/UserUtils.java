@@ -1,6 +1,6 @@
-package com.yawarSoft.Utils;
+package com.yawarSoft.Core.Utils;
 
-import com.yawarSoft.Models.CustomUserDetails;
+import com.yawarSoft.Modules.Login.Models.CustomUserDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

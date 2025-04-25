@@ -1,17 +1,17 @@
 package com.yawarSoft.Services.Implementations;
 
-import com.yawarSoft.Config.errors.ResourceNotFoundException;
+import com.yawarSoft.Core.Errors.ResourceNotFoundException;
 import com.yawarSoft.Dto.BloodBankNetworkDetailsDTO;
 import com.yawarSoft.Dto.NetworkDTO;
-import com.yawarSoft.Entities.BloodBankEntity;
-import com.yawarSoft.Entities.BloodBankNetworkEntity;
-import com.yawarSoft.Entities.NetworkEntity;
-import com.yawarSoft.Entities.UserEntity;
+import com.yawarSoft.Core.Entities.BloodBankEntity;
+import com.yawarSoft.Core.Entities.BloodBankNetworkEntity;
+import com.yawarSoft.Core.Entities.NetworkEntity;
+import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Mappers.BBNetworkMapper;
 import com.yawarSoft.Repositories.BBNetworkRepository;
 import com.yawarSoft.Services.Interfaces.BBNetworkService;
 import com.yawarSoft.Services.Interfaces.BloodBankService;
-import com.yawarSoft.Utils.UserUtils;
+import com.yawarSoft.Core.Utils.UserUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,7 +54,7 @@ public class BBNetworkServiceImpl implements BBNetworkService {
 
     @Override
     public void associateBloodBank(Integer networkId, Integer bloodBankId) {
-        Long userId = UserUtils.getAuthenticatedUserId();
+        Integer userId = UserUtils.getAuthenticatedUserId();
         NetworkEntity network = networkRepository.findById(networkId)
                 .orElseThrow(() -> new RuntimeException("Red no encontrada"));
         BloodBankEntity bloodBank = bloodBankService.getBloodBankEntityById(bloodBankId)
@@ -72,7 +72,7 @@ public class BBNetworkServiceImpl implements BBNetworkService {
 
     @Override
     public void disassociateBloodBank(Integer networkId, Integer bloodBankId) {
-        Long userId = UserUtils.getAuthenticatedUserId();
+        Integer userId = UserUtils.getAuthenticatedUserId();
         NetworkEntity network = networkRepository.findById(networkId)
                 .orElseThrow(() -> new RuntimeException("Red no encontrada"));
 

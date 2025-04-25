@@ -1,4 +1,4 @@
-package com.yawarSoft.Repositories;
+package com.yawarSoft.Modules.Login.Repositories;
 
 import com.yawarSoft.Core.Entities.AuthEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

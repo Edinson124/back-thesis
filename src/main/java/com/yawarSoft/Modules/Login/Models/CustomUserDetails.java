@@ -1,4 +1,4 @@
-package com.yawarSoft.Models;
+package com.yawarSoft.Modules.Login.Models;
 
 
 import lombok.Getter;

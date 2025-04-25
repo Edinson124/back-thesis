@@ -1,4 +1,4 @@
-package com.yawarSoft.Config;
+package com.yawarSoft.Core.Config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;

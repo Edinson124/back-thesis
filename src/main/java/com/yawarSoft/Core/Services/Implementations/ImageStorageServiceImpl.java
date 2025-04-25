@@ -1,6 +1,6 @@
-package com.yawarSoft.Services.Implementations;
+package com.yawarSoft.Core.Services.Implementations;
 
-import com.yawarSoft.Services.Interfaces.ImageStorageService;
+import com.yawarSoft.Core.Services.Interfaces.ImageStorageService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

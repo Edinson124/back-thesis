@@ -1,4 +1,4 @@
-package com.yawarSoft.Controllers.Dto;
+package com.yawarSoft.Modules.Login.Dto;
 
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

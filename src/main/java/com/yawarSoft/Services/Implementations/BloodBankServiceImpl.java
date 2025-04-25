@@ -1,7 +1,7 @@
 package com.yawarSoft.Services.Implementations;
 
 import com.yawarSoft.Dto.BloodBankProjection;
-import com.yawarSoft.Entities.BloodBankEntity;
+import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Repositories.BloodBankRepository;
 import com.yawarSoft.Services.Interfaces.BloodBankService;
 import org.springframework.stereotype.Service;

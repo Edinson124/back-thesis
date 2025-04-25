@@ -1,11 +1,9 @@
-package com.yawarSoft.Config.filter;
+package com.yawarSoft.Core.Config.filter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yawarSoft.Dto.ApiResponse;
-import com.yawarSoft.Models.CustomUserDetails;
-import com.yawarSoft.Utils.JwtUtils;
+import com.yawarSoft.Modules.Login.Models.CustomUserDetails;
+import com.yawarSoft.Core.Utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -13,8 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;

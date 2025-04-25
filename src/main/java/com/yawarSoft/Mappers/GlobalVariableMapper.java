@@ -1,7 +1,7 @@
 package com.yawarSoft.Mappers;
 
 import com.yawarSoft.Dto.GlobalVariableDTO;
-import com.yawarSoft.Entities.GlobalVariablesEntity;
+import com.yawarSoft.Core.Entities.GlobalVariablesEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

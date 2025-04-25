@@ -1,8 +1,10 @@
-package com.yawarSoft.Entities;
+package com.yawarSoft.Core.Entities;
 
 
 import lombok.*;
 import jakarta.persistence.*;
+import lombok.experimental.SuperBuilder;
+
 import java.time.LocalDate;
 
 @Entity
@@ -10,7 +12,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Table(name = "donors")
 public class DonorEntity extends PersonEntity {
 

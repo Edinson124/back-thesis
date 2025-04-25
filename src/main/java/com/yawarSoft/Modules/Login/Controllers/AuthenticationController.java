@@ -1,8 +1,8 @@
-package com.yawarSoft.Controllers;
+package com.yawarSoft.Modules.Login.Controllers;
 
-import com.yawarSoft.Controllers.Dto.AuthLoginRequest;
-import com.yawarSoft.Controllers.Dto.AuthResponse;
-import com.yawarSoft.Services.Implementations.UserDetailServiceImpl;
+import com.yawarSoft.Modules.Login.Dto.AuthLoginRequest;
+import com.yawarSoft.Modules.Login.Dto.AuthResponse;
+import com.yawarSoft.Modules.Login.Services.Implementations.UserDetailServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

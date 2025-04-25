@@ -1,4 +1,4 @@
-package com.yawarSoft.Config;
+package com.yawarSoft.Core.Config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

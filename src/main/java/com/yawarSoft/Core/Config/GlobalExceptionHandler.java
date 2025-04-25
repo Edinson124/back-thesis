@@ -1,6 +1,6 @@
-package com.yawarSoft.Config;
+package com.yawarSoft.Core.Config;
 
-import com.yawarSoft.Config.errors.ResourceNotFoundException;
+import com.yawarSoft.Core.Errors.ResourceNotFoundException;
 import com.yawarSoft.Dto.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

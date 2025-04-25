@@ -1,13 +1,14 @@
-package com.yawarSoft.Modules.Login.Services;
+package com.yawarSoft.Modules.Login.Services.Implementations;
 
 
+import com.yawarSoft.Core.Entities.RoleEntity;
 import com.yawarSoft.Modules.Login.Dto.AuthLoginRequest;
 import com.yawarSoft.Modules.Login.Dto.AuthResponse;
 import com.yawarSoft.Core.Entities.AuthEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
-import com.yawarSoft.Models.CustomUserDetails;
-import com.yawarSoft.Repositories.AuthRepository;
-import com.yawarSoft.Utils.JwtUtils;
+import com.yawarSoft.Modules.Login.Models.CustomUserDetails;
+import com.yawarSoft.Modules.Login.Repositories.AuthRepository;
+import com.yawarSoft.Core.Utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -94,12 +95,22 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     private List<SimpleGrantedAuthority> getAuthoritiesOfUserEntity(UserEntity userEntity){
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-        userEntity.getRoles().forEach(role-> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getName()))));
-        userEntity.getRoles().stream()
-                .flatMap(role->role.getPermissionList().stream())
-                .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
+        RoleEntity role = userEntity.getRole();
+
+        if (role != null) {
+            authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getName())));
+            role.getPermissionList()
+                    .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
+        }
 
         return authorityList;
+
+//        userEntity.getRoles().forEach(role-> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getName()))));
+//        userEntity.getRoles().stream()
+//                .flatMap(role->role.getPermissionList().stream())
+//                .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
+//
+//        return authorityList;
 
     }
 }

@@ -1,4 +1,4 @@
-package com.yawarSoft.Services.Interfaces;
+package com.yawarSoft.Modules.Login.Services.Interfaces;
 
 import com.yawarSoft.Core.Entities.AuthEntity;
 

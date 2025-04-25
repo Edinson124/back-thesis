@@ -2,9 +2,9 @@ package com.yawarSoft.Mappers;
 
 import com.yawarSoft.Dto.BloodBankNetworkDetailsDTO;
 import com.yawarSoft.Dto.NetworkDTO;
-import com.yawarSoft.Entities.BloodBankNetworkEntity;
-import com.yawarSoft.Entities.NetworkEntity;
-import com.yawarSoft.Entities.UserEntity;
+import com.yawarSoft.Core.Entities.BloodBankNetworkEntity;
+import com.yawarSoft.Core.Entities.NetworkEntity;
+import com.yawarSoft.Core.Entities.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;

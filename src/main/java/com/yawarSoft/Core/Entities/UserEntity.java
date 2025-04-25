@@ -1,4 +1,4 @@
-package com.yawarSoft.Entities;
+package com.yawarSoft.Core.Entities;
 
 import com.yawarSoft.Enums.UserStatus;
 import jakarta.persistence.*;
@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 @Setter
 @Getter
@@ -51,9 +49,9 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name ="id_role"))
-    private Set<RoleEntity> roles = new HashSet<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_role")
+    private RoleEntity role;
 
     @ManyToOne
     @JoinColumn(name = "id_blood_bank")

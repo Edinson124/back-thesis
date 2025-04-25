@@ -1,4 +1,4 @@
-package com.yawarSoft.Utils;
+package com.yawarSoft.Core.Utils;
 
 import java.security.SecureRandom;
 import java.util.Collections;

@@ -1,7 +1,7 @@
 package com.yawarSoft.Mappers;
 
 import com.yawarSoft.Dto.BloodBankDTO;
-import com.yawarSoft.Entities.BloodBankEntity;
+import com.yawarSoft.Core.Entities.BloodBankEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

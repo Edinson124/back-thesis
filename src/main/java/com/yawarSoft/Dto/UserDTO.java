@@ -12,7 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
-    private Long id;
+    private Integer id;
     private String firstName;
     private String lastName;
     private String secondLastName;
@@ -28,6 +28,6 @@ public class UserDTO {
     private String province;
     private String district;
     private UserStatus status;
-    private Set<Integer> roles;
+    private Integer roleId;
     private Integer bloodBankId;
 }

@@ -1,8 +1,8 @@
-package com.yawarSoft.Services;
+package com.yawarSoft.Core.Utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -11,8 +11,8 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-@Service
-public class AESGCMEncryptionService {
+@Component
+public class AESGCMEncryptionUtil {
 
     private static final String AES = "AES";
     private static final int GCM_IV_LENGTH = 12;  // Longitud recomendada del IV para AES-GCM (12 bytes)
@@ -21,12 +21,12 @@ public class AESGCMEncryptionService {
     private final SecretKey secretKey;
 
     @Autowired
-    public AESGCMEncryptionService(@Value("${aes.encryption.key}") String base64Key) throws Exception {
+    public AESGCMEncryptionUtil(@Value("${aes.encryption.key}") String base64Key) throws Exception {
         byte[] keyBytes = Base64.getDecoder().decode(base64Key); // Genera una clave de 256 bits
         this.secretKey = new SecretKeySpec(keyBytes, AES);
     }
 
-    public AESGCMEncryptionService(byte[] keyBytes) {
+    public AESGCMEncryptionUtil(byte[] keyBytes) {
         this.secretKey = new SecretKeySpec(keyBytes, AES);
     }
 
