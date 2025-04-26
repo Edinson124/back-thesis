@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserListDTO {
-    private Long id;
+    private Integer id;
     private String firstName;
     private String lastName;
     private String secondLastName;

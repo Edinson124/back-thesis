@@ -54,7 +54,7 @@ public class BBNetworkServiceImpl implements BBNetworkService {
 
     @Override
     public void associateBloodBank(Integer networkId, Integer bloodBankId) {
-        Integer userId = UserUtils.getAuthenticatedUserId();
+        UserEntity userAuth = UserUtils.getAuthenticatedUser();
         NetworkEntity network = networkRepository.findById(networkId)
                 .orElseThrow(() -> new RuntimeException("Red no encontrada"));
         BloodBankEntity bloodBank = bloodBankService.getBloodBankEntityById(bloodBankId)
@@ -64,7 +64,7 @@ public class BBNetworkServiceImpl implements BBNetworkService {
         relation.setNetwork(network);
         relation.setBloodBank(bloodBank);
         relation.setStatus("ACTIVE");
-        relation.setCreatedBy(UserEntity.builder().id(userId).build());
+        relation.setCreatedBy(userAuth);
         network.getBloodBankRelations().add(relation);
 
         networkRepository.save(network);
@@ -72,7 +72,7 @@ public class BBNetworkServiceImpl implements BBNetworkService {
 
     @Override
     public void disassociateBloodBank(Integer networkId, Integer bloodBankId) {
-        Integer userId = UserUtils.getAuthenticatedUserId();
+        UserEntity userAuth = UserUtils.getAuthenticatedUser();
         NetworkEntity network = networkRepository.findById(networkId)
                 .orElseThrow(() -> new RuntimeException("Red no encontrada"));
 
@@ -82,7 +82,7 @@ public class BBNetworkServiceImpl implements BBNetworkService {
                 .ifPresent(relation -> {
                     relation.setStatus("INACTIVE");
                     relation.setDisassociatedAt(LocalDateTime.now());
-                    relation.setDisassociatedBy(UserEntity.builder().id(userId).build());
+                    relation.setDisassociatedBy(userAuth);
                 });
 
         networkRepository.save(network);

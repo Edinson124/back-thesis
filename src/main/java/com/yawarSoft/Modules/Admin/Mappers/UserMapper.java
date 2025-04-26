@@ -5,13 +5,19 @@ import com.yawarSoft.Modules.Admin.Dto.UserListDTO;
 import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Entities.RoleEntity;
+import com.yawarSoft.Modules.Admin.Dto.UserSelectOptionDTO;
+import com.yawarSoft.Modules.Admin.Repositories.Projections.UserProjectionSelect;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
+
+    List<UserSelectOptionDTO> toSelectDtoListFromProjectionList(List<UserProjectionSelect> projections);
 
     @Mapping(target = "role", source = "role.name")
     @Mapping(target = "bloodBankId", source = "bloodBank.id")

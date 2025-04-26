@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
+@PrimaryKeyJoinColumn(name = "id")
 @Table(name = "donors")
 public class DonorEntity extends PersonEntity {
 
@@ -37,14 +38,16 @@ public class DonorEntity extends PersonEntity {
     @Column(name = "deferral_end_date")
     private LocalDate deferralEndDate;
 
-    @Column(name = "created_by", nullable = false)
-    private Integer createdBy;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
+    private UserEntity createdBy;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private LocalDate createdAt;
 
-    @Column(name = "updated_by")
-    private Integer updatedBy;
+    @ManyToOne
+    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    private UserEntity updatedBy;
 
     @Column(name = "updated_at")
     private LocalDate updatedAt;

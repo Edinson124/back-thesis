@@ -7,7 +7,7 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BloodBankDTO {
+public class BloodBankListDTO {
 
     private Integer id;
     private String name;
@@ -15,9 +15,8 @@ public class BloodBankDTO {
     private String province;
     private String district;
     private String address;
-    private String profileImageUrl;
-    private Boolean isInternal;
-    private Integer idType;
+    private String type;
     private Integer idCoordinator;
+    private String fullNameCoordinator;
     private String status;
 }

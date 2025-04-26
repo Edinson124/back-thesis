@@ -10,5 +10,5 @@ import lombok.*;
 public class BloodBankSelectOptionDTO {
     private Integer id;
     private String name;
-    private Integer bloodBankTypeId;
+    private String bloodBankType;
 }

@@ -3,6 +3,8 @@ package com.yawarSoft.Core.Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -22,7 +24,10 @@ public class BloodBankEntity {
     private String district;
     private String address;
     private String status;
-
+    @Column(name = "is_internal")
+    private Boolean isInternal;
+    @Column(name = "profile_image_url")
+    private String profileImageUrl;
     @ManyToOne
     @JoinColumn(name = "id_blood_bank_type", nullable = false)
     private BloodBankTypeEntity bloodBankType;
@@ -30,4 +35,18 @@ public class BloodBankEntity {
     @ManyToOne
     @JoinColumn(name = "id_coordinator", nullable = false)
     private UserEntity coordinator;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
+    private UserEntity createdBy;
+
+    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    private UserEntity updatedBy;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 }

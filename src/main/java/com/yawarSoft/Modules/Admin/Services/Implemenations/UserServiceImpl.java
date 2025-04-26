@@ -7,8 +7,10 @@ import com.yawarSoft.Core.Entities.AuthEntity;
 import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.RoleEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
+import com.yawarSoft.Modules.Admin.Dto.UserSelectOptionDTO;
 import com.yawarSoft.Modules.Admin.Enums.UserStatus;
 import com.yawarSoft.Modules.Admin.Mappers.UserMapper;
+import com.yawarSoft.Modules.Admin.Repositories.Projections.UserProjectionSelect;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.BloodBankService;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.RoleService;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.UserService;
@@ -28,10 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -79,7 +78,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(Integer id, UserDTO userDto) {
-        Integer userId = UserUtils.getAuthenticatedUserId();
+        UserEntity userAuth = UserUtils.getAuthenticatedUser();
         UserEntity existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
 
@@ -175,6 +174,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserSelectOptionDTO> getMedicUsersByBloodBank(Integer idBloodBank) {
+        List<UserProjectionSelect> userProjectionSelectList = userRepository.getUserRoleMedicByBloodBank(idBloodBank);
+        return userMapper.toSelectDtoListFromProjectionList(userProjectionSelectList);
+    }
+
+    @Override
     public String updateUserProfileImage(Integer userId, MultipartFile profileImage) throws IOException {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
 
@@ -182,7 +187,7 @@ public class UserServiceImpl implements UserService {
             UserEntity user = userOptional.get();
 
             // Guardar la imagen y obtener la URL
-            String imageUrl = imageStorageService.storeImage(userId,profileImage);
+            String imageUrl = imageStorageService.storeImage(userId,profileImage,"BLOODBANK");
             user.setProfileImageUrl(imageUrl);
 
             // Guardar el usuario actualizado

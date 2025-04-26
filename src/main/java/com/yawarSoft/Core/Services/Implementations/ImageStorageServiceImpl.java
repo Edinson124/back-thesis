@@ -15,13 +15,13 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     private static final String IMAGE_UPLOAD_DIR = "src/main/resources/img_profile/";
 
     @Override
-    public String storeImage(Integer idUser, MultipartFile file) throws IOException {
+    public String storeImage(Integer idUser, MultipartFile file, String root) throws IOException {
         if (file.isEmpty()) {
             throw new IOException("El archivo está vacío.");
         }
 
         // Crear directorio del usuario
-        Path userDir = Paths.get(IMAGE_UPLOAD_DIR, idUser.toString());
+        Path userDir = Paths.get(IMAGE_UPLOAD_DIR + root + "/", idUser.toString());
         Files.createDirectories(userDir);
 
         // Generar nombre de archivo único

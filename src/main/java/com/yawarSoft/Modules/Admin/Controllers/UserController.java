@@ -1,9 +1,11 @@
 package com.yawarSoft.Modules.Admin.Controllers;
 
 import com.yawarSoft.Core.Dto.ApiResponse;
+import com.yawarSoft.Modules.Admin.Dto.BloodBankSelectOptionDTO;
 import com.yawarSoft.Modules.Admin.Dto.Request.UserDocumentCheckRequest;
 import com.yawarSoft.Modules.Admin.Dto.UserDTO;
 import com.yawarSoft.Modules.Admin.Dto.UserListDTO;
+import com.yawarSoft.Modules.Admin.Dto.UserSelectOptionDTO;
 import com.yawarSoft.Modules.Admin.Enums.UserStatus;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.UserService;
 import org.springframework.data.domain.Page;
@@ -72,6 +74,12 @@ public class UserController {
     public ResponseEntity<Map<String, Boolean>> checkIfUserExists(@RequestBody UserDocumentCheckRequest request) {
         Boolean exists = userService.existsByDocument(request.documentType(), request.documentNumber());
         return ResponseEntity.ok(Map.of("exists", exists));
+    }
+
+    @GetMapping("/medic/{idBloodBank}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserSelectOptionDTO> getMedicUsersByBloodBank(@PathVariable Integer idBloodBank) {
+        return userService.getMedicUsersByBloodBank(idBloodBank);
     }
 
     @PostMapping("img-profile/{idUser}")
