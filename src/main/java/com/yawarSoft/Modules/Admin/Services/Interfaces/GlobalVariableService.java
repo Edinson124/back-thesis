@@ -6,4 +6,5 @@ import com.yawarSoft.Modules.Admin.Dto.GroupedVariablesDTO;
 public interface GlobalVariableService {
     GroupedVariablesDTO getAllGlobalVariablesGrouped();
     GlobalVariableDTO editGlobalVariable(Integer id, String value);
+    GlobalVariableDTO getByCode(String code);
 }

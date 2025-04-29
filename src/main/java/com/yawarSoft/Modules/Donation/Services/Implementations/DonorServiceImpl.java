@@ -1,13 +1,13 @@
 package com.yawarSoft.Modules.Donation.Services.Implementations;
 
 import com.yawarSoft.Core.Entities.DonorEntity;
-import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.HmacUtil;
 import com.yawarSoft.Core.Utils.UserUtils;
-import com.yawarSoft.Modules.Donation.Dto.DonorDTO;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.GetDonorRequest;
+import com.yawarSoft.Modules.Donation.Enums.DonorStatus;
 import com.yawarSoft.Modules.Donation.Mappers.DonorMapper;
 import com.yawarSoft.Modules.Donation.Repositories.DonorRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
@@ -29,22 +29,64 @@ public class DonorServiceImpl implements DonorService {
     }
 
     @Override
-    public DonorDTO createDonor(DonorDTO donorDTO) {
-        UserEntity userAuth = UserUtils.getAuthenticatedUser();
-        String combinedInfo = donorDTO.getDocumentType() + '|' + donorDTO.getDocumentNumber();
+    public Long createDonor(DonorRequestDTO donorRequestDTO) {
+        String combinedInfo = donorRequestDTO.getDocumentType() + '|' + donorRequestDTO.getDocumentNumber();
         String searchHash = hmacUtil.generateHmac(combinedInfo);
 
         if (donorRepository.existsBySearchHash(searchHash)) {
             throw new IllegalArgumentException("El documento ya existe en el sistema");
         }
 
-        DonorEntity donorEntity = donorMapper.toEntity(donorDTO, aesGCMEncryptionUtil);
+        DonorEntity donorEntity = donorMapper.toEntity(donorRequestDTO, aesGCMEncryptionUtil);
         donorEntity.setSearchHash(searchHash);
-        donorEntity.setCreatedBy(userAuth);
-        donorEntity.setStatus("ACTIVE");
-        donorRepository.save(donorEntity);
-        return donorDTO;
+        donorEntity.setCreatedBy(UserUtils.getAuthenticatedUser());
+        donorEntity.setStatus(DonorStatus.ACTIVE.name());
+        DonorEntity donorSaved = donorRepository.save(donorEntity);
+        return donorSaved.getId();
     }
+
+    @Override
+    public DonorGetDTO updateDonor(Long id, DonorRequestDTO donorRequestDTO) throws Exception {
+        DonorEntity existingDonor = donorRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado con ID: " + id));
+
+        String docInfoDonor = donorRequestDTO.getDocumentType() + '|' + donorRequestDTO.getDocumentNumber();
+        String newSearchHash = hmacUtil.generateHmac(docInfoDonor);
+
+        if (!existingDonor.getSearchHash().equals(newSearchHash) &&
+                donorRepository.existsBySearchHash(newSearchHash)) {
+            throw new IllegalArgumentException("El número de documento ya está registrado con otro donante.");
+        }
+
+        existingDonor.setFirstName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getFirstName()).getBytes());
+        existingDonor.setLastName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getLastName()).getBytes());
+        existingDonor.setSecondLastName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getSecondLastName()).getBytes());
+        existingDonor.setDocumentType(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getDocumentType()).getBytes());
+        existingDonor.setDocumentNumber(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getDocumentNumber()).getBytes());
+        existingDonor.setAddress(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getAddress()).getBytes());
+        existingDonor.setPhone(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getPhone()).getBytes());
+        existingDonor.setEmail(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getEmail()).getBytes());
+        existingDonor.setBirthDate(donorRequestDTO.getBirthDate());
+        existingDonor.setGender(donorRequestDTO.getGender());
+        existingDonor.setRegion(donorRequestDTO.getRegion());
+        existingDonor.setProvince(donorRequestDTO.getProvince());
+        existingDonor.setDistrict(donorRequestDTO.getDistrict());
+        existingDonor.setBloodType(donorRequestDTO.getBloodType());
+        existingDonor.setRhFactor(donorRequestDTO.getRhFactor());
+
+        existingDonor.setPlaceOfBirth(donorRequestDTO.getPlaceOfBirth());
+        existingDonor.setPlaceOfOrigin(donorRequestDTO.getPlaceOfOrigin());
+        existingDonor.setMaritalStatus(donorRequestDTO.getMaritalStatus());
+        existingDonor.setTrips(donorRequestDTO.getTrips());
+        existingDonor.setDonationRequest(donorRequestDTO.isDonationRequest());
+
+        String combinedInfo = donorRequestDTO.getDocumentType() + '|' + donorRequestDTO.getDocumentNumber();
+        existingDonor.setSearchHash(hmacUtil.generateHmac(combinedInfo));
+
+        donorRepository.save(existingDonor);
+        return donorMapper.toGetDto(existingDonor,aesGCMEncryptionUtil);
+    }
+
 
     @Override
     public DonorGetDTO getDonor(GetDonorRequest infoDonorRequest) {
@@ -55,4 +97,6 @@ public class DonorServiceImpl implements DonorService {
 
         return donorMapper.toGetDto(donorEntity, aesGCMEncryptionUtil);
     }
+
+
 }

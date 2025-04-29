@@ -8,6 +8,8 @@ import com.yawarSoft.Core.Utils.UserUtils;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankListDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankSelectOptionDTO;
+import com.yawarSoft.Modules.Admin.Enums.BloodBankStatus;
+import com.yawarSoft.Modules.Admin.Enums.UserStatus;
 import com.yawarSoft.Modules.Admin.Mappers.BloodBankMapper;
 import com.yawarSoft.Modules.Admin.Repositories.Projections.BloodBankProjectionSelect;
 import com.yawarSoft.Core.Entities.BloodBankEntity;
@@ -23,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -96,6 +99,21 @@ public class BloodBankServiceImpl implements BloodBankService {
 
         BloodBankEntity bloodBankSaved = bloodBankRepository.saveAndFlush(bloodBank);
         return bloodBankMapper.toDTO(bloodBankSaved);
+    }
+
+    @Override
+    public BloodBankDTO changeStatus(Integer id) {
+        Optional<BloodBankEntity> bloodBankEntityOptional = bloodBankRepository.findById(id);
+        if (bloodBankEntityOptional.isPresent()) {
+            BloodBankEntity bloodBank = bloodBankEntityOptional.get();
+            bloodBank.setStatus(Objects.equals(bloodBank.getStatus(), BloodBankStatus.ACTIVE.name())
+                    ? UserStatus.INACTIVE.name()
+                    : UserStatus.ACTIVE.name());
+            BloodBankEntity updateBloodBank = bloodBankRepository.save(bloodBank);
+            return bloodBankMapper.toDTO(updateBloodBank);
+        } else {
+            throw new RuntimeException("Banco de sangre no encontrado con ID: " + id);
+        }
     }
 
     @Override

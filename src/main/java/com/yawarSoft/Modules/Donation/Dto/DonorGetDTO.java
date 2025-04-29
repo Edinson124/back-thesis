@@ -35,4 +35,10 @@ public class DonorGetDTO {
     private String status;
     private boolean donationRequest;
     private LocalDate deferralEndDate;
+
+    //Auditoria
+    private Integer createdById;
+    private String createdByName;
+    private Integer updatedById;
+    private String updatedByName;
 }

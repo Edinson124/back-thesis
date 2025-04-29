@@ -1,7 +1,6 @@
 package com.yawarSoft.Modules.Admin.Services.Interfaces;
 
 import com.yawarSoft.Core.Dto.ApiResponse;
-import com.yawarSoft.Modules.Admin.Dto.BloodBankSelectOptionDTO;
 import com.yawarSoft.Modules.Admin.Dto.UserDTO;
 import com.yawarSoft.Modules.Admin.Dto.UserListDTO;
 import com.yawarSoft.Modules.Admin.Dto.UserSelectOptionDTO;

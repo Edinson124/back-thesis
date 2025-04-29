@@ -17,8 +17,7 @@ import com.yawarSoft.Modules.Admin.Services.Interfaces.UserService;
 import com.yawarSoft.Modules.Login.Services.Interfaces.AuthService;
 import com.yawarSoft.Modules.Admin.Repositories.UserRepository;
 import com.yawarSoft.Core.Utils.PasswordGenerator;
-import com.yawarSoft.Core.Utils.UserUtils;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -78,7 +77,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateUser(Integer id, UserDTO userDto) {
-        UserEntity userAuth = UserUtils.getAuthenticatedUser();
         UserEntity existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + id));
 

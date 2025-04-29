@@ -17,4 +17,5 @@ public interface RoleRepository extends JpaRepository<RoleEntity,Integer> {
     Optional<RoleEntity> findById(Long id);
     @Query("SELECT r FROM RoleEntity r WHERE r.bloodBankType.id = :bloodBankTypeId")
     List<RoleEntity> findRolesByBloodBankTypeId(@Param("bloodBankTypeId") Integer bloodBankTypeId);
+    boolean existsByName(String name);
 }

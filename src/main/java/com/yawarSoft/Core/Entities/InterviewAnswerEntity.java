@@ -29,6 +29,6 @@ public class InterviewAnswerEntity {
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
     private UserEntity createdBy;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private LocalDateTime createdAt;
 }

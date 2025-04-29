@@ -1,20 +1,18 @@
 package com.yawarSoft.Modules.Admin.Mappers;
 
-import com.yawarSoft.Core.Entities.UserEntity;
-import com.yawarSoft.Modules.Admin.Dto.BloodBankListDTO;
 import com.yawarSoft.Core.Entities.BloodBankEntity;
-import com.yawarSoft.Modules.Admin.Dto.BloodBankSelectOptionDTO;
+import com.yawarSoft.Core.Utils.MapperUtils;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankDTO;
+import com.yawarSoft.Modules.Admin.Dto.BloodBankListDTO;
+import com.yawarSoft.Modules.Admin.Dto.BloodBankSelectOptionDTO;
 import com.yawarSoft.Modules.Admin.Repositories.Projections.BloodBankProjectionSelect;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
-import java.util.Optional;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", uses = MapperUtils.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BloodBankMapper {
 
     // Mapeo de BloodBankRequest a BloodBankEntity
@@ -30,16 +28,6 @@ public interface BloodBankMapper {
     @Mapping(source = "bloodBankType.id", target = "idType")
     @Mapping(source = "coordinator.id", target = "idCoordinator")
     BloodBankDTO toDTO(BloodBankEntity bloodBankEntity);
-
-    @Named("getFullName")
-    public static String getFullName(UserEntity coordinator) {
-        if (coordinator == null) return null;
-        return String.join(" ",
-                Optional.ofNullable(coordinator.getFirstName()).orElse(""),
-                Optional.ofNullable(coordinator.getLastName()).orElse(""),
-                Optional.ofNullable(coordinator.getSecondLastName()).orElse("")
-        ).trim();
-    }
 
     @Mapping(source = "bloodBankType", target = "bloodBankType")
     List<BloodBankSelectOptionDTO> toSelectDtoListFromProjectionList(List<BloodBankProjectionSelect> projections);

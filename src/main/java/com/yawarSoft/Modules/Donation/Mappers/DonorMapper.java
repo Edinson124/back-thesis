@@ -2,24 +2,25 @@ package com.yawarSoft.Modules.Donation.Mappers;
 
 import com.yawarSoft.Core.Entities.DonorEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
-import com.yawarSoft.Modules.Donation.Dto.DonorDTO;
+import com.yawarSoft.Core.Utils.MapperUtils;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
 import org.mapstruct.*;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring", uses = MapperUtils.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface DonorMapper {
 
     @Mappings({
-            @Mapping(target = "firstName", expression = "java(encryptToBytes(donorDTO.getFirstName(), aesUtil))"),
-            @Mapping(target = "lastName", expression = "java(encryptToBytes(donorDTO.getLastName(), aesUtil))"),
-            @Mapping(target = "secondLastName", expression = "java(encryptToBytes(donorDTO.getSecondLastName(), aesUtil))"),
-            @Mapping(target = "documentType", expression = "java(encryptToBytes(donorDTO.getDocumentType(), aesUtil))"),
-            @Mapping(target = "documentNumber", expression = "java(encryptToBytes(donorDTO.getDocumentNumber(), aesUtil))"),
-            @Mapping(target = "address", expression = "java(encryptToBytes(donorDTO.getAddress(), aesUtil))"),
-            @Mapping(target = "phone", expression = "java(encryptToBytes(donorDTO.getPhone(), aesUtil))"),
-            @Mapping(target = "email", expression = "java(encryptToBytes(donorDTO.getEmail(), aesUtil))")
+            @Mapping(target = "firstName", expression = "java(encryptToBytes(donorRequestDTO.getFirstName(), aesUtil))"),
+            @Mapping(target = "lastName", expression = "java(encryptToBytes(donorRequestDTO.getLastName(), aesUtil))"),
+            @Mapping(target = "secondLastName", expression = "java(encryptToBytes(donorRequestDTO.getSecondLastName(), aesUtil))"),
+            @Mapping(target = "documentType", expression = "java(encryptToBytes(donorRequestDTO.getDocumentType(), aesUtil))"),
+            @Mapping(target = "documentNumber", expression = "java(encryptToBytes(donorRequestDTO.getDocumentNumber(), aesUtil))"),
+            @Mapping(target = "address", expression = "java(encryptToBytes(donorRequestDTO.getAddress(), aesUtil))"),
+            @Mapping(target = "phone", expression = "java(encryptToBytes(donorRequestDTO.getPhone(), aesUtil))"),
+            @Mapping(target = "email", expression = "java(encryptToBytes(donorRequestDTO.getEmail(), aesUtil))")
     })
-    DonorEntity toEntity(DonorDTO donorDTO, @Context AESGCMEncryptionUtil aesUtil);
+    DonorEntity toEntity(DonorRequestDTO donorRequestDTO, @Context AESGCMEncryptionUtil aesUtil);
 
     @Mappings({
             @Mapping(target = "firstName", expression = "java(decryptFromBytes(donorEntity.getFirstName(), aesUtil))"),
@@ -30,9 +31,10 @@ public interface DonorMapper {
             @Mapping(target = "address", expression = "java(decryptFromBytes(donorEntity.getAddress(), aesUtil))"),
             @Mapping(target = "phone", expression = "java(decryptFromBytes(donorEntity.getPhone(), aesUtil))"),
             @Mapping(target = "email", expression = "java(decryptFromBytes(donorEntity.getEmail(), aesUtil))"),
-            @Mapping(target = "status", source = "status"),
-            @Mapping(target = "deferralEndDate", source = "deferralEndDate"),
-            // mapea también el resto normalmente
+            @Mapping(source = "createdBy.id", target = "createdById"),
+            @Mapping(source = "createdBy", target = "createdByName", qualifiedByName = "getFullName"),
+            @Mapping(source = "updatedBy.id", target = "updatedById"),
+            @Mapping(source = "updatedBy", target = "updatedByName", qualifiedByName = "getFullName")
     })
     DonorGetDTO toGetDto(DonorEntity donorEntity, @Context AESGCMEncryptionUtil aesUtil);
 

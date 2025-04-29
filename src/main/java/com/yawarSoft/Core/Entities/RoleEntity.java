@@ -32,4 +32,9 @@ public class RoleEntity {
     @JoinTable(name = "roles_permissions", joinColumns = @JoinColumn(name = "id_role"), inverseJoinColumns = @JoinColumn(name ="id_permission"))
     private Set<PermissionEntity> permissionList = new HashSet<>();
 
+    private String status;
+
+    @Column(name = "is_deletable", nullable = false, insertable = false, updatable = false)
+    private Boolean isDeletable;
+
 }

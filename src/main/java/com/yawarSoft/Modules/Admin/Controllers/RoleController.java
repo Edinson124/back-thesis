@@ -1,12 +1,11 @@
 package com.yawarSoft.Modules.Admin.Controllers;
 
+import com.yawarSoft.Core.Entities.RoleEntity;
 import com.yawarSoft.Modules.Admin.Dto.RoleDTO;
+import com.yawarSoft.Modules.Admin.Dto.RoleListDTO;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.RoleService;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,13 +20,31 @@ public class RoleController {
 
     @GetMapping("")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<RoleDTO> getRoles() {
+    public List<RoleListDTO> getRoles() {
         return roleService.getAllRoles();
     }
 
     @GetMapping("/{bloodBankTypeId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<RoleDTO> getRolesByBloodBankTypeId(@PathVariable Integer bloodBankTypeId) {
+    public List<RoleListDTO> getRolesByBloodBankTypeId(@PathVariable Integer bloodBankTypeId) {
         return roleService.getRolesByBloodBankTypeId(bloodBankTypeId);
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public RoleDTO getBloodBankById(@PathVariable Integer id) {
+        return roleService.getRoleById(id);
+    }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public RoleDTO createBloodBank(@RequestBody RoleDTO roleDTO) {
+        return roleService.createRole(roleDTO);
+    }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public RoleDTO updateRole(@PathVariable Integer id, @RequestBody RoleDTO roleDTO) {
+        return roleService.updateRole(id, roleDTO);
     }
 }

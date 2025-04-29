@@ -1,0 +1,93 @@
+package com.yawarSoft.Modules.Donation.Services.Implementations;
+
+import com.yawarSoft.Core.Entities.DonationEntity;
+import com.yawarSoft.Core.Entities.PatientEntity;
+import com.yawarSoft.Core.Utils.UserUtils;
+import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
+import com.yawarSoft.Modules.Donation.Dto.DonationResponseDTO;
+import com.yawarSoft.Modules.Donation.Dto.Response.DonationByDonorDTO;
+import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
+import com.yawarSoft.Modules.Donation.Mappers.DonationMapper;
+import com.yawarSoft.Modules.Donation.Repositories.DonationRepository;
+import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
+import com.yawarSoft.Modules.Transfusion.Services.Interfaces.PatientService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+
+@Service
+public class DonationServiceImpl implements DonationService {
+
+    private final DonationRepository donationRepository;
+    private final DonationMapper donationMapper;
+    private final PatientService patientService;
+
+
+    public DonationServiceImpl(DonationRepository donationRepository, DonationMapper donationMapper, PatientService patientService) {
+        this.donationRepository = donationRepository;
+        this.donationMapper = donationMapper;
+        this.patientService = patientService;
+    }
+
+    @Override
+    @Transactional
+    public Long createDonation(DonationCreateRequest donationCreateRequest) {
+        DonationEntity donationEntity = donationMapper.toEntityByDonationCreateRequest(donationCreateRequest);
+        donationEntity.setStatus(DonationStatus.IN_PROGRESS.name());
+        donationEntity.setInterrupted(false);
+        donationEntity.setCreatedBy(UserUtils.getAuthenticatedUser());
+        donationEntity.setCreatedAt(LocalDateTime.now());
+        donationEntity.setDate(LocalDateTime.now());
+
+        DonationEntity savedDonation = donationRepository.save(donationEntity);
+        return savedDonation.getId();
+    }
+
+    @Override
+    public DonationResponseDTO updateDonation(Long donationId, DonationUpdateDTO donationUpdateDTO) {
+        DonationEntity donationEntity = donationRepository.findById(donationId)
+                .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + donationId));
+
+        if (donationUpdateDTO.getPatientId() == null) {
+            donationEntity.setPatient(null);
+        } else {
+            PatientEntity patient = patientService.getPatientById(donationUpdateDTO.getPatientId());
+            donationEntity.setPatient(patient);
+        }
+        donationMapper.updateEntityFromDto(donationUpdateDTO, donationEntity);
+
+        donationEntity.setUpdatedAt(LocalDateTime.now());
+        donationEntity.setUpdatedBy(UserUtils.getAuthenticatedUser());
+        DonationEntity updated = donationRepository.save(donationEntity);
+
+        return donationMapper.toResponseDto(updated);
+    }
+
+    @Override
+    public Page<DonationByDonorDTO> getDonationsByDonor(Long donorId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DonationEntity> donationsPage = donationRepository.findByDonorId(donorId, pageable);
+        return donationsPage.map(donationMapper::toDonationByDonorDTO);
+    }
+
+
+    @Override
+    public boolean updateInterviewAnswer(Long donationId, Long interviewAnswerId) {
+        return donationRepository.updateInterviewAnswer(donationId, interviewAnswerId) > 0;
+    }
+
+    @Override
+    public boolean updatePhysicalAssessment(Long donationId, Long physicalAssessmentId) {
+        return donationRepository.updatePhysicalAssessment(donationId, physicalAssessmentId) > 0;
+    }
+
+    @Override
+    public boolean updateBloodExtraction(Long donationId, Long bloodExtractionId) {
+        return donationRepository.updateBloodExtraction(donationId, bloodExtractionId) > 0;
+    }
+}

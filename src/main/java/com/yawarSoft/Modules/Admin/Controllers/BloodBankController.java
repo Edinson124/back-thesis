@@ -58,6 +58,12 @@ public class BloodBankController {
         return bloodBankService.createBloodBank(bloodBankDTO);
     }
 
+    @PatchMapping("status/{bloodBankId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public BloodBankDTO changeStatus(@PathVariable Integer bloodBankId) {
+        return bloodBankService.changeStatus(bloodBankId);
+    }
+
     @PostMapping("img-profile/{idBloodBank}")
     public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Integer idBloodBank,
                                                           @RequestParam("image") MultipartFile file) {

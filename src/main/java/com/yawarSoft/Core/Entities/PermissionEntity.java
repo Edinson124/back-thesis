@@ -20,8 +20,11 @@ public class PermissionEntity {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column
     private String description;
+
+    @Column(name = "all_blood_bank_type")
+    private Boolean allBloodBankType;
 
 
 }

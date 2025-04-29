@@ -5,6 +5,7 @@ import com.yawarSoft.Modules.Admin.Dto.BloodBankDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankListDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankSelectOptionDTO;
 import com.yawarSoft.Core.Entities.BloodBankEntity;
+import com.yawarSoft.Modules.Admin.Dto.UserListDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,7 @@ public interface BloodBankService {
     BloodBankDTO getBloodBankById(int id);
     BloodBankDTO updateBloodBank(int id, BloodBankDTO bloodBankDTO);
     BloodBankDTO createBloodBank(BloodBankDTO bloodBankDTO);
+    BloodBankDTO changeStatus(Integer id);
 
     List<BloodBankSelectOptionDTO> getBloodBankSelector();
     Optional<BloodBankEntity> getBloodBankEntityById(Integer id);

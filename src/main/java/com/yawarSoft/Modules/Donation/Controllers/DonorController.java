@@ -1,10 +1,15 @@
 package com.yawarSoft.Modules.Donation.Controllers;
 
-import com.yawarSoft.Modules.Donation.Dto.DonorDTO;
+import com.yawarSoft.Core.Dto.ApiResponse;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.GetDonorRequest;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/donors")
@@ -17,11 +22,20 @@ public class DonorController {
     }
 
     @PostMapping
-    public DonorDTO createDonor(@RequestBody DonorDTO donorDTO) {
-        return donorService.createDonor(donorDTO);
+    public ResponseEntity<ApiResponse> createDonor(@RequestBody DonorRequestDTO donorRequestDTO) {
+        Long id = donorService.createDonor(donorRequestDTO);
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse(HttpStatus.CREATED, "Donante creado exitosamente", payload));
     }
 
-    @PostMapping("/find")
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse> updateDonor(@PathVariable Long id, @RequestBody DonorRequestDTO donorRequestDTO) throws Exception {
+        DonorGetDTO donorGetDTO = donorService.updateDonor(id, donorRequestDTO);
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK, "Donante actualizado exitosamente", donorGetDTO));
+    }
+
+    @GetMapping("/{id}")
     public DonorGetDTO getDonor(@RequestBody GetDonorRequest infoDonorRequest) {
         return donorService.getDonor(infoDonorRequest);
     }

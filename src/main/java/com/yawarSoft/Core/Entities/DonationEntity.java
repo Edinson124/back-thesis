@@ -1,8 +1,9 @@
 package com.yawarSoft.Core.Entities;
 
 
-import lombok.*;
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -26,19 +27,19 @@ public class DonationEntity {
     @JoinColumn(name = "id_physical_assessment")
     private PhysicalAssessmentEntity physicalAssessment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_interview_answer")
     private InterviewAnswerEntity interviewAnswer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_blood_extraction")
     private BloodExtractionEntity bloodExtraction;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_inmuno_test")
     private ImmunohematologyTestEntity inmunoTest;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_serology_test")
     private SerologyTestEntity serologyTest;
 
@@ -60,7 +61,7 @@ public class DonationEntity {
     private String observation;
 
     @Column(nullable = false)
-    private boolean interrupted;
+    private Boolean interrupted;
 
     @Column(name = "interruption_phase")
     private String interruptionPhase;
@@ -71,17 +72,22 @@ public class DonationEntity {
     @Column(name = "deferral_duration")
     private Integer deferralDuration;
 
+    @Column(name = "date")
+    private LocalDateTime date;
+
     @Column(nullable = false)
     private String status;
 
-    @Column(name = "created_by", nullable = false)
-    private Integer createdBy;
+    @ManyToOne
+    @JoinColumn(name = "created_by", nullable = false)
+    private UserEntity createdBy;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_by")
-    private Integer updatedBy;
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    private UserEntity updatedBy;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

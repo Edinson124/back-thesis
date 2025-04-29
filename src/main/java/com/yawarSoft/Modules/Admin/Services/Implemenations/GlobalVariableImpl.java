@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,9 +37,19 @@ public class GlobalVariableImpl implements GlobalVariableService {
 
     @Override
     public GlobalVariableDTO editGlobalVariable(Integer id, String value) {
-        GlobalVariablesEntity variable = globalVariableRepository.findById(id).get();
+        GlobalVariablesEntity variable = globalVariableRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Variable global no encontrada con ID: " + id));
+
         variable.setValue(value);
         globalVariableRepository.save(variable);
+
+        return globalVariableMapper.toDTO(variable);
+    }
+
+    @Override
+    public GlobalVariableDTO getByCode(String code) {
+        GlobalVariablesEntity variable = globalVariableRepository.findByCode(code)
+                .orElseThrow(() -> new IllegalArgumentException("Variable global no encontrada con code: " + code));
         return globalVariableMapper.toDTO(variable);
     }
 }
