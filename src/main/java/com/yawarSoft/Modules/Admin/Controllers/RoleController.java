@@ -24,12 +24,6 @@ public class RoleController {
         return roleService.getAllRoles();
     }
 
-    @GetMapping("/{bloodBankTypeId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<RoleListDTO> getRolesByBloodBankTypeId(@PathVariable Integer bloodBankTypeId) {
-        return roleService.getRolesByBloodBankTypeId(bloodBankTypeId);
-    }
-
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public RoleDTO getBloodBankById(@PathVariable Integer id) {
