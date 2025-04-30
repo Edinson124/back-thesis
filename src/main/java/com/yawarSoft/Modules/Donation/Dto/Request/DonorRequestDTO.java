@@ -25,8 +25,7 @@ public class DonorRequestDTO {
     private String address;
     private String phone;
     private String email;
-    private String bloodType;
-    private String rhFactor;
+    private String occupation;
 
     // DonorEntity fields
     private String placeOfBirth;

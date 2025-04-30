@@ -59,11 +59,14 @@ public class PersonEntity {
     @Column(unique = true)
     private byte[] email;
 
-    @Column(name = "blood_type", nullable = false)
+    @Column(name = "blood_type")
     private String bloodType;
 
-    @Column(name = "rh_factor", nullable = false)
+    @Column(name = "rh_factor")
     private String rhFactor;
+
+    @Column
+    private String occupation;
 
     @Column(name = "search_hash", nullable = false, unique = true)
     private String searchHash;

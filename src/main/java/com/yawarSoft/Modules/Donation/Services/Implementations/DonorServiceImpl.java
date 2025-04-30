@@ -1,6 +1,7 @@
 package com.yawarSoft.Modules.Donation.Services.Implementations;
 
 import com.yawarSoft.Core.Entities.DonorEntity;
+import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.HmacUtil;
 import com.yawarSoft.Core.Utils.UserUtils;
@@ -12,6 +13,8 @@ import com.yawarSoft.Modules.Donation.Mappers.DonorMapper;
 import com.yawarSoft.Modules.Donation.Repositories.DonorRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class DonorServiceImpl implements DonorService {
@@ -46,6 +49,13 @@ public class DonorServiceImpl implements DonorService {
     }
 
     @Override
+    public Boolean existsByDocument(Long id, String documentType, String documentNumber) {
+        String docInfoDonor = documentType + '|' + documentNumber;
+        String newSearchHash = hmacUtil.generateHmac(docInfoDonor);
+        return donorRepository.existsBySearchHash(newSearchHash);
+    }
+
+    @Override
     public DonorGetDTO updateDonor(Long id, DonorRequestDTO donorRequestDTO) throws Exception {
         DonorEntity existingDonor = donorRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado con ID: " + id));
@@ -71,8 +81,6 @@ public class DonorServiceImpl implements DonorService {
         existingDonor.setRegion(donorRequestDTO.getRegion());
         existingDonor.setProvince(donorRequestDTO.getProvince());
         existingDonor.setDistrict(donorRequestDTO.getDistrict());
-        existingDonor.setBloodType(donorRequestDTO.getBloodType());
-        existingDonor.setRhFactor(donorRequestDTO.getRhFactor());
 
         existingDonor.setPlaceOfBirth(donorRequestDTO.getPlaceOfBirth());
         existingDonor.setPlaceOfOrigin(donorRequestDTO.getPlaceOfOrigin());

@@ -1,8 +1,9 @@
 package com.yawarSoft.Modules.Donation.Controllers;
 
 import com.yawarSoft.Core.Dto.ApiResponse;
-import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorDocumentCheckRequest;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.GetDonorRequest;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
 import org.springframework.http.HttpStatus;
@@ -38,5 +39,11 @@ public class DonorController {
     @GetMapping("/{id}")
     public DonorGetDTO getDonor(@RequestBody GetDonorRequest infoDonorRequest) {
         return donorService.getDonor(infoDonorRequest);
+    }
+
+    @PostMapping("/exists")
+    public ResponseEntity<Map<String, Boolean>> checkIfUserExists(@RequestBody DonorDocumentCheckRequest request) {
+        Boolean exists = donorService.existsByDocument(request.donorId(), request.documentType(), request.documentNumber());
+        return ResponseEntity.ok(Map.of("exists", exists));
     }
 }
