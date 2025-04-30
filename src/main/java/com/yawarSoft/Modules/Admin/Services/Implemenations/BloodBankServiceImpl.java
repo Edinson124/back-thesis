@@ -1,6 +1,7 @@
 package com.yawarSoft.Modules.Admin.Services.Implemenations;
 
 import com.yawarSoft.Core.Dto.ApiResponse;
+import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.BloodBankTypeEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.ImageStorageService;
@@ -9,11 +10,9 @@ import com.yawarSoft.Modules.Admin.Dto.BloodBankDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankListDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankSelectOptionDTO;
 import com.yawarSoft.Modules.Admin.Enums.BloodBankStatus;
-import com.yawarSoft.Modules.Admin.Enums.UserStatus;
 import com.yawarSoft.Modules.Admin.Mappers.BloodBankMapper;
-import com.yawarSoft.Modules.Admin.Repositories.Projections.BloodBankProjectionSelect;
-import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Modules.Admin.Repositories.BloodBankRepository;
+import com.yawarSoft.Modules.Admin.Repositories.Projections.BloodBankProjectionSelect;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.BloodBankService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -73,13 +73,22 @@ public class BloodBankServiceImpl implements BloodBankService {
             throw new IllegalArgumentException("El nombre del banco de sangre ya está registrado.");
         }
 
+        if (bloodBankDTO.getIdCoordinator() != null) {
+            existingBloodBank.setCoordinator(UserEntity.builder()
+                    .id(bloodBankDTO.getIdCoordinator())
+                    .build());
+        } else {
+            existingBloodBank.setCoordinator(null);
+        }
+
         existingBloodBank.setName(bloodBankDTO.getName());
         existingBloodBank.setRegion(bloodBankDTO.getRegion());
         existingBloodBank.setProvince(bloodBankDTO.getProvince());
         existingBloodBank.setDistrict(bloodBankDTO.getDistrict());
         existingBloodBank.setAddress(bloodBankDTO.getAddress());
         existingBloodBank.setStatus(bloodBankDTO.getStatus());
-        existingBloodBank.setCoordinator(UserEntity.builder().id(bloodBankDTO.getIdCoordinator()).build());
+        existingBloodBank.setUpdatedAt(LocalDateTime.now());
+        existingBloodBank.setUpdatedBy(UserUtils.getAuthenticatedUser());
         existingBloodBank.setBloodBankType(BloodBankTypeEntity.builder().id(bloodBankDTO.getIdType()).build());
 
         BloodBankEntity bloodBankSaved = bloodBankRepository.save(existingBloodBank);
@@ -95,7 +104,15 @@ public class BloodBankServiceImpl implements BloodBankService {
         }
 
         BloodBankEntity bloodBank = bloodBankMapper.toEntity(bloodBankDTO);
+        if (bloodBankDTO.getIdCoordinator() != null) {
+            bloodBank.setCoordinator(UserEntity.builder()
+                    .id(bloodBankDTO.getIdCoordinator())
+                    .build());
+        } else {
+            bloodBank.setCoordinator(null);
+        }
         bloodBank.setCreatedBy(userAuth);
+        bloodBank.setIsInternal(true);
 
         BloodBankEntity bloodBankSaved = bloodBankRepository.saveAndFlush(bloodBank);
         return bloodBankMapper.toDTO(bloodBankSaved);
@@ -107,8 +124,8 @@ public class BloodBankServiceImpl implements BloodBankService {
         if (bloodBankEntityOptional.isPresent()) {
             BloodBankEntity bloodBank = bloodBankEntityOptional.get();
             bloodBank.setStatus(Objects.equals(bloodBank.getStatus(), BloodBankStatus.ACTIVE.name())
-                    ? UserStatus.INACTIVE.name()
-                    : UserStatus.ACTIVE.name());
+                    ? BloodBankStatus.INACTIVE.name()
+                    : BloodBankStatus.ACTIVE.name());
             BloodBankEntity updateBloodBank = bloodBankRepository.save(bloodBank);
             return bloodBankMapper.toDTO(updateBloodBank);
         } else {

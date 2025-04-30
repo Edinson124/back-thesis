@@ -4,10 +4,15 @@ import com.yawarSoft.Core.Entities.PermissionEntity;
 import com.yawarSoft.Modules.Admin.Dto.RoleDTO;
 import com.yawarSoft.Modules.Admin.Dto.RoleListDTO;
 import com.yawarSoft.Core.Entities.RoleEntity;
+import com.yawarSoft.Modules.Admin.Dto.RoleSelectDTO;
 import com.yawarSoft.Modules.Admin.Enums.RoleStatus;
+import com.yawarSoft.Modules.Admin.Enums.UserStatus;
 import com.yawarSoft.Modules.Admin.Mappers.RoleMapper;
 import com.yawarSoft.Modules.Admin.Repositories.RoleRepository;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.RoleService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +34,23 @@ public class RoleServiceImpl implements RoleService {
         List<RoleEntity> roles = roleRepository.findAll();
         return roles.stream()
                 .map(roleMapper::toListDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<RoleListDTO> getRolesPaginated(int page, int size, String search,String status) {
+        Pageable pageable = PageRequest.of(page, size);
+        search = (search != null && !search.isBlank()) ? search : null;
+        status = (status != null && !status.isBlank()) ? status : null;
+        return roleRepository.findByFilters(search, status, pageable)
+                .map(roleMapper::toListDTO);
+    }
+
+    @Override
+    public List<RoleSelectDTO> getRolesSelectActive() {
+        List<RoleEntity> roles = roleRepository.findByStatus(RoleStatus.ACTIVE.name());
+        return roles.stream()
+                .map(roleMapper::toSelectDTO)
                 .collect(Collectors.toList());
     }
 

@@ -16,7 +16,6 @@ public class BloodBankDTO {
     private String district;
     private String address;
     private String profileImageUrl;
-    private Boolean isInternal;
     private Integer idType;
     private Integer idCoordinator;
     private String status;

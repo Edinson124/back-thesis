@@ -16,6 +16,7 @@ public class BloodBankListDTO {
     private String district;
     private String address;
     private String type;
+    private String profileImageUrl;
     private Integer idCoordinator;
     private String fullNameCoordinator;
     private String status;

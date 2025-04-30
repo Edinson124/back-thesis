@@ -14,4 +14,8 @@ public class UserSelectOptionDTO {
     private String secondLastName;
     private String documentType;
     private String documentNumber;
+
+    public String getFullName() {
+        return String.format("%s %s %s", firstName, lastName, secondLastName != null ? secondLastName : "").trim();
+    }
 }

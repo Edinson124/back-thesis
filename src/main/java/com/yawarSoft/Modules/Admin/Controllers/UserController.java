@@ -32,9 +32,9 @@ public class UserController {
     @GetMapping("/paginated")
     @PreAuthorize("hasRole('ADMIN')")
     public Page<UserListDTO> getUsers(@RequestParam(defaultValue = "0") int page,
-                                      @RequestParam(defaultValue = "5") int size,
+                                      @RequestParam(defaultValue = "10") int size,
                                       @RequestParam(required = false) String search,
-                                      @RequestParam(required = false) String role,
+                                      @RequestParam(required = false) Integer role,
                                       @RequestParam(required = false) String status) {
         return userService.getUsersPaginated(page, size, search, role, status);
     }
@@ -69,10 +69,10 @@ public class UserController {
         return Arrays.asList(UserStatus.values());
     }
 
-    @GetMapping("/exists")
+    @PostMapping("/exists")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Boolean>> checkIfUserExists(@RequestBody UserDocumentCheckRequest request) {
-        Boolean exists = userService.existsByDocument(request.documentType(), request.documentNumber());
+        Boolean exists = userService.existsByDocument(request.userId(), request.documentNumber());
         return ResponseEntity.ok(Map.of("exists", exists));
     }
 

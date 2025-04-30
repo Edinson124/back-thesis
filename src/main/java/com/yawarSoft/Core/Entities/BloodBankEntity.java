@@ -33,7 +33,7 @@ public class BloodBankEntity {
     private BloodBankTypeEntity bloodBankType;
 
     @ManyToOne
-    @JoinColumn(name = "id_coordinator", nullable = false)
+    @JoinColumn(name = "id_coordinator")
     private UserEntity coordinator;
 
     @ManyToOne(optional = false)

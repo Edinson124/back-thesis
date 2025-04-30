@@ -4,6 +4,7 @@ import com.yawarSoft.Core.Entities.PermissionEntity;
 import com.yawarSoft.Modules.Admin.Dto.RoleDTO;
 import com.yawarSoft.Modules.Admin.Dto.RoleListDTO;
 import com.yawarSoft.Core.Entities.RoleEntity;
+import com.yawarSoft.Modules.Admin.Dto.RoleSelectDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -16,6 +17,8 @@ import java.util.stream.Collectors;
 public interface RoleMapper {
 
     RoleListDTO toListDTO(RoleEntity roleEntity);
+
+    RoleSelectDTO toSelectDTO(RoleEntity roleEntity);
 
     @Mapping(source = "permissionList", target = "permissionList", qualifiedByName = "mapPermissionsToIds")
     RoleDTO toDto(RoleEntity roleEntity);

@@ -16,24 +16,27 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<UserEntity,Integer> {
     @Query("SELECT DISTINCT u FROM UserEntity u JOIN u.role r WHERE " +
             "(:search IS NULL OR :search = '' OR u.firstName LIKE CONCAT('%', :search, '%') OR u.documentNumber LIKE CONCAT('%', :search, '%')) AND " +
-            "(:role IS NULL OR r.name = :role) AND " +
+            "(:role IS NULL OR r.id = :role) AND " +
             "(:status IS NULL OR u.status = :status) " +
             "ORDER BY u.firstName ASC")
-    Page<UserEntity > findByFilters(@Param("search") String search, @Param("role") String role,
+    Page<UserEntity > findByFilters(@Param("search") String search, @Param("role") Integer role,
                                     @Param("status") UserStatus status, Pageable pageable);
 
     Page<UserEntity> findAll(Pageable pageable);
     boolean existsByDocumentNumberAndIdNot(String documentNumber, Integer id);
     boolean existsByDocumentNumber(String documentNumber);
-    boolean existsByDocumentTypeAndDocumentNumber(String documentType, String documentNumber);
 
-    @Query("SELECT u.id AS id, " +
-            "u.firstName AS firstName, " +
-            "u.lastName AS lastName, " +
-            "u.secondLastName AS secondLastName, " +
-            "u.documentType AS documentType, " +
-            "u.documentNumber AS documentNumber " +
-            "FROM UserEntity u JOIN u.role r " +
-            "WHERE r.name = 'Medico' AND u.bloodBank.id = :id AND u.status = 'ACTIVE'")
-    List<UserProjectionSelect> getUserRoleMedicByBloodBank(@Param("id") Integer bloodBankId);
-}
+        @Query("SELECT u.id AS id, " +
+                "u.firstName AS firstName, " +
+                "u.lastName AS lastName, " +
+                "u.secondLastName AS secondLastName, " +
+                "u.documentType AS documentType, " +
+                "u.documentNumber AS documentNumber " +
+                "FROM UserEntity u JOIN u.role r " +
+                "WHERE r.id = :roleId AND u.bloodBank.id = :bloodBankId AND u.status = :status " +
+                "ORDER BY u.firstName ASC, u.lastName ASC, u.secondLastName ASC")
+        List<UserProjectionSelect> getUsersByRoleAndStatusAndBloodBank(
+                @Param("bloodBankId") Integer bloodBankId,
+                @Param("roleId") Integer roleId,
+                @Param("status") UserStatus status);
+    }

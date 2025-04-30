@@ -3,7 +3,10 @@ package com.yawarSoft.Modules.Admin.Controllers;
 import com.yawarSoft.Core.Entities.RoleEntity;
 import com.yawarSoft.Modules.Admin.Dto.RoleDTO;
 import com.yawarSoft.Modules.Admin.Dto.RoleListDTO;
+import com.yawarSoft.Modules.Admin.Dto.RoleSelectDTO;
+import com.yawarSoft.Modules.Admin.Dto.UserListDTO;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.RoleService;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +25,21 @@ public class RoleController {
     @PreAuthorize("hasRole('ADMIN')")
     public List<RoleListDTO> getRoles() {
         return roleService.getAllRoles();
+    }
+
+    @GetMapping("/paginated")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Page<RoleListDTO> getRoles(@RequestParam(defaultValue = "0") int page,
+                                      @RequestParam(defaultValue = "10") int size,
+                                      @RequestParam(required = false) String search,
+                                      @RequestParam(required = false) String status) {
+        return roleService.getRolesPaginated(page, size, search, status);
+    }
+
+    @GetMapping("/select")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<RoleSelectDTO> getRolesSelectActive() {
+        return roleService.getRolesSelectActive();
     }
 
     @GetMapping("/{id}")

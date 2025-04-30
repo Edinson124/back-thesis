@@ -32,7 +32,7 @@ public class BloodBankController {
     @GetMapping("/paginated")
     @PreAuthorize("hasRole('ADMIN')")
     public Page<BloodBankListDTO> getBloodBank(@RequestParam(defaultValue = "0") int page,
-                                           @RequestParam(defaultValue = "5") int size,
+                                           @RequestParam(defaultValue = "6") int size,
                                            @RequestParam(required = false) String name,
                                            @RequestParam(required = false) String region,
                                            @RequestParam(required = false) String province,

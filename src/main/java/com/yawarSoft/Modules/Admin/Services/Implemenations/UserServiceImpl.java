@@ -8,6 +8,7 @@ import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.RoleEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Modules.Admin.Dto.UserSelectOptionDTO;
+import com.yawarSoft.Modules.Admin.Enums.RoleEnum;
 import com.yawarSoft.Modules.Admin.Enums.UserStatus;
 import com.yawarSoft.Modules.Admin.Mappers.UserMapper;
 import com.yawarSoft.Modules.Admin.Repositories.Projections.UserProjectionSelect;
@@ -57,11 +58,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserListDTO> getUsersPaginated(int page, int size, String search, String role, String status) {
+    public Page<UserListDTO> getUsersPaginated(int page, int size, String search, Integer role, String status) {
         Pageable pageable = PageRequest.of(page, size);
 
         search = (search != null && !search.isBlank()) ? search : null;
-        role = (role != null && !role.isBlank()) ? role : null;
         UserStatus userStatus = (status != null && !status.isBlank()) ? UserStatus.valueOf(status) : null;
         return userRepository.findByFilters(search, role, userStatus, pageable)
                 .map(userMapper::toListDto);
@@ -151,8 +151,6 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-
-
     @Override
     public UserListDTO changeStatus(Integer userId) {
         Optional<UserEntity> userOptional = userRepository.findById(userId);
@@ -167,13 +165,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean existsByDocument(String documentType, String documentNumber) {
-        return userRepository.existsByDocumentTypeAndDocumentNumber(documentType, documentNumber);
+    public Boolean existsByDocument(Integer userId, String documentNumber) {
+        if (userId != null) {
+            Optional<UserEntity> existingUser = userRepository.findById(userId);
+            if (existingUser.isEmpty()) {
+                throw new IllegalArgumentException("Usuario no encontrado con ID: " + userId);
+            }
+            if (existingUser.get().getDocumentNumber().equals(documentNumber)) {
+                return false;
+            }
+        }
+        return userRepository.existsByDocumentNumber(documentNumber);
     }
 
     @Override
     public List<UserSelectOptionDTO> getMedicUsersByBloodBank(Integer idBloodBank) {
-        List<UserProjectionSelect> userProjectionSelectList = userRepository.getUserRoleMedicByBloodBank(idBloodBank);
+        List<UserProjectionSelect> userProjectionSelectList =
+                userRepository.getUsersByRoleAndStatusAndBloodBank(idBloodBank, RoleEnum.MEDICO_BANCO_DE_SANGRE.getId(),UserStatus.ACTIVE);
         return userMapper.toSelectDtoListFromProjectionList(userProjectionSelectList);
     }
 
