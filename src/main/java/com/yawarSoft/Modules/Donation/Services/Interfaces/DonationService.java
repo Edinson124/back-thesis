@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 public interface DonationService {
     Long createDonation(DonationCreateRequest donationCreateRequest);
     DonationResponseDTO updateDonation(Long donationId, DonationUpdateDTO donationUpdateDTO);
-    Page<DonationByDonorDTO> getDonationsByDonor(Long donorId, int page, int size);
+    Page<DonationByDonorDTO> getDonationsByDonor(String documentType,String documentNumber, int page, int size);
 
 
     boolean updateInterviewAnswer(Long donationId, Long interviewAnswerId);

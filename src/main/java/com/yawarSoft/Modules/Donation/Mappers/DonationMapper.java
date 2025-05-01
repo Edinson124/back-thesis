@@ -50,5 +50,6 @@ public interface DonationMapper {
     @Mapping(target = "patient.id", source = "patientId")
     void updateEntityFromDto(DonationUpdateDTO request, @MappingTarget DonationEntity entity);
 
+    @Mapping(source = "createdAt", target = "date")
     DonationByDonorDTO toDonationByDonorDTO(DonationEntity donationEntity);
 }

@@ -9,4 +9,5 @@ public interface DonorService {
     Boolean existsByDocument(Long id, String documentType, String documentNumber);
     DonorGetDTO updateDonor(Long id, DonorRequestDTO donorRequestDTO) throws Exception;
     DonorGetDTO getDonor(GetDonorRequest infoDonorRequest);
+    Long getIdDonor(String documentType, String documentNumber);
 }

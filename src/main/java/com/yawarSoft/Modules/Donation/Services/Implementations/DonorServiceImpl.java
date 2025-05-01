@@ -43,7 +43,7 @@ public class DonorServiceImpl implements DonorService {
         DonorEntity donorEntity = donorMapper.toEntity(donorRequestDTO, aesGCMEncryptionUtil);
         donorEntity.setSearchHash(searchHash);
         donorEntity.setCreatedBy(UserUtils.getAuthenticatedUser());
-        donorEntity.setStatus(DonorStatus.ACTIVE.name());
+        donorEntity.setStatus(DonorStatus.APTO.getLabel());
         DonorEntity donorSaved = donorRepository.save(donorEntity);
         return donorSaved.getId();
     }
@@ -106,5 +106,13 @@ public class DonorServiceImpl implements DonorService {
         return donorMapper.toGetDto(donorEntity, aesGCMEncryptionUtil);
     }
 
+    @Override
+    public Long getIdDonor(String documentType, String documentNumber) {
+        String combinedInfo = documentType + '|' + documentNumber;
+        String searchHash = hmacUtil.generateHmac(combinedInfo);
+
+        return donorRepository.findIdBySearchHash(searchHash)
+                .orElse(0L);
+    }
 
 }

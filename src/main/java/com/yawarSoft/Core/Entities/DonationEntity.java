@@ -72,9 +72,6 @@ public class DonationEntity {
     @Column(name = "deferral_duration")
     private Integer deferralDuration;
 
-    @Column(name = "date")
-    private LocalDateTime date;
-
     @Column(nullable = false)
     private String status;
 

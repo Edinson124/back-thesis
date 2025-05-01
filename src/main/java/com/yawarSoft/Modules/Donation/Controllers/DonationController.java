@@ -24,11 +24,12 @@ public class DonationController {
         this.donationService = donationService;
     }
 
-    @GetMapping("/paginated/{idDonor}")
+    @GetMapping("/paginated")
     public Page<DonationByDonorDTO> getDonationsByDonor(@RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "5") int size,
-                                                        @RequestParam() Long donorId) {
-        return donationService.getDonationsByDonor(donorId, page, size);
+                                                        @RequestParam() String documentType,
+                                                        @RequestParam() String documentNumber) {
+        return donationService.getDonationsByDonor(documentType, documentNumber, page, size);
     }
 
     @PostMapping

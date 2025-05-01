@@ -11,10 +11,12 @@ import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
 import com.yawarSoft.Modules.Donation.Mappers.DonationMapper;
 import com.yawarSoft.Modules.Donation.Repositories.DonationRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
+import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.PatientService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,12 +28,14 @@ public class DonationServiceImpl implements DonationService {
     private final DonationRepository donationRepository;
     private final DonationMapper donationMapper;
     private final PatientService patientService;
+    private final DonorService donorService;
 
 
-    public DonationServiceImpl(DonationRepository donationRepository, DonationMapper donationMapper, PatientService patientService) {
+    public DonationServiceImpl(DonationRepository donationRepository, DonationMapper donationMapper, PatientService patientService, DonorService donorService) {
         this.donationRepository = donationRepository;
         this.donationMapper = donationMapper;
         this.patientService = patientService;
+        this.donorService = donorService;
     }
 
     @Override
@@ -42,7 +46,6 @@ public class DonationServiceImpl implements DonationService {
         donationEntity.setInterrupted(false);
         donationEntity.setCreatedBy(UserUtils.getAuthenticatedUser());
         donationEntity.setCreatedAt(LocalDateTime.now());
-        donationEntity.setDate(LocalDateTime.now());
 
         DonationEntity savedDonation = donationRepository.save(donationEntity);
         return savedDonation.getId();
@@ -69,10 +72,15 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override
-    public Page<DonationByDonorDTO> getDonationsByDonor(Long donorId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<DonationEntity> donationsPage = donationRepository.findByDonorId(donorId, pageable);
-        return donationsPage.map(donationMapper::toDonationByDonorDTO);
+    public Page<DonationByDonorDTO> getDonationsByDonor(String documentType,String documentNumber, int page, int size){
+        Long donorId = donorService.getIdDonor(documentType, documentNumber);
+        if (donorId != 0L) {
+            Pageable pageable = PageRequest.of(page, size,Sort.by(Sort.Direction.DESC, "createdAt"));
+            Page<DonationEntity> donationsPage = donationRepository.findByDonorId(donorId, pageable);
+            return donationsPage.map(donationMapper::toDonationByDonorDTO);
+        }else{
+            throw new IllegalArgumentException("Donante no encontrada con documento");
+        }
     }
 
 

@@ -36,7 +36,7 @@ public class DonorController {
         return ResponseEntity.ok(new ApiResponse(HttpStatus.OK, "Donante actualizado exitosamente", donorGetDTO));
     }
 
-    @GetMapping("/{id}")
+    @PostMapping("/search")
     public DonorGetDTO getDonor(@RequestBody GetDonorRequest infoDonorRequest) {
         return donorService.getDonor(infoDonorRequest);
     }
