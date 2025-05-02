@@ -1,4 +1,4 @@
-package com.yawarSoft.Modules.Donation.Dto;
+package com.yawarSoft.Modules.Transfusion.Dto;
 
 import lombok.*;
 
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DonorGetDTO {
+public class PatientGetDTO {
 
     private String firstName;
     private String lastName;
@@ -24,22 +24,11 @@ public class DonorGetDTO {
     private String address;
     private String phone;
     private String email;
-    private String bloodType;
-    private String rhFactor;
-
-    // DonorEntity fields
-    private String placeOfBirth;
-    private String placeOfOrigin;
-    private String maritalStatus;
-    private String trips;
-    private String status;
-    private boolean donationRequest;
-    private LocalDate deferralEndDate;
-    private String deferralReason;
 
     //Auditoria
     private Integer createdById;
     private String createdByName;
     private Integer updatedById;
     private String updatedByName;
+
 }

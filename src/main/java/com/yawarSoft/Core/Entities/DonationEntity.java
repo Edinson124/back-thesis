@@ -69,6 +69,9 @@ public class DonationEntity {
     @Column(name = "deferral_type")
     private String deferralType;
 
+    @Column(name = "deferral_reason")
+    private String deferralReason;
+
     @Column(name = "deferral_duration")
     private Integer deferralDuration;
 

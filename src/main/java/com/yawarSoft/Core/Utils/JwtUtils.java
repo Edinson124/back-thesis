@@ -50,7 +50,7 @@ public class JwtUtils {
                 .withClaim("id", userId)// Usuario al que se crea el token
                 .withClaim("authorities",authorities)  //Uso de claims para poner permisos
                 .withIssuedAt(new Date())    //Fecha en la que se generó el token
-                .withExpiresAt(new Date(System.currentTimeMillis()+1800000)) //Tiempo de expiración
+                .withExpiresAt(new Date(Constants.getTimeToken())) //Tiempo de expiración
                 .withJWTId(UUID.randomUUID().toString())   //Id unico del token agregado
                 .withNotBefore(new Date(System.currentTimeMillis()))   //Tiempo a partir del que token es válido
                 .sign(algorithm);   //Firma con el algoritmo, devuelve en string

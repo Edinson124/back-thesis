@@ -9,10 +9,13 @@ import lombok.*;
 @NoArgsConstructor
 public class DonationCreateRequest {
 
+        private String documentTypeDonor;
+        private String documentNumberDonor;
+        private String documentTypePatient;
+        private String documentNumberPatient;
         private Integer bloodBankId;
-        private Long donorId;
-        private Long patientId;
         private String donationPurpose;
         private String bloodComponent;
         private String observation;
 }
+

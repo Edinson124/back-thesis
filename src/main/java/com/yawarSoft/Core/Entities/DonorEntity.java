@@ -38,6 +38,9 @@ public class DonorEntity extends PersonEntity {
     @Column(name = "deferral_end_date")
     private LocalDate deferralEndDate;
 
+    @Column(name = "deferral_reason")
+    private LocalDate deferralReason;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
     private UserEntity createdBy;

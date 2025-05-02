@@ -1,6 +1,8 @@
 package com.yawarSoft.Modules.Donation.Services.Implementations;
 
+import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.DonationEntity;
+import com.yawarSoft.Core.Entities.DonorEntity;
 import com.yawarSoft.Core.Entities.PatientEntity;
 import com.yawarSoft.Core.Utils.UserUtils;
 import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
@@ -41,13 +43,43 @@ public class DonationServiceImpl implements DonationService {
     @Override
     @Transactional
     public Long createDonation(DonationCreateRequest donationCreateRequest) {
-        DonationEntity donationEntity = donationMapper.toEntityByDonationCreateRequest(donationCreateRequest);
-        donationEntity.setStatus(DonationStatus.IN_PROGRESS.name());
-        donationEntity.setInterrupted(false);
-        donationEntity.setCreatedBy(UserUtils.getAuthenticatedUser());
-        donationEntity.setCreatedAt(LocalDateTime.now());
 
-        DonationEntity savedDonation = donationRepository.save(donationEntity);
+        Long donorId = donorService.getIdDonor(donationCreateRequest.getDocumentTypeDonor(),donationCreateRequest.getDocumentNumberDonor());
+        if (donorId == 0) {
+            throw new IllegalArgumentException("Donante no encontrado con el documento tipo: " + donationCreateRequest.getDocumentTypeDonor() + " - número: " + donationCreateRequest.getDocumentNumberDonor());
+        }
+        DonorEntity donor = DonorEntity.builder().id(donorId).build();
+        PatientEntity patient = null;
+
+        if (donationCreateRequest.getDocumentTypePatient() != null && !donationCreateRequest.getDocumentTypePatient().isBlank()
+                && donationCreateRequest.getDocumentNumberPatient() != null && !donationCreateRequest.getDocumentNumberPatient().isBlank()) {
+
+            Long patientId = patientService.getIdPatient(donationCreateRequest.getDocumentTypePatient(),donationCreateRequest.getDocumentNumberPatient());
+
+            if (patientId == 0) {
+                throw new IllegalArgumentException("Paciente no encontrado con el documento tipo: " + donationCreateRequest.getDocumentTypePatient()
+                                + " - número: " + donationCreateRequest.getDocumentNumberPatient()
+                );
+            }
+
+            patient = PatientEntity.builder().id(patientId).build();
+        }
+
+        BloodBankEntity bloodBank = BloodBankEntity.builder().id(donationCreateRequest.getBloodBankId()).build();
+
+        DonationEntity newDonation = new DonationEntity();
+        newDonation.setDonor(donor);
+        newDonation.setPatient(patient);
+        newDonation.setBloodBank(bloodBank);
+        newDonation.setDonationPurpose(donationCreateRequest.getDonationPurpose());
+        newDonation.setBloodComponent(donationCreateRequest.getBloodComponent());
+        newDonation.setObservation(donationCreateRequest.getObservation());
+        newDonation.setCreatedBy(UserUtils.getAuthenticatedUser());
+        newDonation.setCreatedAt(LocalDateTime.now());
+        newDonation.setStatus(DonationStatus.IN_PROCRESS.getLabel());
+        newDonation.setInterrupted(false);
+
+        DonationEntity savedDonation = donationRepository.save(newDonation);
         return savedDonation.getId();
     }
 

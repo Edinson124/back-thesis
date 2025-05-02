@@ -16,32 +16,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface DonationMapper {
 
-    @Mapping(target = "bloodBank", source = "bloodBankId")
-    @Mapping(target = "donor", source = "donorId")
-    @Mapping(target = "patient", source = "patientId")
-    DonationEntity toEntityByDonationCreateRequest(DonationCreateRequest request);
-
-    default BloodBankEntity mapBloodBankId(Integer id) {
-        if (id == null) return null;
-        BloodBankEntity entity = new BloodBankEntity();
-        entity.setId(id);
-        return entity;
-    }
-
-    default DonorEntity mapDonorId(Long id) {
-        if (id == null) return null;
-        DonorEntity entity = new DonorEntity();
-        entity.setId(id);
-        return entity;
-    }
-
-    default PatientEntity mapPatientId(Long id) {
-        if (id == null) return null;
-        PatientEntity entity = new PatientEntity();
-        entity.setId(id);
-        return entity;
-    }
-
     @Mapping(source = "bloodBank.id", target = "bloodBankId")
     @Mapping(source = "donor.id", target = "donorId")
     @Mapping(source = "patient.id", target = "patientId")
