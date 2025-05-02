@@ -1,10 +1,7 @@
 package com.yawarSoft.Modules.Transfusion.Controllers;
 
-import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.GetDonorRequest;
 import com.yawarSoft.Modules.Transfusion.Dto.Request.GetPatientRequest;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.PatientService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

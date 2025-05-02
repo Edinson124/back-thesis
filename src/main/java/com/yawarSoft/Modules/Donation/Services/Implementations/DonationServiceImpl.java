@@ -4,12 +4,16 @@ import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.DonationEntity;
 import com.yawarSoft.Core.Entities.DonorEntity;
 import com.yawarSoft.Core.Entities.PatientEntity;
+import com.yawarSoft.Core.Utils.Constants;
 import com.yawarSoft.Core.Utils.UserUtils;
 import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
 import com.yawarSoft.Modules.Donation.Dto.DonationResponseDTO;
+import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
+import com.yawarSoft.Modules.Donation.Dto.Response.DateDonationDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DonationByDonorDTO;
 import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
+import com.yawarSoft.Modules.Donation.Enums.DonorGender;
 import com.yawarSoft.Modules.Donation.Mappers.DonationMapper;
 import com.yawarSoft.Modules.Donation.Repositories.DonationRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
@@ -22,7 +26,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class DonationServiceImpl implements DonationService {
@@ -114,6 +120,46 @@ public class DonationServiceImpl implements DonationService {
             throw new IllegalArgumentException("Donante no encontrada con documento");
         }
     }
+
+    @Override
+    public DonationResponseDTO getActualDonation(String documentType,String documentNumber) {
+        Long donorId = donorService.getIdDonor(documentType,documentNumber);
+        Optional<DonationEntity> activeDonation = donationRepository.findByDonorIdAndStatus(donorId, DonationStatus.IN_PROCRESS.getLabel());
+        return activeDonation
+                .map(donationMapper::toResponseDto)
+                .orElse(null);
+    }
+
+    @Override
+    public DateDonationDTO getDateDetailLastDonation(String documentType, String documentNumber) {
+        Long idDonor = donorService.getIdDonor(documentType, documentNumber);
+        DonorGetDTO donor = donorService.getDonor(documentType, documentNumber);
+
+        Optional<DonationEntity> donation = donationRepository.findTopByDonorIdOrderByIdDesc(idDonor);
+
+        if (donation.isEmpty()) {
+            return null;
+        }
+
+        DonationEntity donationEntity = donation.get();
+        LocalDate dateDonation = donationEntity.getDate();
+
+        int requiredMonths = donor.getGender().equalsIgnoreCase(DonorGender.MASCULINO.getLabel())
+                ? Constants.DONATION_INTERVAL_MALE_MONTHS
+                : Constants.DONATION_INTERVAL_FEMALE_MONTHS;
+
+        LocalDate dateEnabledDonation = dateDonation.plusMonths(requiredMonths);
+        boolean isEnableDonation = !LocalDate.now().isBefore(dateEnabledDonation);
+
+        DateDonationDTO dto = new DateDonationDTO();
+        dto.setDonationId(donationEntity.getId());
+        dto.setDateDonation(dateDonation);
+        dto.setDateEnabledDonation(dateEnabledDonation);
+        dto.setIsEnableDonation(isEnableDonation);
+
+        return dto;
+    }
+
 
 
     @Override

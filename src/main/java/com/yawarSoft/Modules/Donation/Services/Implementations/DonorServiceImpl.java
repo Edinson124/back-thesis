@@ -1,20 +1,17 @@
 package com.yawarSoft.Modules.Donation.Services.Implementations;
 
 import com.yawarSoft.Core.Entities.DonorEntity;
-import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.HmacUtil;
 import com.yawarSoft.Core.Utils.UserUtils;
-import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.GetDonorRequest;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequest;
 import com.yawarSoft.Modules.Donation.Enums.DonorStatus;
 import com.yawarSoft.Modules.Donation.Mappers.DonorMapper;
 import com.yawarSoft.Modules.Donation.Repositories.DonorRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class DonorServiceImpl implements DonorService {
@@ -97,11 +94,11 @@ public class DonorServiceImpl implements DonorService {
 
 
     @Override
-    public DonorGetDTO getDonor(GetDonorRequest infoDonorRequest) {
-        String combinedInfo = infoDonorRequest.documentType() + '|' + infoDonorRequest.documentNumber();
+    public DonorGetDTO getDonor(String documentType, String documentNumber) {
+        String combinedInfo = documentType + '|' + documentNumber;
         String searchHash = hmacUtil.generateHmac(combinedInfo);
         DonorEntity donorEntity = donorRepository.findBySearchHash(searchHash)
-                .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado con documento: " + infoDonorRequest.documentNumber()));
+                .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado con documento: " + documentNumber));
 
         return donorMapper.toGetDto(donorEntity, aesGCMEncryptionUtil);
     }

@@ -5,6 +5,8 @@ import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Modules.Donation.Dto.DonationResponseDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequest;
+import com.yawarSoft.Modules.Donation.Dto.Response.DateDonationDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DonationByDonorDTO;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
 import org.springframework.data.domain.Page;
@@ -45,5 +47,23 @@ public class DonationController {
         DonationResponseDTO updatedDonation  = donationService.updateDonation(id, donationUpdateDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse(HttpStatus.CREATED, "Donación actualizada exitosamente", updatedDonation));
+    }
+
+    @PostMapping("/actual")
+    public  ResponseEntity<?>  getActualDonation(@RequestBody DonorRequest donorRequest) {
+        DonationResponseDTO responseDTO = donationService.getActualDonation(donorRequest.documentType(),donorRequest.documentNumber());
+        if (responseDTO == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @PostMapping("/last/date")
+    public ResponseEntity<?>  getDateDetaillDonation(@RequestBody DonorRequest donorRequest) {
+        DateDonationDTO responseDTO = donationService.getDateDetailLastDonation(donorRequest.documentType(),donorRequest.documentNumber());
+        if (responseDTO == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(responseDTO);
     }
 }

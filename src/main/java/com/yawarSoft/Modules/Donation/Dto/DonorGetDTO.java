@@ -42,4 +42,6 @@ public class DonorGetDTO {
     private String createdByName;
     private Integer updatedById;
     private String updatedByName;
+
+    private Long activeDonationId;
 }

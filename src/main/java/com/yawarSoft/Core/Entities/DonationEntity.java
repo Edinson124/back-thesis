@@ -4,6 +4,7 @@ package com.yawarSoft.Core.Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -74,6 +75,8 @@ public class DonationEntity {
 
     @Column(name = "deferral_duration")
     private Integer deferralDuration;
+
+    private LocalDate date;
 
     @Column(nullable = false)
     private String status;

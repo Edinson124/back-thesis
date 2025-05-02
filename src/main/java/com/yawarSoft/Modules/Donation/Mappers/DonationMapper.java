@@ -19,6 +19,7 @@ public interface DonationMapper {
     @Mapping(source = "bloodBank.id", target = "bloodBankId")
     @Mapping(source = "donor.id", target = "donorId")
     @Mapping(source = "patient.id", target = "patientId")
+    @Mapping(source = "date", target = "date")
     DonationResponseDTO toResponseDto(DonationEntity entity);
 
     @Mapping(target = "patient.id", source = "patientId")

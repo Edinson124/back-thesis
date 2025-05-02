@@ -4,7 +4,7 @@ import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonorDocumentCheckRequest;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.GetDonorRequest;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequest;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +37,8 @@ public class DonorController {
     }
 
     @PostMapping("/search")
-    public DonorGetDTO getDonor(@RequestBody GetDonorRequest infoDonorRequest) {
-        return donorService.getDonor(infoDonorRequest);
+    public DonorGetDTO getDonor(@RequestBody DonorRequest infoDonorRequest) {
+        return donorService.getDonor(infoDonorRequest.documentType(),infoDonorRequest.documentNumber());
     }
 
     @PostMapping("/exists")

@@ -1,6 +1,7 @@
 package com.yawarSoft.Modules.Donation.Repositories;
 
 import com.yawarSoft.Core.Entities.DonationEntity;
+import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,10 +11,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 public interface DonationRepository extends JpaRepository<DonationEntity, Long> {
 
     Page<DonationEntity> findByDonorId(Long donorId, Pageable pageable);
+    Optional<DonationEntity> findByDonorIdAndStatus(Long donorId, String status);
+    Optional<DonationEntity> findTopByDonorIdOrderByIdDesc(Long donorId);
 
     @Modifying
     @Transactional
