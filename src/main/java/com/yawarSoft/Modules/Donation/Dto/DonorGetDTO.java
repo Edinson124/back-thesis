@@ -22,6 +22,7 @@ public class DonorGetDTO {
     private String province;
     private String district;
     private String address;
+    private String occupation;
     private String phone;
     private String email;
     private String bloodType;

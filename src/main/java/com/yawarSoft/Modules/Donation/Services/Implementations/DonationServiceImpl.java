@@ -1,20 +1,23 @@
 package com.yawarSoft.Modules.Donation.Services.Implementations;
 
-import com.yawarSoft.Core.Entities.BloodBankEntity;
-import com.yawarSoft.Core.Entities.DonationEntity;
-import com.yawarSoft.Core.Entities.DonorEntity;
-import com.yawarSoft.Core.Entities.PatientEntity;
+import com.yawarSoft.Core.Entities.*;
+import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
+import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.Constants;
 import com.yawarSoft.Core.Utils.UserUtils;
 import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
+import com.yawarSoft.Modules.Donation.Dto.DonationViewDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
 import com.yawarSoft.Modules.Donation.Dto.DonationResponseDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DateDonationDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DonationByDonorDTO;
+import com.yawarSoft.Modules.Donation.Dto.Response.DonationGetDTO;
+import com.yawarSoft.Modules.Donation.Dto.Response.ExistDonationDTO;
 import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
 import com.yawarSoft.Modules.Donation.Enums.DonorGender;
 import com.yawarSoft.Modules.Donation.Mappers.DonationMapper;
+import com.yawarSoft.Modules.Donation.Mappers.DonorMapper;
 import com.yawarSoft.Modules.Donation.Repositories.DonationRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
@@ -35,20 +38,28 @@ public class DonationServiceImpl implements DonationService {
 
     private final DonationRepository donationRepository;
     private final DonationMapper donationMapper;
+    private final DonorMapper donorMapper;
     private final PatientService patientService;
     private final DonorService donorService;
+    private final AESGCMEncryptionUtil aesGCMEncryptionUtil;
+    private final AuthenticatedUserService authenticatedUserService;
 
 
-    public DonationServiceImpl(DonationRepository donationRepository, DonationMapper donationMapper, PatientService patientService, DonorService donorService) {
+    public DonationServiceImpl(DonationRepository donationRepository, DonationMapper donationMapper, DonorMapper donorMapper,
+                               PatientService patientService, DonorService donorService, AESGCMEncryptionUtil aesGCMEncryptionUtil, AuthenticatedUserService authenticatedUserService) {
         this.donationRepository = donationRepository;
         this.donationMapper = donationMapper;
+        this.donorMapper = donorMapper;
         this.patientService = patientService;
         this.donorService = donorService;
+        this.aesGCMEncryptionUtil = aesGCMEncryptionUtil;
+        this.authenticatedUserService = authenticatedUserService;
     }
 
     @Override
     @Transactional
     public Long createDonation(DonationCreateRequest donationCreateRequest) {
+        UserEntity userEntity = authenticatedUserService.getCurrentUser();
 
         Long donorId = donorService.getIdDonor(donationCreateRequest.getDocumentTypeDonor(),donationCreateRequest.getDocumentNumberDonor());
         if (donorId == 0) {
@@ -71,19 +82,18 @@ public class DonationServiceImpl implements DonationService {
             patient = PatientEntity.builder().id(patientId).build();
         }
 
-        BloodBankEntity bloodBank = BloodBankEntity.builder().id(donationCreateRequest.getBloodBankId()).build();
-
         DonationEntity newDonation = new DonationEntity();
         newDonation.setDonor(donor);
         newDonation.setPatient(patient);
-        newDonation.setBloodBank(bloodBank);
+        newDonation.setBloodBank(userEntity.getBloodBank());
         newDonation.setDonationPurpose(donationCreateRequest.getDonationPurpose());
         newDonation.setBloodComponent(donationCreateRequest.getBloodComponent());
         newDonation.setObservation(donationCreateRequest.getObservation());
-        newDonation.setCreatedBy(UserUtils.getAuthenticatedUser());
+        newDonation.setCreatedBy(userEntity);
         newDonation.setCreatedAt(LocalDateTime.now());
         newDonation.setStatus(DonationStatus.IN_PROCRESS.getLabel());
         newDonation.setInterrupted(false);
+        newDonation.setDate(LocalDate.now());
 
         DonationEntity savedDonation = donationRepository.save(newDonation);
         return savedDonation.getId();
@@ -106,7 +116,7 @@ public class DonationServiceImpl implements DonationService {
         donationEntity.setUpdatedBy(UserUtils.getAuthenticatedUser());
         DonationEntity updated = donationRepository.save(donationEntity);
 
-        return donationMapper.toResponseDto(updated);
+        return donationMapper.toResponseDto(updated,aesGCMEncryptionUtil);
     }
 
     @Override
@@ -122,11 +132,13 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override
-    public DonationResponseDTO getActualDonation(String documentType,String documentNumber) {
-        Long donorId = donorService.getIdDonor(documentType,documentNumber);
-        Optional<DonationEntity> activeDonation = donationRepository.findByDonorIdAndStatus(donorId, DonationStatus.IN_PROCRESS.getLabel());
+    public DonationResponseDTO getActualDonation(String documentType, String documentNumber) {
+        Long donorId = donorService.getIdDonor(documentType, documentNumber);
+        Optional<DonationEntity> activeDonation = donationRepository.findByDonorIdAndStatus(
+                donorId, DonationStatus.IN_PROCRESS.getLabel());
+
         return activeDonation
-                .map(donationMapper::toResponseDto)
+                .map(donation -> donationMapper.toResponseDto(donation, aesGCMEncryptionUtil))
                 .orElse(null);
     }
 
@@ -134,20 +146,17 @@ public class DonationServiceImpl implements DonationService {
     public DateDonationDTO getDateDetailLastDonation(String documentType, String documentNumber) {
         Long idDonor = donorService.getIdDonor(documentType, documentNumber);
         DonorGetDTO donor = donorService.getDonor(documentType, documentNumber);
-
         Optional<DonationEntity> donation = donationRepository.findTopByDonorIdOrderByIdDesc(idDonor);
 
         if (donation.isEmpty()) {
             return null;
         }
-
         DonationEntity donationEntity = donation.get();
         LocalDate dateDonation = donationEntity.getDate();
 
         int requiredMonths = donor.getGender().equalsIgnoreCase(DonorGender.MASCULINO.getLabel())
                 ? Constants.DONATION_INTERVAL_MALE_MONTHS
                 : Constants.DONATION_INTERVAL_FEMALE_MONTHS;
-
         LocalDate dateEnabledDonation = dateDonation.plusMonths(requiredMonths);
         boolean isEnableDonation = !LocalDate.now().isBefore(dateEnabledDonation);
 
@@ -159,8 +168,6 @@ public class DonationServiceImpl implements DonationService {
 
         return dto;
     }
-
-
 
     @Override
     public boolean updateInterviewAnswer(Long donationId, Long interviewAnswerId) {
@@ -176,4 +183,79 @@ public class DonationServiceImpl implements DonationService {
     public boolean updateBloodExtraction(Long donationId, Long bloodExtractionId) {
         return donationRepository.updateBloodExtraction(donationId, bloodExtractionId) > 0;
     }
+
+    @Override
+    public ExistDonationDTO existsByCode(Long id) {
+        ExistDonationDTO result = new ExistDonationDTO();
+        DonationEntity donationEntity = donationRepository.findById(id).orElse(null);
+        if (donationEntity == null) {
+            result.setDonationActualExists(false);
+            result.setCanViewDonation(false);
+            result.setDonationId(null);
+        } else {
+            UserEntity userEntity = authenticatedUserService.getCurrentUser();
+            // Verificar si el banco de sangre de la donación es el mismo que el banco de sangre del usuario
+            Boolean canViewDonation = donationEntity.getBloodBank().getId().equals(userEntity.getBloodBank().getId());
+            result.setDonationActualExists(true);
+            result.setCanViewDonation(canViewDonation);
+            result.setDonationId(donationEntity.getId());
+        }
+        return result;
+    }
+
+    @Override
+    public ExistDonationDTO existsActualByDonor(String documentType, String documentNumber) {
+        ExistDonationDTO result = new ExistDonationDTO();
+        Long donorId = donorService.getIdDonor(documentType,documentNumber);
+        if(donorId == 0) {
+            result.setExistDonor(false);
+            result.setDonationActualExists(false);
+            result.setCanViewDonation(false);
+            result.setDonationId(null);
+            return result;
+        }
+        result.setExistDonor(true);
+        DonationResponseDTO donationResponseDTO = getActualDonation(documentType,documentNumber);
+        if (donationResponseDTO == null) {
+            result.setDonationActualExists(false);
+            result.setCanViewDonation(false);
+            result.setDonationId(null);
+        } else {
+            UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+            // Verificar si el banco de sangre de la donación es el mismo que el banco de sangre del usuario
+            Boolean canViewDonation = userAuthenticated.getBloodBank() != null
+                    && donationResponseDTO.getBloodBankId().equals(userAuthenticated.getBloodBank().getId());
+            result.setDonationActualExists(true);
+            result.setCanViewDonation(canViewDonation);
+            result.setDonationId(donationResponseDTO.getId());
+        }
+        return result;
+    }
+
+    @Override
+    public DonationGetDTO getDonationById(Long id) {
+        DonationGetDTO result = new DonationGetDTO();
+
+        DonationEntity donationEntity = donationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + id));
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+
+        Boolean canViewDonation = userAuthenticated.getBloodBank() != null
+                && donationEntity.getBloodBank().getId().equals(userAuthenticated.getBloodBank().getId());
+        result.setCanViewDonation(canViewDonation);
+
+        if (!canViewDonation) {
+            result.setDonor(null);
+            result.setDonation(null);
+            return result;
+        }
+
+        DonorGetDTO donorGetDTO = donorMapper.toGetDto(donationEntity.getDonor(),aesGCMEncryptionUtil);
+        result.setDonor(donorGetDTO);
+        DonationViewDTO donationViewDTO = donationMapper.toDonationViewDTO(donationEntity,aesGCMEncryptionUtil);
+        result.setDonation(donationViewDTO);
+
+        return result;
+    }
+
 }

@@ -1,12 +1,12 @@
 package com.yawarSoft.Modules.Transfusion.Mappers;
 
-import com.yawarSoft.Core.Entities.DonorEntity;
 import com.yawarSoft.Core.Entities.PatientEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.MapperUtils;
-import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.PatientGetDTO;
 import org.mapstruct.*;
+
+import java.util.Base64;
 
 @Mapper(componentModel = "spring", uses = MapperUtils.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PatientMapper {
@@ -36,4 +36,5 @@ public interface PatientMapper {
             throw new RuntimeException("Error decrypting field: " + e.getMessage(), e);
         }
     }
+
 }

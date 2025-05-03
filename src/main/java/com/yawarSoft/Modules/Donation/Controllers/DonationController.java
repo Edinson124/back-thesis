@@ -8,6 +8,8 @@ import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequest;
 import com.yawarSoft.Modules.Donation.Dto.Response.DateDonationDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DonationByDonorDTO;
+import com.yawarSoft.Modules.Donation.Dto.Response.DonationGetDTO;
+import com.yawarSoft.Modules.Donation.Dto.Response.ExistDonationDTO;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -65,5 +67,20 @@ public class DonationController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/exists/{id}")
+    public ExistDonationDTO checkIfUserExistsAndPermitById(@PathVariable Long id) {
+        return donationService.existsByCode(id);
+    }
+
+    @PostMapping("/exists")
+    public  ExistDonationDTO  checkIfUserExistsAndPermitByDonor(@RequestBody DonorRequest donorRequest) {
+        return donationService.existsActualByDonor(donorRequest.documentType(),donorRequest.documentNumber());
+    }
+
+    @GetMapping("/{id}")
+        public DonationGetDTO getDonation(@PathVariable("id") Long id){
+        return donationService.getDonationById(id);
     }
 }

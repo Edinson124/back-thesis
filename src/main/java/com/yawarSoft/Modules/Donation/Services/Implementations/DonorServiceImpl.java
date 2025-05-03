@@ -6,7 +6,6 @@ import com.yawarSoft.Core.Utils.HmacUtil;
 import com.yawarSoft.Core.Utils.UserUtils;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequest;
 import com.yawarSoft.Modules.Donation.Enums.DonorStatus;
 import com.yawarSoft.Modules.Donation.Mappers.DonorMapper;
 import com.yawarSoft.Modules.Donation.Repositories.DonorRepository;

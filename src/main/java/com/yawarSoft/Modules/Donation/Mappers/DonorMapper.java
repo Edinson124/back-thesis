@@ -34,7 +34,8 @@ public interface DonorMapper {
             @Mapping(source = "createdBy.id", target = "createdById"),
             @Mapping(source = "createdBy", target = "createdByName", qualifiedByName = "getFullName"),
             @Mapping(source = "updatedBy.id", target = "updatedById"),
-            @Mapping(source = "updatedBy", target = "updatedByName", qualifiedByName = "getFullName")
+            @Mapping(source = "updatedBy", target = "updatedByName", qualifiedByName = "getFullName"),
+            @Mapping(source = "occupation", target = "occupation")
     })
     DonorGetDTO toGetDto(DonorEntity donorEntity, @Context AESGCMEncryptionUtil aesUtil);
 
