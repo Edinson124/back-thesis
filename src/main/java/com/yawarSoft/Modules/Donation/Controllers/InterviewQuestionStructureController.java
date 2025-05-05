@@ -1,6 +1,7 @@
 package com.yawarSoft.Modules.Donation.Controllers;
 
 import com.yawarSoft.Core.Entities.InterviewAnswerEntity;
+import com.yawarSoft.Modules.Donation.Dto.Response.InterviewQuestionStructureDTO;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.InterviewQuestionStructureService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,7 @@ public class InterviewQuestionStructureController {
     }
 
     @GetMapping
-    public InterviewAnswerEntity getPhysicalAssessment() {
-        return interviewQuestionStructureService.getActualInterviewStrcuture();
+    public InterviewQuestionStructureDTO getInterviewQuestionStructure() {
+        return interviewQuestionStructureService.getActualInterviewStructure();
     }
 }

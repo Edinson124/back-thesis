@@ -1,5 +1,6 @@
 package com.yawarSoft.Modules.Donation.Dto;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 public class InterviewAnswerDTO {
 
     private Long id;
-    private String answer;
+    private JsonNode answer;
     private Integer createdById;
     private String createdByName;
     private LocalDateTime createdAt;

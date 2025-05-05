@@ -30,9 +30,9 @@ public class DonorController {
                 .body(new ApiResponse(HttpStatus.CREATED, "Donante creado exitosamente", payload));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> updateDonor(@PathVariable Long id, @RequestBody DonorRequestDTO donorRequestDTO) throws Exception {
-        DonorGetDTO donorGetDTO = donorService.updateDonor(id, donorRequestDTO);
+    @PutMapping
+    public ResponseEntity<ApiResponse> updateDonor(@RequestBody DonorRequestDTO donorRequestDTO) throws Exception {
+        DonorGetDTO donorGetDTO = donorService.updateDonor(donorRequestDTO);
         return ResponseEntity.ok(new ApiResponse(HttpStatus.OK, "Donante actualizado exitosamente", donorGetDTO));
     }
 

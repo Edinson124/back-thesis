@@ -52,40 +52,34 @@ public class DonorServiceImpl implements DonorService {
     }
 
     @Override
-    public DonorGetDTO updateDonor(Long id, DonorRequestDTO donorRequestDTO) throws Exception {
-        DonorEntity existingDonor = donorRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado con ID: " + id));
-
+    public DonorGetDTO updateDonor(DonorRequestDTO donorRequestDTO) throws Exception {
         String docInfoDonor = donorRequestDTO.getDocumentType() + '|' + donorRequestDTO.getDocumentNumber();
-        String newSearchHash = hmacUtil.generateHmac(docInfoDonor);
+        String searchHash = hmacUtil.generateHmac(docInfoDonor);
+        DonorEntity existingDonor = donorRepository.findBySearchHash(searchHash)
+                .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado con documento: "
+                        + donorRequestDTO.getDocumentType() + " - "+donorRequestDTO.getDocumentNumber()));
 
-        if (!existingDonor.getSearchHash().equals(newSearchHash) &&
-                donorRepository.existsBySearchHash(newSearchHash)) {
-            throw new IllegalArgumentException("El número de documento ya está registrado con otro donante.");
-        }
+        donorMapper.updateEntityFromDto(donorRequestDTO,existingDonor,aesGCMEncryptionUtil);
 
-        existingDonor.setFirstName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getFirstName()).getBytes());
-        existingDonor.setLastName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getLastName()).getBytes());
-        existingDonor.setSecondLastName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getSecondLastName()).getBytes());
-        existingDonor.setDocumentType(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getDocumentType()).getBytes());
-        existingDonor.setDocumentNumber(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getDocumentNumber()).getBytes());
-        existingDonor.setAddress(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getAddress()).getBytes());
-        existingDonor.setPhone(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getPhone()).getBytes());
-        existingDonor.setEmail(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getEmail()).getBytes());
-        existingDonor.setBirthDate(donorRequestDTO.getBirthDate());
-        existingDonor.setGender(donorRequestDTO.getGender());
-        existingDonor.setRegion(donorRequestDTO.getRegion());
-        existingDonor.setProvince(donorRequestDTO.getProvince());
-        existingDonor.setDistrict(donorRequestDTO.getDistrict());
-
-        existingDonor.setPlaceOfBirth(donorRequestDTO.getPlaceOfBirth());
-        existingDonor.setPlaceOfOrigin(donorRequestDTO.getPlaceOfOrigin());
-        existingDonor.setMaritalStatus(donorRequestDTO.getMaritalStatus());
-        existingDonor.setTrips(donorRequestDTO.getTrips());
-        existingDonor.setDonationRequest(donorRequestDTO.isDonationRequest());
-
-        String combinedInfo = donorRequestDTO.getDocumentType() + '|' + donorRequestDTO.getDocumentNumber();
-        existingDonor.setSearchHash(hmacUtil.generateHmac(combinedInfo));
+//        existingDonor.setFirstName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getFirstName()).getBytes());
+//        existingDonor.setLastName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getLastName()).getBytes());
+//        existingDonor.setSecondLastName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getSecondLastName()).getBytes());
+//        existingDonor.setDocumentType(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getDocumentType()).getBytes());
+//        existingDonor.setDocumentNumber(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getDocumentNumber()).getBytes());
+//        existingDonor.setAddress(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getAddress()).getBytes());
+//        existingDonor.setPhone(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getPhone()).getBytes());
+//        existingDonor.setEmail(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getEmail()).getBytes());
+//        existingDonor.setBirthDate(donorRequestDTO.getBirthDate());
+//        existingDonor.setGender(donorRequestDTO.getGender());
+//        existingDonor.setRegion(donorRequestDTO.getRegion());
+//        existingDonor.setProvince(donorRequestDTO.getProvince());
+//        existingDonor.setDistrict(donorRequestDTO.getDistrict());
+//
+//        existingDonor.setPlaceOfBirth(donorRequestDTO.getPlaceOfBirth());
+//        existingDonor.setPlaceOfOrigin(donorRequestDTO.getPlaceOfOrigin());
+//        existingDonor.setMaritalStatus(donorRequestDTO.getMaritalStatus());
+//        existingDonor.setTrips(donorRequestDTO.getTrips());
+//        existingDonor.setDonationRequest(donorRequestDTO.isDonationRequest());
 
         donorRepository.save(existingDonor);
         return donorMapper.toGetDto(existingDonor,aesGCMEncryptionUtil);

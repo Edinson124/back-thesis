@@ -31,6 +31,7 @@ public class AESGCMEncryptionUtil {
     }
 
     public String encrypt(String data) throws Exception {
+        if(data == null ) return null;
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         byte[] iv = new byte[GCM_IV_LENGTH];
         new SecureRandom().nextBytes(iv);
@@ -50,6 +51,7 @@ public class AESGCMEncryptionUtil {
     }
 
     public String decrypt(String encryptedData) throws Exception {
+        if(encryptedData == null ) return null;
         byte[] encryptedDataWithIv = Base64.getDecoder().decode(encryptedData);
         byte[] iv = new byte[GCM_IV_LENGTH];
         System.arraycopy(encryptedDataWithIv, 0, iv, 0, iv.length);

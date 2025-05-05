@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class DonorRequestDTO {
 
-    private Long id;
     private String firstName;
     private String lastName;
     private String secondLastName;

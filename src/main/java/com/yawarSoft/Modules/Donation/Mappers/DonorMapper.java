@@ -1,8 +1,11 @@
 package com.yawarSoft.Modules.Donation.Mappers;
 
+import com.yawarSoft.Core.Entities.DonationEntity;
 import com.yawarSoft.Core.Entities.DonorEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.MapperUtils;
+import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
 import org.mapstruct.*;
@@ -22,6 +25,7 @@ public interface DonorMapper {
     })
     DonorEntity toEntity(DonorRequestDTO donorRequestDTO, @Context AESGCMEncryptionUtil aesUtil);
 
+
     @Mappings({
             @Mapping(target = "firstName", expression = "java(decryptFromBytes(donorEntity.getFirstName(), aesUtil))"),
             @Mapping(target = "lastName", expression = "java(decryptFromBytes(donorEntity.getLastName(), aesUtil))"),
@@ -38,6 +42,18 @@ public interface DonorMapper {
             @Mapping(source = "occupation", target = "occupation")
     })
     DonorGetDTO toGetDto(DonorEntity donorEntity, @Context AESGCMEncryptionUtil aesUtil);
+
+    @Mappings({
+            @Mapping(target = "firstName", expression = "java(encryptToBytes(request.getFirstName(), aesUtil))"),
+            @Mapping(target = "lastName", expression = "java(encryptToBytes(request.getLastName(), aesUtil))"),
+            @Mapping(target = "secondLastName", expression = "java(encryptToBytes(request.getSecondLastName(), aesUtil))"),
+            @Mapping(target = "documentType", expression = "java(encryptToBytes(request.getDocumentType(), aesUtil))"),
+            @Mapping(target = "documentNumber", expression = "java(encryptToBytes(request.getDocumentNumber(), aesUtil))"),
+            @Mapping(target = "address", expression = "java(encryptToBytes(request.getAddress(), aesUtil))"),
+            @Mapping(target = "phone", expression = "java(encryptToBytes(request.getPhone(), aesUtil))"),
+            @Mapping(target = "email", expression = "java(encryptToBytes(request.getEmail(), aesUtil))")
+    })
+    void updateEntityFromDto(DonorRequestDTO request, @MappingTarget DonorEntity entity, @Context AESGCMEncryptionUtil aesUtil);
 
     default byte[] encryptToBytes(String value, AESGCMEncryptionUtil aesUtil) {
         if (value == null) return null;

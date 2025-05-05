@@ -1,6 +1,7 @@
 package com.yawarSoft.Modules.Donation.Services.Implementations;
 
-import com.yawarSoft.Core.Entities.InterviewAnswerEntity;
+import com.yawarSoft.Core.Entities.InterviewQuestionStructureEntity;
+import com.yawarSoft.Modules.Donation.Dto.Response.InterviewQuestionStructureDTO;
 import com.yawarSoft.Modules.Donation.Enums.InterviewQuestionsStructureStatus;
 import com.yawarSoft.Modules.Donation.Repositories.InterviewQuestionStructureRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.InterviewQuestionStructureService;
@@ -16,8 +17,13 @@ public class InterviewQuestionStructureServiceImpl implements InterviewQuestionS
     }
 
     @Override
-    public InterviewAnswerEntity getActualInterviewStrcuture() {
-        return interviewQuestionStructureRepository.findByStatus(InterviewQuestionsStructureStatus.ACTIVE.name())
+    public InterviewQuestionStructureDTO getActualInterviewStructure() {
+        InterviewQuestionStructureEntity questionStructure =  interviewQuestionStructureRepository.findByStatus(InterviewQuestionsStructureStatus.ACTIVE.getLabel())
                 .orElseThrow(() -> new IllegalStateException("No se encontró una estructura de entrevista activa."));
+
+        InterviewQuestionStructureDTO interviewQuestionStructureDTO = new InterviewQuestionStructureDTO();
+        interviewQuestionStructureDTO.setQuestions(questionStructure.getQuestions());
+        interviewQuestionStructureDTO.setId(questionStructure.getId());
+        return interviewQuestionStructureDTO;
     }
 }

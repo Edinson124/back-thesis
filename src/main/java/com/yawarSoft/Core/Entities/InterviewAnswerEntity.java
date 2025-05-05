@@ -1,5 +1,8 @@
 package com.yawarSoft.Core.Entities;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+import org.hibernate.annotations.Type;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,8 +25,9 @@ public class InterviewAnswerEntity {
     @JoinColumn(name = "id_interview_question", referencedColumnName = "id", nullable = false)
     private InterviewQuestionStructureEntity interviewQuestion;
 
-    @Column(nullable = false, columnDefinition = "jsonb")
-    private String answer;
+    @Type(JsonBinaryType.class)
+    @Column(columnDefinition = "jsonb", nullable = false)
+    private JsonNode answer;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)

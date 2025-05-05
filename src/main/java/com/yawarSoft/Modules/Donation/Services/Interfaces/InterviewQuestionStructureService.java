@@ -1,7 +1,7 @@
 package com.yawarSoft.Modules.Donation.Services.Interfaces;
 
-import com.yawarSoft.Core.Entities.InterviewAnswerEntity;
+import com.yawarSoft.Modules.Donation.Dto.Response.InterviewQuestionStructureDTO;
 
 public interface InterviewQuestionStructureService {
-    InterviewAnswerEntity getActualInterviewStrcuture();
+    InterviewQuestionStructureDTO getActualInterviewStructure();
 }
