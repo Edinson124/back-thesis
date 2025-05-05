@@ -20,13 +20,16 @@ public class BloodExtractionEntity {
     private Long id;
 
     @Column(name = "start_datetime", nullable = false)
-    private LocalDateTime startDatetime;
+    private LocalDateTime startDateTime;
 
     @Column(name = "duration_minutes", nullable = false)
     private Integer durationMinutes;
 
     @Column(name = "end_datetime", nullable = false)
-    private LocalDateTime endDatetime;
+    private LocalDateTime endDateTime;
+
+    @Column(name = "arm", nullable = false)
+    private String arm;
 
     @Column(name = "adverse_reaction_occurred", nullable = false)
     private Boolean adverseReactionOccurred;

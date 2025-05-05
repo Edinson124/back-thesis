@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 public class BloodExtractionRequest {
 
     private Long donationId;
-    private LocalDateTime startDatetime;
+    private LocalDateTime startDateTime;
     private Integer durationMinutes;
-    private LocalDateTime endDatetime;
+    private LocalDateTime endDateTime;
+    private String arm;
     private Boolean adverseReactionOccurred;
     private String adverseReaction;
     private String otherReaction;
