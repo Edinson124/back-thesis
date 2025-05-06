@@ -12,13 +12,17 @@ import java.math.BigDecimal;
 public class PhysicalAssessmentRequest {
 
     private Long donationId;
+    private BigDecimal weight;
     private Integer systolicPressure;
     private Integer diastolicPressure;
     private BigDecimal temperature;
     private Integer heartRate;
-    private BigDecimal hemoglobin;
-    private BigDecimal hematocrit;
-    private String observation;
     private String bloodType;
     private String rhFactor;
+    private BigDecimal hemoglobin;
+    private BigDecimal hematocrit;
+    private BigDecimal leukocytes;
+    private BigDecimal monocytes;
+    private Integer platelets;
+    private String observation;
 }

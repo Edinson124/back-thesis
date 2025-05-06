@@ -19,6 +19,7 @@ public interface PhysicalAssesmentMapper {
     @Mapping(target = "updatedBy.id", source = "updatedById")
     PhysicalAssessmentEntity toEntity(PhysicalAssessmentDTO dto);
 
+    @Mapping(source = "weight", target = "weight")
     PhysicalAssessmentEntity toEntityByRequest(PhysicalAssessmentRequest request);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

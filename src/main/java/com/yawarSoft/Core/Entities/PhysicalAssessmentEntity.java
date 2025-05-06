@@ -19,6 +19,9 @@ public class PhysicalAssessmentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column( nullable = false, precision = 5, scale = 2)
+    private BigDecimal weight;
+
     @Column(name = "systolic_pressure", nullable = false)
     private Integer systolicPressure;
 
@@ -31,20 +34,31 @@ public class PhysicalAssessmentEntity {
     @Column(name = "heart_rate", nullable = false)
     private Integer heartRate;
 
+    @Column(name = "blood_type", nullable = false, length = 10)
+    private String bloodType;
+
+    @Column(name = "rh_factor", nullable = false, length = 10)
+    private String rhFactor;
+
     @Column(name = "hemoglobin", nullable = false, precision = 4, scale = 2)
     private BigDecimal hemoglobin;
 
     @Column(name = "hematocrit", nullable = false, precision = 5, scale = 2)
     private BigDecimal hematocrit;
 
+    @Column(name = "leukocytes", precision = 4, scale = 2)
+    private BigDecimal  leukocytes;
+
+    @Column(name = "monocytes", precision = 4, scale = 2)
+    private BigDecimal  monocytes;
+
+    @Column(name = "platelets")
+    private Integer  platelets;
+
     @Column(name = "observation", columnDefinition = "TEXT")
     private String observation;
 
-    @Column(name = "blood_type", nullable = false, length = 10)
-    private String bloodType;
 
-    @Column(name = "rh_factor", nullable = false, length = 10)
-    private String rhFactor;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
