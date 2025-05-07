@@ -3,6 +3,7 @@ package com.yawarSoft.Core.Entities;
 import lombok.*;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,6 +23,10 @@ public class UnitEntity {
     @JoinColumn(name = "id_donation", nullable = false)
     private DonationEntity donation;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_blood_bank_actual")
+    private BloodBankEntity bloodBank;
+
     @Column(name = "unit_type", nullable = false, length = 50)
     private String unitType;
 
@@ -40,14 +45,25 @@ public class UnitEntity {
     @Column(name = "label_url")
     private String labelUrl;
 
-    @Column(name = "created_by", nullable = false)
-    private Integer createdBy;
+    @Column(name = "entry_date")
+    private LocalDate entryDate;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "expiration_date")
+    private LocalDate expirationDate;
+
+    @Column(name = "serology_result")
+    private String serologyResult;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
+    private UserEntity createdBy;
+
+    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_by")
-    private Integer updatedBy;
+    @ManyToOne
+    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    private UserEntity updatedBy;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
