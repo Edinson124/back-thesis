@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum DonorStatus {
-    APTO("Apto"),
-    DIFERIDO_TEMPORALMENTE("Diferido Temporalmente"),
-    DIFERIDO_PERMANENTEMENTE("Diferido Permanentemente");
+    ELIGIBLE("Apto"),
+    TEMPORARILY_DEFERRED("Diferido Temporalmente"),
+    PERMANENTLY_DEFERRED("Diferido Permanentemente");
 
     private final String label;
 

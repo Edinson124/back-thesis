@@ -10,4 +10,7 @@ public interface DonorService {
     DonorGetDTO updateDonor(DonorRequestDTO donorRequestDTO) throws Exception;
     DonorGetDTO getDonor(String documentType, String documentNumber);
     Long getIdDonor(String documentType, String documentNumber);
+
+    boolean updateDonorReactiveTestSeorologyById(Long id);
+    boolean updateDonorBloodType(Long donorId, String bloodType,String rhFactor);
 }

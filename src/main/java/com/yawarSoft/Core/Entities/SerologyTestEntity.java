@@ -23,25 +23,25 @@ public class SerologyTestEntity {
     @Column(name = "test_date", nullable = false)
     private LocalDate testDate;
 
-    @Column(name = "HIV", nullable = false)
+    @Column(name = "hiv", nullable = false)
     private Boolean HIV;
 
-    @Column(name = "HBsAg", nullable = false)
+    @Column(name = "hbsag", nullable = false)
     private Boolean HBsAg;
 
-    @Column(name = "HbCAb", nullable = false)
-    private Boolean HbCAb;
+    @Column(name = "hbcab", nullable = false)
+    private Boolean HBcAb;
 
-    @Column(name = "HCV", nullable = false)
+    @Column(name = "hcv", nullable = false)
     private Boolean HCV;
 
-    @Column(name = "Syphilis", nullable = false)
+    @Column(name = "syphilis", nullable = false)
     private Boolean syphilis;
 
-    @Column(name = "Chagas", nullable = false)
+    @Column(name = "chagas", nullable = false)
     private Boolean chagas;
 
-    @Column(name = "HTLV_I_II", nullable = false)
+    @Column(name = "htlv_i_ii", nullable = false)
     private Boolean htlvI_II;
 
     @Column(name = "observations", columnDefinition = "TEXT")

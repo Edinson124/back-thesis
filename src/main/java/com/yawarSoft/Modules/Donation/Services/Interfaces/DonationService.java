@@ -21,8 +21,15 @@ public interface DonationService {
     boolean updatePhysicalAssessment(Long donationId, Long physicalAssessmentId);
     boolean updateBloodExtraction(Long donationId, Long bloodExtractionId);
 
+    boolean updateSerologyTest(Long donationId, Long serologyTestId);
+    boolean updateHematologicalTest(Long donationId, Long hematologicalTestId);
+
     ExistDonationDTO existsByCode(Long id);
     ExistDonationDTO existsActualByDonor(String documentType, String documentNumber);
 
     DonationGetDTO getDonationById(Long id);
+    boolean updateDonationReactiveTestSeorologyById(Long id);
+    boolean updateDonationFinishedById(Long id, String status);
+
+    boolean updateDonorBloodType(Long donationId, String bloodType, String rhFactor);
 }

@@ -185,6 +185,16 @@ public class DonationServiceImpl implements DonationService {
     }
 
     @Override
+    public boolean updateSerologyTest(Long donationId, Long serologyTestId) {
+        return donationRepository.updateSerologyTest(donationId, serologyTestId) > 0;
+    }
+
+    @Override
+    public boolean updateHematologicalTest(Long donationId, Long hematologicalTestId) {
+        return donationRepository.updateHematologicalTest(donationId, hematologicalTestId) > 0;
+    }
+
+    @Override
     public ExistDonationDTO existsByCode(Long id) {
         ExistDonationDTO result = new ExistDonationDTO();
         DonationEntity donationEntity = donationRepository.findById(id).orElse(null);
@@ -256,6 +266,38 @@ public class DonationServiceImpl implements DonationService {
         result.setDonation(donationViewDTO);
 
         return result;
+    }
+
+    @Override
+    public boolean updateDonationReactiveTestSeorologyById(Long id) {
+        DonationEntity donationEntity = donationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + id));
+
+        donationEntity.setStatus(DonationStatus.FINISHED_PERM_DEFER.getLabel());
+        donationRepository.save(donationEntity);
+        donorService.updateDonorReactiveTestSeorologyById(donationEntity.getDonor().getId());
+        return true;
+    }
+
+    @Override
+    public boolean updateDonationFinishedById(Long id, String status) {
+        DonationEntity donationEntity = donationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + id));
+
+        if(donationEntity.getHematologicalTest() != null && donationEntity.getSerologyTest() != null) {
+            donationEntity.setStatus(status);
+            donationRepository.save(donationEntity);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean updateDonorBloodType(Long donationId, String bloodType, String rhFactor) {
+        DonationEntity donationEntity = donationRepository.findById(donationId)
+                .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + donationId));
+        Long donorId = donationEntity.getDonor().getId();
+        donorService.updateDonorBloodType(donorId,bloodType,rhFactor);
+        return true;
     }
 
 }

@@ -1,0 +1,70 @@
+package com.yawarSoft.Modules.Donation.Services.Implementations;
+
+import com.yawarSoft.Core.Entities.SerologyTestEntity;
+import com.yawarSoft.Core.Entities.UserEntity;
+import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
+import com.yawarSoft.Modules.Donation.Dto.Request.SerologyTestRequest;
+import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
+import com.yawarSoft.Modules.Donation.Enums.SerologyTestStatus;
+import com.yawarSoft.Modules.Donation.Mappers.SerologyTestMapper;
+import com.yawarSoft.Modules.Donation.Repositories.SerologyTestRepository;
+import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
+import com.yawarSoft.Modules.Donation.Services.Interfaces.SerologyTestService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+
+@Service
+public class SerologyTestServiceImpl implements SerologyTestService {
+
+    private final SerologyTestRepository serologyTestRepository;
+    private final DonationService donationService;
+    private final SerologyTestMapper serologyTestMapper;
+    private final AuthenticatedUserService authenticatedUserService;
+
+    public SerologyTestServiceImpl(SerologyTestRepository serologyTestRepository, DonationService donationService, SerologyTestMapper serologyTestMapper, AuthenticatedUserService authenticatedUserService) {
+        this.serologyTestRepository = serologyTestRepository;
+        this.donationService = donationService;
+        this.serologyTestMapper = serologyTestMapper;
+        this.authenticatedUserService = authenticatedUserService;
+    }
+
+
+    @Transactional
+    @Override
+    public Long createSerologyTest(SerologyTestRequest serologyTestRequest) {
+        UserEntity userEntity = authenticatedUserService.getCurrentUser();
+        Long donationId = serologyTestRequest.getDonationId();
+
+        boolean isReactive = (
+                Boolean.TRUE.equals(serologyTestRequest.getHIV()) ||
+                        Boolean.TRUE.equals(serologyTestRequest.getHBsAg()) ||
+                        Boolean.TRUE.equals(serologyTestRequest.getHBcAb()) ||
+                        Boolean.TRUE.equals(serologyTestRequest.getHCV()) ||
+                        Boolean.TRUE.equals(serologyTestRequest.getSyphilis()) ||
+                        Boolean.TRUE.equals(serologyTestRequest.getChagas()) ||
+                        Boolean.TRUE.equals(serologyTestRequest.getHtlvI_II())
+        );
+
+        String status = isReactive
+                ? SerologyTestStatus.REACTIVE.getLabel()
+                : SerologyTestStatus.NO_REACTIVE.getLabel();
+
+        SerologyTestEntity serologyTestEntity = serologyTestMapper.toEntityByRequest(serologyTestRequest);
+        serologyTestEntity.setCreatedBy(userEntity);
+        serologyTestEntity.setCreatedAt(LocalDateTime.now());
+        serologyTestEntity.setStatus(status);
+
+        SerologyTestEntity result = serologyTestRepository.save(serologyTestEntity);
+        donationService.updateSerologyTest(donationId, result.getId());
+
+        if (isReactive) {
+            donationService.updateDonationReactiveTestSeorologyById(donationId);
+        }
+        else{
+            donationService.updateDonationFinishedById(donationId, DonationStatus.FINISHED.getLabel());
+        }
+        return result.getId();
+    }
+}

@@ -37,8 +37,8 @@ public class DonationEntity {
     private BloodExtractionEntity bloodExtraction;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_inmuno_test")
-    private ImmunohematologyTestEntity inmunoTest;
+    @JoinColumn(name = "id_hematological_test")
+    private HematologicalTestEntity hematologicalTest;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_serology_test")

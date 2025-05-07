@@ -39,7 +39,7 @@ public class DonorServiceImpl implements DonorService {
         DonorEntity donorEntity = donorMapper.toEntity(donorRequestDTO, aesGCMEncryptionUtil);
         donorEntity.setSearchHash(searchHash);
         donorEntity.setCreatedBy(UserUtils.getAuthenticatedUser());
-        donorEntity.setStatus(DonorStatus.APTO.getLabel());
+        donorEntity.setStatus(DonorStatus.ELIGIBLE.getLabel());
         DonorEntity donorSaved = donorRepository.save(donorEntity);
         return donorSaved.getId();
     }
@@ -103,6 +103,26 @@ public class DonorServiceImpl implements DonorService {
 
         return donorRepository.findIdBySearchHash(searchHash)
                 .orElse(0L);
+    }
+
+    @Override
+    public boolean updateDonorReactiveTestSeorologyById(Long id){
+        DonorEntity donorEntity = donorRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado"));
+        donorEntity.setStatus(DonorStatus.PERMANENTLY_DEFERRED.getLabel());
+        donorRepository.save(donorEntity);
+        return true;
+    }
+
+    @Override
+    public boolean updateDonorBloodType(Long donorId, String bloodType, String rhFactor) {
+        DonorEntity donorEntity = donorRepository.findById(donorId)
+                .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado"));
+
+        donorEntity.setBloodType(bloodType);
+        donorEntity.setRhFactor(rhFactor);
+        donorRepository.save(donorEntity);
+        return true;
     }
 
 }

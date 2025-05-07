@@ -1,9 +1,9 @@
 package com.yawarSoft.Core.Entities;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "immunohematology_tests")
-public class ImmunohematologyTestEntity {
+@Table(name = "hematological_tests")
+public class HematologicalTestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +29,29 @@ public class ImmunohematologyTestEntity {
     @Column(name = "rh_factor", nullable = false, length = 10)
     private String rhFactor;
 
-    @Column(name = "antibody_screening", columnDefinition = "TEXT")
-    private String antibodyScreening;
+    @Column(name = "phenotype", length = 50, nullable = false)
+    private String phenotype;
+
+    @Column(name = "genotype", length = 50, nullable = false)
+    private String genotype;
+
+    @Column(name = "irregular_antibodies", columnDefinition = "TEXT", nullable = false)
+    private String irregularAntibodies;
+
+    @Column(name = "hemoglobin", precision = 4, scale = 2, nullable = false)
+    private BigDecimal hemoglobin;
+
+    @Column(name = "hematocrit", precision = 5, scale = 2, nullable = false)
+    private BigDecimal hematocrit;
+
+    @Column(name = "platelets")
+    private Integer platelets;
+
+    @Column(name = "leukocytes", precision = 4, scale = 2)
+    private BigDecimal leukocytes;
+
+    @Column(name = "monocytes", precision = 4, scale = 2)
+    private BigDecimal monocytes;
 
     @Column(name = "observations", columnDefinition = "TEXT")
     private String observations;
