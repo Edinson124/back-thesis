@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum UnitStatus {
     APTO("Apto"),
-    QUARANTINED("En cuarentena");
+    QUARANTINED("En cuarentena"),
+    REACTIVO("Reactivo");
 
     private final String label;
 

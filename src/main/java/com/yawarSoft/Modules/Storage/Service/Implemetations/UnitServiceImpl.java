@@ -85,4 +85,30 @@ public class UnitServiceImpl implements UnitService {
         return unitsPage.map(unitMapper::toListDTO);
 
     }
+
+    @Override
+    public boolean updateUnitsReactiveTestSerologyById(Long donationId, String result) {
+        List<UnitEntity> units = unitRepository.findByDonationId(donationId);
+        if (units.isEmpty()) {
+            return false; // No hay unidades que actualizar
+        }
+        for (UnitEntity unit : units) {
+            unit.setStatus(UnitStatus.REACTIVO.getLabel());
+        }
+        unitRepository.saveAll(units); // Guardar todas las unidades modificadas
+        return true;
+    }
+
+    @Override
+    public boolean updateUnitsNoReactiveTestSerologyById(Long donationId, String result) {
+        List<UnitEntity> units = unitRepository.findByDonationId(donationId);
+        if (units.isEmpty()) {
+            return false; // No hay unidades que actualizar
+        }
+        for (UnitEntity unit : units) {
+            unit.setSerologyResult(result);
+        }
+        unitRepository.saveAll(units); // Guardar todas las unidades modificadas
+        return true;
+    }
 }

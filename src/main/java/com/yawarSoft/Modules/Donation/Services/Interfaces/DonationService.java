@@ -1,5 +1,6 @@
 package com.yawarSoft.Modules.Donation.Services.Interfaces;
 
+import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
 import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonationResponseDTO;
@@ -31,5 +32,6 @@ public interface DonationService {
     boolean updateDonationReactiveTestSeorologyById(Long id);
     boolean updateDonationFinishedById(Long id, String status);
 
+    DonationRelationsDTO getIdsRelations(Long id);
     boolean updateDonorBloodType(Long donationId, String bloodType, String rhFactor);
 }

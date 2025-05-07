@@ -6,6 +6,7 @@ import com.yawarSoft.Core.Entities.DonorEntity;
 import com.yawarSoft.Core.Entities.PatientEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.MapperUtils;
+import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonationViewDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
@@ -72,6 +73,13 @@ public interface DonationMapper {
     @Mapping(source = "bloodBank.name", target = "bloodBankName")
     @Mapping(source = "date", target = "date")
     DonationByDonorDTO toDonationByDonorDTO(DonationEntity donationEntity);
+
+    @Mapping(source = "bloodBank.id", target = "idBloodBank")
+    @Mapping(source = "physicalAssessment.id", target = "idPhysicalAssessment")
+    @Mapping(source = "interviewAnswer.id", target = "idInterviewAnswer")
+    @Mapping(source = "hematologicalTest.id", target = "idHematologicalTest")
+    @Mapping(source = "serologyTest.id", target = "idSerologyTest")
+    DonationRelationsDTO toDonationRelationsDTO(DonationEntity donationEntity);
 
     default String decryptFromBytes(byte[] value, AESGCMEncryptionUtil aesUtil) {
         if (value == null) return null;

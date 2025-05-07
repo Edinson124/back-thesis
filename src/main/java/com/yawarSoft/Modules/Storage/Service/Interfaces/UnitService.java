@@ -7,5 +7,9 @@ import java.time.LocalDate;
 
 public interface UnitService {
     Page<UnitListDTO> getUnitsQuarantined(int page, int size, LocalDate startEntryDate, LocalDate endEntryDate,
-                                          LocalDate startExpirationDate, LocalDate endExpirationDate, String bloodType, String type);
+                                          LocalDate startExpirationDate, LocalDate endExpirationDate, String bloodType,
+                                          String type);
+
+    boolean updateUnitsReactiveTestSerologyById(Long id, String result);
+    boolean updateUnitsNoReactiveTestSerologyById(Long id, String result);
 }

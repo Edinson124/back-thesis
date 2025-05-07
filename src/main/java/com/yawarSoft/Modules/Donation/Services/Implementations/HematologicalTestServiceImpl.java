@@ -3,6 +3,8 @@ package com.yawarSoft.Modules.Donation.Services.Implementations;
 import com.yawarSoft.Core.Entities.HematologicalTestEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
+import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
+import com.yawarSoft.Modules.Donation.Dto.HematologicalTestDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.HematologicalTestRequest;
 import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
 import com.yawarSoft.Modules.Donation.Enums.HematologicalTestStatus;
@@ -46,5 +48,18 @@ public class HematologicalTestServiceImpl implements HematologicalTestService {
         donationService.updateDonorBloodType(donationId,hematologicalTestRequest.getBloodType(),hematologicalTestRequest.getRhFactor());
         donationService.updateDonationFinishedById(donationId, DonationStatus.FINISHED.getLabel());
         return hematologicalTestSaved.getId();
+    }
+
+    @Override
+    public HematologicalTestDTO getHematologicalTest(Long donationId) {
+        DonationRelationsDTO relationsDTO = donationService.getIdsRelations(donationId);
+        HematologicalTestEntity hematologicalTest = hematologicalTestRepository
+                .findById(relationsDTO.getIdHematologicalTest())
+                .orElse(null);
+
+        if (hematologicalTest == null) {
+            return null;
+        }
+        return hematologicalMapper.toDto(hematologicalTest);
     }
 }

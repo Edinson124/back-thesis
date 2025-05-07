@@ -5,11 +5,8 @@ import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.Constants;
 import com.yawarSoft.Core.Utils.UserUtils;
-import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
-import com.yawarSoft.Modules.Donation.Dto.DonationViewDTO;
+import com.yawarSoft.Modules.Donation.Dto.*;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
-import com.yawarSoft.Modules.Donation.Dto.DonationResponseDTO;
-import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DateDonationDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DonationByDonorDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DonationGetDTO;
@@ -289,6 +286,13 @@ public class DonationServiceImpl implements DonationService {
             donationRepository.save(donationEntity);
         }
         return true;
+    }
+
+    @Override
+    public DonationRelationsDTO getIdsRelations(Long id) {
+        DonationEntity donationEntity = donationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + id));
+        return donationMapper.toDonationRelationsDTO(donationEntity);
     }
 
     @Override

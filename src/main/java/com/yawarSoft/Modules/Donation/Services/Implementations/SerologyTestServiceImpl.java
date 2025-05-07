@@ -3,13 +3,16 @@ package com.yawarSoft.Modules.Donation.Services.Implementations;
 import com.yawarSoft.Core.Entities.SerologyTestEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
+import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.SerologyTestRequest;
+import com.yawarSoft.Modules.Donation.Dto.SerologyTestDTO;
 import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
 import com.yawarSoft.Modules.Donation.Enums.SerologyTestStatus;
 import com.yawarSoft.Modules.Donation.Mappers.SerologyTestMapper;
 import com.yawarSoft.Modules.Donation.Repositories.SerologyTestRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.SerologyTestService;
+import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +23,14 @@ public class SerologyTestServiceImpl implements SerologyTestService {
 
     private final SerologyTestRepository serologyTestRepository;
     private final DonationService donationService;
+    private final UnitService unitService;
     private final SerologyTestMapper serologyTestMapper;
     private final AuthenticatedUserService authenticatedUserService;
 
-    public SerologyTestServiceImpl(SerologyTestRepository serologyTestRepository, DonationService donationService, SerologyTestMapper serologyTestMapper, AuthenticatedUserService authenticatedUserService) {
+    public SerologyTestServiceImpl(SerologyTestRepository serologyTestRepository, DonationService donationService, UnitService unitService, SerologyTestMapper serologyTestMapper, AuthenticatedUserService authenticatedUserService) {
         this.serologyTestRepository = serologyTestRepository;
         this.donationService = donationService;
+        this.unitService = unitService;
         this.serologyTestMapper = serologyTestMapper;
         this.authenticatedUserService = authenticatedUserService;
     }
@@ -61,10 +66,26 @@ public class SerologyTestServiceImpl implements SerologyTestService {
 
         if (isReactive) {
             donationService.updateDonationReactiveTestSeorologyById(donationId);
+            unitService.updateUnitsReactiveTestSerologyById(donationId,SerologyTestStatus.REACTIVE.getLabel());
+
         }
         else{
             donationService.updateDonationFinishedById(donationId, DonationStatus.FINISHED.getLabel());
+            unitService.updateUnitsNoReactiveTestSerologyById(donationId,SerologyTestStatus.NO_REACTIVE.getLabel());
         }
         return result.getId();
+    }
+
+    @Override
+    public SerologyTestDTO getSerologyTest(Long donationId) {
+        DonationRelationsDTO relationsDTO = donationService.getIdsRelations(donationId);
+        SerologyTestEntity serologyTestEntity = serologyTestRepository
+                .findById(relationsDTO.getIdSerologyTest())
+                .orElse(null);
+
+        if (serologyTestEntity == null) {
+            return null;
+        }
+        return serologyTestMapper.toDto(serologyTestEntity);
     }
 }
