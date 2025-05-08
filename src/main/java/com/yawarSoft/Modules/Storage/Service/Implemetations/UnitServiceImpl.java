@@ -4,7 +4,9 @@ import com.yawarSoft.Core.Entities.UnitEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
+import com.yawarSoft.Modules.Storage.Dto.UnitDTO;
 import com.yawarSoft.Modules.Storage.Enums.UnitStatus;
+import com.yawarSoft.Modules.Storage.Enums.UnitTypes;
 import com.yawarSoft.Modules.Storage.Mappers.UnitMapper;
 import com.yawarSoft.Modules.Storage.Repositories.UnitRepository;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
@@ -87,6 +89,64 @@ public class UnitServiceImpl implements UnitService {
     }
 
     @Override
+    public Page<UnitListDTO> getUnitsTransformation(int page, int size, LocalDate startEntryDate, LocalDate endEntryDate, LocalDate startExpirationDate, LocalDate endExpirationDate, String bloodType, String type) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("id")));
+
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+        Integer bloodBankId = userAuthenticated.getBloodBank().getId();
+
+        Specification<UnitEntity> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Fecha de vencimiento
+            if (startExpirationDate != null && endExpirationDate != null) {
+                predicates.add(cb.between(root.get("expirationDate"), startExpirationDate, endExpirationDate));
+            } else if (startExpirationDate != null) {
+                predicates.add(cb.equal(root.get("expirationDate"), startExpirationDate));
+            } else if (endExpirationDate != null) {
+                predicates.add(cb.equal(root.get("expirationDate"), endExpirationDate));
+            }
+
+            // Fecha de ingreso
+            if (startEntryDate != null && endEntryDate != null) {
+                predicates.add(cb.between(root.get("entryDate"), startEntryDate, endEntryDate));
+            } else if (startEntryDate != null) {
+                predicates.add(cb.equal(root.get("entryDate"), startEntryDate));
+            } else if (endEntryDate != null) {
+                predicates.add(cb.equal(root.get("entryDate"), endEntryDate));
+            }
+
+            // Filtro por tipo
+            if (type != null && !type.isBlank()) {
+                predicates.add(cb.equal(root.get("unitType"), type));
+            } else {
+                predicates.add(
+                        cb.or(
+                                cb.equal(root.get("unitType"), UnitTypes.SANGRE_TOTAL.getLabel()),
+                                cb.equal(root.get("unitType"), UnitTypes.PLASMA_FRESCO_CONGELADO.getLabel())
+                        )
+                );
+            }
+
+            if (type != null && !type.isBlank()) {
+                predicates.add(cb.equal(root.get("unitType"), type));
+            }
+
+            // Filtrar por unidades en cuarentena (status = 'Disponible')
+            predicates.add(cb.equal(root.get("bloodBank").get("id"), bloodBankId));
+            predicates.add(cb.equal(root.get("status"), UnitStatus.DISPONIBLE.getLabel()));
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<UnitEntity> unitsPage = unitRepository.findAll(spec, pageable);
+
+        // Aquí puedes mapear UnitEntity → UnitListDTO
+        return unitsPage.map(unitMapper::toListDTO);
+
+    }
+
+    @Override
     public boolean updateUnitsReactiveTestSerologyById(Long donationId, String result) {
         List<UnitEntity> units = unitRepository.findByDonationId(donationId);
         if (units.isEmpty()) {
@@ -111,4 +171,13 @@ public class UnitServiceImpl implements UnitService {
         unitRepository.saveAll(units); // Guardar todas las unidades modificadas
         return true;
     }
+
+    @Override
+    public UnitDTO getUnitById(Long id) {
+        UnitEntity unit = unitRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Unidad no encontrada con id: " + id));
+
+        return unitMapper.toDTO(unit);
+    }
+
 }

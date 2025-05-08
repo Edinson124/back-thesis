@@ -42,6 +42,12 @@ public class UnitEntity {
     @Column(name = "rh_factor", nullable = false, length = 10)
     private String rhFactor;
 
+    @Column(name = "anticoagulant")
+    private String anticoagulant;
+
+    @Column(name = "bag_type")
+    private String bagType;
+
     @Column(name = "label_url")
     private String labelUrl;
 
