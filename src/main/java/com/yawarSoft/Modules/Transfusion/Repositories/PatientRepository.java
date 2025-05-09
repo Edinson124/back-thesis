@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface PatientRepository extends JpaRepository<PatientEntity, Long> {
+    boolean existsBySearchHash(String searchHash);
     Optional<PatientEntity> findBySearchHash(String searchHash);
     @Query("SELECT p.id FROM PatientEntity p WHERE p.searchHash = :searchHash")
     Optional<Long> findIdBySearchHash(@Param("searchHash") String searchHash);

@@ -52,6 +52,24 @@ public class UnitController {
                 startExpirationDate, endExpirationDate, bloodType, type);
     }
 
+    @GetMapping("/stock")
+    public Page<UnitListDTO> getUnitsStock(@RequestParam(defaultValue = "0") int page,
+                                                    @RequestParam(defaultValue = "10") int size,
+                                                    @RequestParam(required = false)
+                                                    @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startEntryDate,
+                                                    @RequestParam(required = false)
+                                                    @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endEntryDate,
+                                                    @RequestParam(required = false)
+                                                    @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate startExpirationDate,
+                                                    @RequestParam(required = false)
+                                                    @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endExpirationDate,
+                                                    @RequestParam(required = false) String bloodType,
+                                                    @RequestParam(required = false) String type,
+                                           @RequestParam(required = false) String status) {
+        return unitService.getUnitsStock(page, size, startEntryDate, endEntryDate,
+                startExpirationDate, endExpirationDate, bloodType, type, status);
+    }
+
     @GetMapping("/{id}")
     public UnitDTO getUnitById(@PathVariable Long id) {
         return unitService.getUnitById(id);

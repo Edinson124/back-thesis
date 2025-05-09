@@ -1,8 +1,10 @@
 package com.yawarSoft.Modules.Transfusion.Services.Implemenations;
 
+import com.yawarSoft.Core.Entities.DonorEntity;
 import com.yawarSoft.Core.Entities.PatientEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.HmacUtil;
+import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.PatientGetDTO;
 import com.yawarSoft.Modules.Transfusion.Mappers.PatientMapper;
 import com.yawarSoft.Modules.Transfusion.Repositories.PatientRepository;
@@ -53,6 +55,23 @@ public class PatientServiceImpl implements PatientService {
 
         return patientRepository.findIdBySearchHash(searchHash)
                 .orElse(0L);
+    }
+
+    @Override
+    public Boolean existsByDocument(String documentType, String documentNumber) {
+        String docInfoDonor = documentType + '|' + documentNumber;
+        String newSearchHash = hmacUtil.generateHmac(docInfoDonor);
+        return patientRepository.existsBySearchHash(newSearchHash);
+    }
+
+    @Override
+    public PatientGetDTO getPatient(String documentType, String documentNumber) {
+        String combinedInfo = documentType + '|' + documentNumber;
+        String searchHash = hmacUtil.generateHmac(combinedInfo);
+        PatientEntity patientEntity = patientRepository.findBySearchHash(searchHash)
+                .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado con documento: " + documentNumber));
+
+        return patientMapper.toGetDto(patientEntity, aesGCMEncryptionUtil);
     }
 
 }

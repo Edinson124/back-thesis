@@ -29,18 +29,19 @@ public class MapperUtils {
 
         try {
             String firstName = person.getFirstName() != null
-                    ? aesUtil.decrypt(Base64.getEncoder().encodeToString(person.getFirstName()))
+                    //aesUtil.decrypt(new String(person.getFirstName(), StandardCharsets.UTF_8)
+                    ? aesUtil.decrypt(new String(person.getFirstName()))
                     : "";
             String lastName = person.getLastName() != null
-                    ? aesUtil.decrypt(Base64.getEncoder().encodeToString(person.getLastName()))
+                    ? aesUtil.decrypt(new String(person.getLastName()))
                     : "";
             String secondLastName = person.getSecondLastName() != null
-                    ? aesUtil.decrypt(Base64.getEncoder().encodeToString(person.getSecondLastName()))
+                    ? aesUtil.decrypt(new String(person.getSecondLastName()))
                     : "";
 
             return String.join(" ", firstName, lastName, secondLastName).trim();
         } catch (Exception e) {
-            // Log y manejo de errores según tu política
+            System.out.println("ERROR getFullNamePerson DECRYPT");
             return null;
         }
     }

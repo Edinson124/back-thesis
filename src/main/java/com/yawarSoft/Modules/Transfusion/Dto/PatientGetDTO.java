@@ -25,6 +25,9 @@ public class PatientGetDTO {
     private String phone;
     private String email;
 
+    private String occupation;
+    private String allergic;
+
     //Auditoria
     private Integer createdById;
     private String createdByName;

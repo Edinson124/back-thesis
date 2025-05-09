@@ -18,4 +18,6 @@ public interface UnitService {
     boolean updateUnitsNoReactiveTestSerologyById(Long id, String result);
 
     UnitDTO getUnitById(Long id);
+
+    Page<UnitListDTO> getUnitsStock(int page, int size, LocalDate startEntryDate, LocalDate endEntryDate, LocalDate startExpirationDate, LocalDate endExpirationDate, String bloodType, String type, String status);
 }

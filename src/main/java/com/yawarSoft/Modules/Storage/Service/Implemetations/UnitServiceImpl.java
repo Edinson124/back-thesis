@@ -134,7 +134,7 @@ public class UnitServiceImpl implements UnitService {
 
             // Filtrar por unidades en cuarentena (status = 'Disponible')
             predicates.add(cb.equal(root.get("bloodBank").get("id"), bloodBankId));
-            predicates.add(cb.equal(root.get("status"), UnitStatus.DISPONIBLE.getLabel()));
+            predicates.add(cb.equal(root.get("status"), UnitStatus.APTO.getLabel()));
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
@@ -178,6 +178,75 @@ public class UnitServiceImpl implements UnitService {
                 .orElseThrow(() -> new IllegalArgumentException("Unidad no encontrada con id: " + id));
 
         return unitMapper.toDTO(unit);
+    }
+
+    @Override
+    public Page<UnitListDTO> getUnitsStock(int page, int size, LocalDate startEntryDate, LocalDate endEntryDate, LocalDate startExpirationDate, LocalDate endExpirationDate, String bloodType, String type, String status) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("id")));
+
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+        Integer bloodBankId = userAuthenticated.getBloodBank().getId();
+
+        Specification<UnitEntity> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Fecha de vencimiento
+            if (startExpirationDate != null && endExpirationDate != null) {
+                predicates.add(cb.between(root.get("expirationDate"), startExpirationDate, endExpirationDate));
+            } else if (startExpirationDate != null) {
+                predicates.add(cb.equal(root.get("expirationDate"), startExpirationDate));
+            } else if (endExpirationDate != null) {
+                predicates.add(cb.equal(root.get("expirationDate"), endExpirationDate));
+            }
+
+            // Fecha de ingreso
+            if (startEntryDate != null && endEntryDate != null) {
+                predicates.add(cb.between(root.get("entryDate"), startEntryDate, endEntryDate));
+            } else if (startEntryDate != null) {
+                predicates.add(cb.equal(root.get("entryDate"), startEntryDate));
+            } else if (endEntryDate != null) {
+                predicates.add(cb.equal(root.get("entryDate"), endEntryDate));
+            }
+
+            // Estado
+            if (status != null && !status.isBlank()) {
+                predicates.add(cb.equal(root.get("status"), status));
+            } else {
+                predicates.add(
+                        cb.or(
+                                cb.equal(root.get("status"), UnitStatus.APTO.getLabel()),
+                                cb.equal(root.get("status"), UnitStatus.RESERVADO.getLabel())
+                        )
+                );
+            }
+
+            // Filtro por tipo
+            if (type != null && !type.isBlank()) {
+                predicates.add(cb.equal(root.get("unitType"), type));
+            } else {
+                predicates.add(
+                        cb.or(
+                                cb.equal(root.get("unitType"), UnitTypes.SANGRE_TOTAL.getLabel()),
+                                cb.equal(root.get("unitType"), UnitTypes.PLASMA_FRESCO_CONGELADO.getLabel())
+                        )
+                );
+            }
+
+            if (type != null && !type.isBlank()) {
+                predicates.add(cb.equal(root.get("unitType"), type));
+            }
+
+            // Filtrar por unidades en cuarentena (status = 'Disponible')
+            predicates.add(cb.equal(root.get("bloodBank").get("id"), bloodBankId));
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<UnitEntity> unitsPage = unitRepository.findAll(spec, pageable);
+
+        // Aquí puedes mapear UnitEntity → UnitListDTO
+        return unitsPage.map(unitMapper::toListDTO);
+
     }
 
 }

@@ -4,7 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum UnitStatus {
-    DISPONIBLE("DISPONIBLE"),
+    APTO("Apto"),
+    RESERVADO("Reservado"),
     QUARANTINED("En cuarentena"),
     REACTIVO("Reactivo");
 

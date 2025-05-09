@@ -120,7 +120,7 @@ public class DonationServiceImpl implements DonationService {
     public Page<DonationByDonorDTO> getDonationsByDonor(String documentType,String documentNumber, int page, int size){
         Long donorId = donorService.getIdDonor(documentType, documentNumber);
         if (donorId != 0L) {
-            Pageable pageable = PageRequest.of(page, size,Sort.by(Sort.Direction.DESC, "createdAt"));
+            Pageable pageable = PageRequest.of(page, size,Sort.by(Sort.Direction.DESC, "id"));
             Page<DonationEntity> donationsPage = donationRepository.findByDonorId(donorId, pageable);
             return donationsPage.map(donationMapper::toDonationByDonorDTO);
         }else{

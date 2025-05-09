@@ -3,6 +3,7 @@ package com.yawarSoft.Core.Entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,8 +20,14 @@ public class TransfusionRequestEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_blood_bank", nullable = false)
+    private BloodBankEntity bloodBank;
+
+    @ManyToOne(optional = false)
     @JoinColumn(name = "id_patient", nullable = false)
     private PatientEntity patient;
+
+    private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_attending_doctor", nullable = false)

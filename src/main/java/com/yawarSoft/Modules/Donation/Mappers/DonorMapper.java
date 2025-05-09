@@ -1,13 +1,10 @@
 package com.yawarSoft.Modules.Donation.Mappers;
 
-import com.yawarSoft.Core.Entities.DonationEntity;
 import com.yawarSoft.Core.Entities.DonorEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.MapperUtils;
-import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
-import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", uses = MapperUtils.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
