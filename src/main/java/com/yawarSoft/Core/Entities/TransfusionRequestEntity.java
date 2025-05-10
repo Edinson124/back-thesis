@@ -19,17 +19,21 @@ public class TransfusionRequestEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_blood_bank", nullable = false)
     private BloodBankEntity bloodBank;
 
-    @ManyToOne(optional = false)
+    @ManyToOne()
     @JoinColumn(name = "id_patient", nullable = false)
     private PatientEntity patient;
 
+    @OneToOne
+    @JoinColumn(name = "id_transfusion_result")
+    private TransfusionResultEntity transfusionResult;
+
     private LocalDate date;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_attending_doctor", nullable = false)
     private UserEntity attendingDoctor;
 
@@ -48,7 +52,7 @@ public class TransfusionRequestEntity {
     @Column(name = "status", nullable = false, length = 20)
     private String status;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)
     private UserEntity createdBy;
 

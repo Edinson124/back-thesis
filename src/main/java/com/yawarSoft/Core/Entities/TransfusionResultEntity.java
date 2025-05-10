@@ -11,30 +11,31 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "transfusion_records")
-public class TransfusionRecordEntity {
+@Table(name = "transfusion_results")
+public class TransfusionResultEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "transfused_by", nullable = false)
-    private UserEntity transfusedBy;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_patient", nullable = false)
     private PatientEntity patient;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_transfusion_request", nullable = false)
-    private TransfusionRequestEntity transfusionRequest;
 
     @Column(name = "transfusion_date", nullable = false)
     private LocalDateTime transfusionDate;
 
-    @Column(name = "reaction")
-    private String reaction;
+    @Column(name = "transfusion_doctor_name")
+    private String transfusionDoctorName;
+
+    @Column(name = "transfusion_doctor_license_number")
+    private String transfusionDoctorLicenseNumber;
+
+    @Column(name = "has_reaction")
+    private Boolean hasReaction;
+
+    @Column(name = "reaction_adverse")
+    private String reactionAdverse;
 
     @Column(name = "observations")
     private String observations;
