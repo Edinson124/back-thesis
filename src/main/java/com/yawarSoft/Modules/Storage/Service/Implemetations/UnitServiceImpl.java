@@ -1,9 +1,6 @@
 package com.yawarSoft.Modules.Storage.Service.Implemetations;
 
-import com.yawarSoft.Core.Entities.DonationEntity;
-import com.yawarSoft.Core.Entities.UnitEntity;
-import com.yawarSoft.Core.Entities.UnitStorageEntity;
-import com.yawarSoft.Core.Entities.UserEntity;
+import com.yawarSoft.Core.Entities.*;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Modules.Admin.Dto.GlobalVariableDTO;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.GlobalVariableService;
@@ -16,6 +13,7 @@ import com.yawarSoft.Modules.Storage.Enums.UnitTypes;
 import com.yawarSoft.Modules.Storage.Mappers.UnitMapper;
 import com.yawarSoft.Modules.Storage.Repositories.UnitRepository;
 import com.yawarSoft.Modules.Storage.Repositories.UnitStorageRepository;
+import com.yawarSoft.Modules.Storage.Repositories.UnitTransformationRepository;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
@@ -28,21 +26,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class UnitServiceImpl implements UnitService {
 
     private final UnitRepository unitRepository;
-    private final GlobalVariableService globalVariableService;
+    private final UnitTransformationRepository unitTransformationRepository;
     private final UnitStorageRepository unitStorageRepository;
     private final UnitMapper unitMapper;
+    private final GlobalVariableService globalVariableService;
     private final DonationService donationService;
     private final AuthenticatedUserService authenticatedUserService;
 
-    public UnitServiceImpl(UnitRepository unitRepository, GlobalVariableService globalVariableService, UnitStorageRepository unitStorageRepository, UnitMapper unitMapper, DonationService donationService, AuthenticatedUserService authenticatedUserService) {
+    public UnitServiceImpl(UnitRepository unitRepository, UnitTransformationRepository unitTransformationRepository, GlobalVariableService globalVariableService, UnitStorageRepository unitStorageRepository, UnitMapper unitMapper, DonationService donationService, AuthenticatedUserService authenticatedUserService) {
         this.unitRepository = unitRepository;
+        this.unitTransformationRepository = unitTransformationRepository;
         this.globalVariableService = globalVariableService;
         this.unitStorageRepository = unitStorageRepository;
         this.unitMapper = unitMapper;
@@ -149,7 +151,7 @@ public class UnitServiceImpl implements UnitService {
 
             // Filtrar por unidades en cuarentena (status = 'Disponible')
             predicates.add(cb.equal(root.get("bloodBank").get("id"), bloodBankId));
-            predicates.add(cb.equal(root.get("status"), UnitStatus.APTO.getLabel()));
+            predicates.add(cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()));
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
@@ -168,7 +170,7 @@ public class UnitServiceImpl implements UnitService {
             return false; // No hay unidades que actualizar
         }
         for (UnitEntity unit : units) {
-            unit.setStatus(UnitStatus.REACTIVO.getLabel());
+            unit.setStatus(UnitStatus.REACTIVE.getLabel());
         }
         unitRepository.saveAll(units); // Guardar todas las unidades modificadas
         return true;
@@ -229,20 +231,8 @@ public class UnitServiceImpl implements UnitService {
             } else {
                 predicates.add(
                         cb.or(
-                                cb.equal(root.get("status"), UnitStatus.APTO.getLabel()),
-                                cb.equal(root.get("status"), UnitStatus.RESERVADO.getLabel())
-                        )
-                );
-            }
-
-            // Filtro por tipo
-            if (type != null && !type.isBlank()) {
-                predicates.add(cb.equal(root.get("unitType"), type));
-            } else {
-                predicates.add(
-                        cb.or(
-                                cb.equal(root.get("unitType"), UnitTypes.SANGRE_TOTAL.getLabel()),
-                                cb.equal(root.get("unitType"), UnitTypes.PLASMA_FRESCO_CONGELADO.getLabel())
+                                cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()),
+                                cb.equal(root.get("status"), UnitStatus.RESERVED.getLabel())
                         )
                 );
             }
@@ -325,6 +315,60 @@ public class UnitServiceImpl implements UnitService {
         unitEntity.setVolume(unit.getVolume());
         unitRepository.save(unitEntity);
         return unit;
+    }
+
+    @Override
+    @Transactional
+    public UnitExtractionDTO saveUnitTransformation(Long idUnit, UnitExtractionDTO unit) {
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+        UnitEntity unitEntityOrigin = unitRepository.findById(idUnit)
+                .orElseThrow( () -> new IllegalArgumentException("No se encontro el id: " + idUnit));
+
+        String code = UnitTypes.getLifeTimeByLabel(unit.getType());
+        GlobalVariableDTO globalVariableDTO = globalVariableService.getByCode(code);
+        Integer days = Integer.parseInt(globalVariableDTO.getValue());
+        LocalDate date = unitEntityOrigin.getEntryDate();
+        LocalDate dateExpiration = date.plusDays(days);
+
+        UnitEntity unitEntityGenerated = unitMapper.toEntityByExtractionDTO(unit);
+        unitEntityGenerated.setExpirationDate(dateExpiration);
+        unitEntityGenerated.setBloodType(unitEntityOrigin.getBloodType());
+        unitEntityGenerated.setDonation(null);
+        unitEntityGenerated.setCreatedAt(LocalDateTime.now());
+        unitEntityGenerated.setCreatedBy(userAuthenticated);
+        unitEntityGenerated.setBloodBank(userAuthenticated.getBloodBank());
+        unitEntityGenerated.setEntryDate(date);
+        unitEntityGenerated.setStatus(UnitStatus.SUITABLE.getLabel());
+        unitEntityGenerated.setSerologyResult(unitEntityOrigin.getSerologyResult());
+
+        UnitEntity result = unitRepository.save(unitEntityGenerated);
+        unit.setId(result.getId());
+
+        UnitTransformationEntity unitTransformation = new UnitTransformationEntity();
+        unitTransformation.setOriginUnit(unitEntityOrigin);
+        unitTransformation.setGeneratedUnit(unitEntityGenerated);
+        unitTransformation.setTransformationDate(LocalDateTime.now());
+        unitTransformation.setCreatedBy(userAuthenticated);
+        unitTransformation.setCreatedAt(LocalDateTime.now());
+        unitTransformationRepository.save(unitTransformation);
+
+        unitRepository.updateStatusById(unitEntityOrigin.getId(), UnitStatus.FRACTIONATED.getLabel());
+        return unit;
+    }
+
+    @Override
+    public Long unitSuitable(Long idUnit) {
+        String status = UnitStatus.SUITABLE.getLabel();
+        unitRepository.updateStatusById(idUnit, status);
+        return idUnit;
+    }
+
+    @Override
+    public List<UnitExtractionDTO> getUnitsTransformationByUnit(Long idUnit) {
+        List<UnitEntity> generatedUnits = unitTransformationRepository.findGeneratedUnitsByOriginUnitId(idUnit);
+        return generatedUnits.stream()
+                .map(unitMapper::toExtractionDTO)
+                .collect(Collectors.toList());
     }
 
 }

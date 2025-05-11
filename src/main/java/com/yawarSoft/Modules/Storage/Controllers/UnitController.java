@@ -1,5 +1,6 @@
 package com.yawarSoft.Modules.Storage.Controllers;
 
+import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Modules.Donation.Dto.SampleDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
@@ -7,10 +8,13 @@ import com.yawarSoft.Modules.Storage.Dto.UnitDTO;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/units")
@@ -38,6 +42,14 @@ public class UnitController {
                 startExpirationDate, endExpirationDate, bloodType, type);
     }
 
+    @PutMapping("/quarantined/unitSuitable/{idUnit}")
+    public ResponseEntity<ApiResponse> unitSuitable(@PathVariable Long idUnit) {
+        Long id = unitService.unitSuitable(idUnit);
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(HttpStatus.OK, "Cambio de unidad ha estado apta", payload));
+    }
+
     @GetMapping("/transformation")
     public Page<UnitListDTO> getUnitsTransformation(@RequestParam(defaultValue = "0") int page,
                                                  @RequestParam(defaultValue = "10") int size,
@@ -54,6 +66,12 @@ public class UnitController {
         return unitService.getUnitsTransformation(page, size, startEntryDate, endEntryDate,
                 startExpirationDate, endExpirationDate, bloodType, type);
     }
+
+    @GetMapping("/transformation/get/{idUnit}")
+    public List<UnitExtractionDTO> getUnitsTransformationByUnit(@PathVariable Long idUnit) {
+        return unitService.getUnitsTransformationByUnit(idUnit);
+    }
+
 
     @GetMapping("/stock")
     public Page<UnitListDTO> getUnitsStock(@RequestParam(defaultValue = "0") int page,
@@ -91,6 +109,11 @@ public class UnitController {
     @PutMapping("/edit/{idUnit}")
     public UnitExtractionDTO editUnit(@PathVariable Long idUnit, @RequestBody UnitExtractionDTO unit) {
         return unitService.editUnit(idUnit, unit);
+    }
+
+    @PostMapping("/transformation/save/{idUnit}")
+    public UnitExtractionDTO saveUnitTransformation(@PathVariable Long idUnit, @RequestBody UnitExtractionDTO unit) {
+        return unitService.saveUnitTransformation(idUnit, unit);
     }
 
 }

@@ -53,13 +53,10 @@ public class HematologicalTestServiceImpl implements HematologicalTestService {
     @Override
     public HematologicalTestDTO getHematologicalTest(Long donationId) {
         DonationRelationsDTO relationsDTO = donationService.getIdsRelations(donationId);
+        if(relationsDTO.getIdHematologicalTest() == null){ return null;}
         HematologicalTestEntity hematologicalTest = hematologicalTestRepository
                 .findById(relationsDTO.getIdHematologicalTest())
                 .orElse(null);
-
-        if (hematologicalTest == null) {
-            return null;
-        }
         return hematologicalMapper.toDto(hematologicalTest);
     }
 }

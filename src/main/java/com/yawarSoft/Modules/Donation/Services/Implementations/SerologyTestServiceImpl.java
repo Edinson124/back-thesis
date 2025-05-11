@@ -79,13 +79,11 @@ public class SerologyTestServiceImpl implements SerologyTestService {
     @Override
     public SerologyTestDTO getSerologyTest(Long donationId) {
         DonationRelationsDTO relationsDTO = donationService.getIdsRelations(donationId);
+        if (relationsDTO.getIdSerologyTest() == null) {return null;}
         SerologyTestEntity serologyTestEntity = serologyTestRepository
                 .findById(relationsDTO.getIdSerologyTest())
                 .orElse(null);
 
-        if (serologyTestEntity == null) {
-            return null;
-        }
         return serologyTestMapper.toDto(serologyTestEntity);
     }
 }

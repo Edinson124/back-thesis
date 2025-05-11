@@ -19,8 +19,8 @@ public class UnitEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_donation", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_donation")
     private DonationEntity donation;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

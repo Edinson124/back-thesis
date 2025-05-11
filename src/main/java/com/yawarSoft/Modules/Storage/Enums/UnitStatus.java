@@ -4,10 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum UnitStatus {
-    APTO("Apto"),
-    RESERVADO("Reservado"),
+    SUITABLE("Apto"),
+    RESERVED("Reservado"),
     QUARANTINED("En cuarentena"),
-    REACTIVO("Reactivo");
+    FRACTIONATED("Fraccionado"),
+    REACTIVE("Reactivo");
 
     private final String label;
 

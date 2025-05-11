@@ -28,4 +28,10 @@ public interface UnitService {
     UnitExtractionDTO saveUnitDonation(Long idDonation, UnitExtractionDTO unit);
 
     UnitExtractionDTO editUnit(Long idUnit, UnitExtractionDTO unit);
+
+    UnitExtractionDTO saveUnitTransformation(Long idUnit, UnitExtractionDTO unit);
+
+    Long unitSuitable(Long idUnit);
+
+    List<UnitExtractionDTO> getUnitsTransformationByUnit(Long idDonation);
 }
