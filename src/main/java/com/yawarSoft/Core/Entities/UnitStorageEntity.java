@@ -17,14 +17,15 @@ public class UnitStorageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_blood_bank", nullable = false)
-    private Integer bloodBankId; // Si no hay entidad BloodBank, se deja como ID
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_blood_bank")
+    private BloodBankEntity bloodBank;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_blood_unit", nullable = false)
     private UnitEntity unit;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String location;
 
     @Column(name = "entry_date", nullable = false)
@@ -33,14 +34,16 @@ public class UnitStorageEntity {
     @Column(name = "exit_date")
     private LocalDateTime exitDate;
 
-    @Column(name = "created_by", nullable = false)
-    private Integer createdBy;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
+    private UserEntity createdBy;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_by")
-    private Integer updatedBy;
+    @ManyToOne
+    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    private UserEntity updatedBy;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

@@ -2,8 +2,12 @@ package com.yawarSoft.Modules.Storage.Service.Implemetations;
 
 import com.yawarSoft.Core.Entities.DonationEntity;
 import com.yawarSoft.Core.Entities.UnitEntity;
+import com.yawarSoft.Core.Entities.UnitStorageEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
+import com.yawarSoft.Modules.Admin.Dto.GlobalVariableDTO;
+import com.yawarSoft.Modules.Admin.Services.Interfaces.GlobalVariableService;
+import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
 import com.yawarSoft.Modules.Storage.Dto.UnitDTO;
@@ -11,6 +15,7 @@ import com.yawarSoft.Modules.Storage.Enums.UnitStatus;
 import com.yawarSoft.Modules.Storage.Enums.UnitTypes;
 import com.yawarSoft.Modules.Storage.Mappers.UnitMapper;
 import com.yawarSoft.Modules.Storage.Repositories.UnitRepository;
+import com.yawarSoft.Modules.Storage.Repositories.UnitStorageRepository;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
@@ -22,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,12 +35,18 @@ import java.util.stream.Collectors;
 public class UnitServiceImpl implements UnitService {
 
     private final UnitRepository unitRepository;
+    private final GlobalVariableService globalVariableService;
+    private final UnitStorageRepository unitStorageRepository;
     private final UnitMapper unitMapper;
+    private final DonationService donationService;
     private final AuthenticatedUserService authenticatedUserService;
 
-    public UnitServiceImpl(UnitRepository unitRepository, UnitMapper unitMapper, AuthenticatedUserService authenticatedUserService) {
+    public UnitServiceImpl(UnitRepository unitRepository, GlobalVariableService globalVariableService, UnitStorageRepository unitStorageRepository, UnitMapper unitMapper, DonationService donationService, AuthenticatedUserService authenticatedUserService) {
         this.unitRepository = unitRepository;
+        this.globalVariableService = globalVariableService;
+        this.unitStorageRepository = unitStorageRepository;
         this.unitMapper = unitMapper;
+        this.donationService = donationService;
         this.authenticatedUserService = authenticatedUserService;
     }
 
@@ -258,6 +270,61 @@ public class UnitServiceImpl implements UnitService {
         return units.stream()
                 .map(unitMapper::toExtractionDTO)
                 .toList();
+    }
+
+    @Transactional
+    @Override
+    public UnitExtractionDTO saveUnitDonation(Long idDonation, UnitExtractionDTO unit) {
+        Map<String, String> values = donationService.getBloodTypeAndSerology(idDonation);
+        String bloodType = values.get("bloodType");
+        String serologyResult = values.get("serologyResult");
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+
+        String code = UnitTypes.getLifeTimeByLabel(unit.getType());
+
+        GlobalVariableDTO globalVariableDTO = globalVariableService.getByCode(code);
+        Integer days = Integer.parseInt(globalVariableDTO.getValue());
+
+        LocalDate date = LocalDate.now();
+        LocalDate dateExpiration = date.plusDays(days);
+
+        DonationEntity donationEntity = new DonationEntity();
+        donationEntity.setId(idDonation);
+
+        UnitEntity unitEntity = unitMapper.toEntityByExtractionDTO(unit);
+        unitEntity.setExpirationDate(dateExpiration);
+        unitEntity.setBloodType(bloodType);
+        unitEntity.setDonation(donationEntity);
+        unitEntity.setCreatedAt(LocalDateTime.now());
+        unitEntity.setCreatedBy(userAuthenticated);
+        unitEntity.setBloodBank(userAuthenticated.getBloodBank());
+        unitEntity.setEntryDate(date);
+        unitEntity.setStatus(UnitStatus.QUARANTINED.getLabel());
+        unitEntity.setSerologyResult(serologyResult);
+
+        UnitEntity result = unitRepository.save(unitEntity);
+        unit.setId(result.getId());
+
+        UnitStorageEntity unitStorage = new UnitStorageEntity();
+        unitStorage.setUnit(result);
+        unitStorage.setBloodBank(userAuthenticated.getBloodBank());
+        unitStorage.setCreatedAt(LocalDateTime.now());
+        unitStorage.setEntryDate(LocalDateTime.now());
+        unitStorage.setCreatedBy(userAuthenticated);
+        unitStorageRepository.save(unitStorage);
+        return unit;
+    }
+
+    @Override
+    public UnitExtractionDTO editUnit(Long idUnit, UnitExtractionDTO unit) {
+        UnitEntity unitEntity = unitRepository.findById(idUnit)
+                .orElseThrow( () -> new IllegalArgumentException("No se encontro la unidad con el id: " + idUnit));
+        unitEntity.setUnitType(unit.getType());
+        unitEntity.setAnticoagulant(unit.getAnticoagulant());
+        unitEntity.setBagType(unit.getBag());
+        unitEntity.setVolume(unit.getVolume());
+        unitRepository.save(unitEntity);
+        return unit;
     }
 
 }

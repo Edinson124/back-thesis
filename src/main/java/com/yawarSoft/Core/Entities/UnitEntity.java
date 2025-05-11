@@ -39,9 +39,6 @@ public class UnitEntity {
     @Column(name = "blood_type", nullable = false, length = 10)
     private String bloodType;
 
-    @Column(name = "rh_factor", nullable = false, length = 10)
-    private String rhFactor;
-
     @Column(name = "anticoagulant")
     private String anticoagulant;
 

@@ -10,6 +10,8 @@ import com.yawarSoft.Modules.Donation.Dto.Response.DonationGetDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.ExistDonationDTO;
 import org.springframework.data.domain.Page;
 
+import java.util.Map;
+
 public interface DonationService {
     Long createDonation(DonationCreateRequest donationCreateRequest);
     DonationResponseDTO updateDonation(Long donationId, DonationUpdateDTO donationUpdateDTO);
@@ -34,4 +36,6 @@ public interface DonationService {
 
     DonationRelationsDTO getIdsRelations(Long id);
     boolean updateDonorBloodType(Long donationId, String bloodType, String rhFactor);
+
+    Map<String, String> getBloodTypeAndSerology(Long id);
 }

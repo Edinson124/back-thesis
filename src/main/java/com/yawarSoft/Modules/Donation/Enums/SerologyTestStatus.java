@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum SerologyTestStatus {
     REACTIVE("REACTIVO"),
+    PENDING("PENDIENTE"),
     NO_REACTIVE("NO REACTIVO");
 
     private final String label;

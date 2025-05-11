@@ -13,6 +13,8 @@ import com.yawarSoft.Modules.Donation.Dto.Response.DonationGetDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.ExistDonationDTO;
 import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
 import com.yawarSoft.Modules.Donation.Enums.DonorGender;
+import com.yawarSoft.Modules.Donation.Enums.RhFactor;
+import com.yawarSoft.Modules.Donation.Enums.SerologyTestStatus;
 import com.yawarSoft.Modules.Donation.Mappers.DonationMapper;
 import com.yawarSoft.Modules.Donation.Mappers.DonorMapper;
 import com.yawarSoft.Modules.Donation.Repositories.DonationRepository;
@@ -28,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -303,5 +307,35 @@ public class DonationServiceImpl implements DonationService {
         donorService.updateDonorBloodType(donorId,bloodType,rhFactor);
         return true;
     }
+
+    @Override
+    public Map<String, String> getBloodTypeAndSerology(Long id) {
+        Map<String, String> result = new HashMap<>();
+        DonationEntity donationEntity = donationRepository.findById(id).orElse(null);
+
+        if (donationEntity != null) {
+            String bloodType = null;
+
+            if (donationEntity.getDonor() != null && donationEntity.getDonor().getBloodType() != null) {
+                String type = donationEntity.getDonor().getBloodType();
+                String rh = RhFactor.getSymbolByName(donationEntity.getDonor().getRhFactor());
+                bloodType = type + rh;
+            } else if (donationEntity.getHematologicalTest() != null && donationEntity.getHematologicalTest().getBloodType() != null) {
+                String type = donationEntity.getHematologicalTest().getBloodType();
+                String rh = RhFactor.getSymbolByName(donationEntity.getHematologicalTest().getRhFactor());
+                bloodType = type + rh;
+            }
+
+            result.put("bloodType", bloodType != null ? bloodType : "");
+
+            String serologyResult = donationEntity.getSerologyTest() != null
+                    ? donationEntity.getSerologyTest().getStatus()
+                    : SerologyTestStatus.PENDING.getLabel();
+            result.put("serologyResult", serologyResult);
+        }
+
+        return result;
+    }
+
 
 }

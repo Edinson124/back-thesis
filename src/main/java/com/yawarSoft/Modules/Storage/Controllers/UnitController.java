@@ -83,5 +83,14 @@ public class UnitController {
         return unitService.getUnitsByDonation(idDonation);
     }
 
+    @PostMapping("/save/{idDonation}")
+    public UnitExtractionDTO saveUnitDonation(@PathVariable Long idDonation, @RequestBody UnitExtractionDTO unit) {
+        return unitService.saveUnitDonation(idDonation, unit);
+    }
+
+    @PutMapping("/edit/{idUnit}")
+    public UnitExtractionDTO editUnit(@PathVariable Long idUnit, @RequestBody UnitExtractionDTO unit) {
+        return unitService.editUnit(idUnit, unit);
+    }
 
 }

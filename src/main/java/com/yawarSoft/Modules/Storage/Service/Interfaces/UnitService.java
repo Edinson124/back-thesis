@@ -24,4 +24,8 @@ public interface UnitService {
     Page<UnitListDTO> getUnitsStock(int page, int size, LocalDate startEntryDate, LocalDate endEntryDate, LocalDate startExpirationDate, LocalDate endExpirationDate, String bloodType, String type, String status);
 
     List<UnitExtractionDTO> getUnitsByDonation(Long idDonation);
+
+    UnitExtractionDTO saveUnitDonation(Long idDonation, UnitExtractionDTO unit);
+
+    UnitExtractionDTO editUnit(Long idUnit, UnitExtractionDTO unit);
 }
