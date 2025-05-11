@@ -34,7 +34,7 @@ public class UnitEntity {
     private String status;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal volumen;
+    private BigDecimal volume;
 
     @Column(name = "blood_type", nullable = false, length = 10)
     private String bloodType;

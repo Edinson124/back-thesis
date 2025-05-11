@@ -1,15 +1,19 @@
 package com.yawarSoft.Modules.Transfusion.Services.Implemenations;
 
-import com.yawarSoft.Core.Entities.TransfusionRequestEntity;
-import com.yawarSoft.Core.Entities.UserEntity;
+import com.yawarSoft.Core.Entities.*;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.HmacUtil;
-import com.yawarSoft.Modules.Transfusion.Dto.Response.ExistTransfusionDTO;
-import com.yawarSoft.Modules.Transfusion.Dto.Response.TransfusionDetailDTO;
-import com.yawarSoft.Modules.Transfusion.Dto.Response.TranfusionListDTO;
-import com.yawarSoft.Modules.Transfusion.Dto.Response.TransfusionByPatientDTO;
+import com.yawarSoft.Modules.Donation.Dto.Response.DonationGetDTO;
+import com.yawarSoft.Modules.Transfusion.Dto.Response.*;
+import com.yawarSoft.Modules.Transfusion.Dto.TransfusionAssignmentDTO;
+import com.yawarSoft.Modules.Transfusion.Dto.TransfusionRequestDetailDTO;
+import com.yawarSoft.Modules.Transfusion.Dto.TransfusionResultDTO;
+import com.yawarSoft.Modules.Transfusion.Dto.TransfusionViewDTO;
+import com.yawarSoft.Modules.Transfusion.Mappers.TransfusionAssignmentMapper;
+import com.yawarSoft.Modules.Transfusion.Mappers.TransfusionRequestDetailMapper;
 import com.yawarSoft.Modules.Transfusion.Mappers.TransfusionRequestMapper;
+import com.yawarSoft.Modules.Transfusion.Mappers.TransfusionResultMapper;
 import com.yawarSoft.Modules.Transfusion.Repositories.PatientRepository;
 import com.yawarSoft.Modules.Transfusion.Repositories.TransfusionRequestRepository;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.TransfusionRequestService;
@@ -32,14 +36,20 @@ public class TransfusionRequestServiceImpl implements TransfusionRequestService 
     private final TransfusionRequestRepository transfusionRequestRepository;
     private final PatientRepository patientRepository;
     private final TransfusionRequestMapper transfusionRequestMapper;
+    private final TransfusionAssignmentMapper transfusionAssignmentMapper;
+    private final TransfusionRequestDetailMapper transfusionRequestDetailMapper;
+    private final TransfusionResultMapper transfusionResultMapper;
     private final AuthenticatedUserService authenticatedUserService;
     private final HmacUtil hmacUtil;
     private final AESGCMEncryptionUtil aesGCMEncryptionUtil;
 
-    public TransfusionRequestServiceImpl(TransfusionRequestRepository transfusionRequestRepository, PatientRepository patientRepository, TransfusionRequestMapper transfusionRequestMapper, AuthenticatedUserService authenticatedUserService, HmacUtil hmacUtil, AESGCMEncryptionUtil aesGCMEncryptionUtil) {
+    public TransfusionRequestServiceImpl(TransfusionRequestRepository transfusionRequestRepository, PatientRepository patientRepository, TransfusionRequestMapper transfusionRequestMapper, TransfusionAssignmentMapper transfusionAssignmentMapper, TransfusionRequestDetailMapper transfusionRequestDetailMapper, TransfusionResultMapper transfusionResultMapper, AuthenticatedUserService authenticatedUserService, HmacUtil hmacUtil, AESGCMEncryptionUtil aesGCMEncryptionUtil) {
         this.transfusionRequestRepository = transfusionRequestRepository;
         this.patientRepository = patientRepository;
         this.transfusionRequestMapper = transfusionRequestMapper;
+        this.transfusionAssignmentMapper = transfusionAssignmentMapper;
+        this.transfusionRequestDetailMapper = transfusionRequestDetailMapper;
+        this.transfusionResultMapper = transfusionResultMapper;
         this.authenticatedUserService = authenticatedUserService;
         this.hmacUtil = hmacUtil;
         this.aesGCMEncryptionUtil = aesGCMEncryptionUtil;
@@ -129,6 +139,45 @@ public class TransfusionRequestServiceImpl implements TransfusionRequestService 
     public TransfusionDetailDTO getDetailTransfusion(Long id) {
         TransfusionRequestEntity transfusionEntity = transfusionRequestRepository.findById(id).orElse(null);
         return transfusionRequestMapper.toDetailDTO(transfusionEntity, aesGCMEncryptionUtil);
+    }
+
+    @Override
+    public TransfusionGetDTO getTranfusion(Long id) {
+        TransfusionGetDTO result = new TransfusionGetDTO();
+
+        TransfusionRequestEntity transfusionEntity = transfusionRequestRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + id));
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+
+        Boolean canViewTransfusion = userAuthenticated.getBloodBank() != null
+                && transfusionEntity.getBloodBank().getId().equals(userAuthenticated.getBloodBank().getId());
+        result.setCanViewTransfusion(canViewTransfusion);
+
+        if (!canViewTransfusion) {
+            result.setTransfusion(null);
+            result.setResult(null);
+            result.setRequest(null);
+            result.setAssignments(null);
+            return result;
+        }
+        TransfusionViewDTO transfusionViewDTO = transfusionRequestMapper.toTransfusionViewTO(transfusionEntity,aesGCMEncryptionUtil);
+        result.setTransfusion(transfusionViewDTO);
+
+        TransfusionResultEntity resultEntity = transfusionEntity.getTransfusionResult();
+        TransfusionResultDTO resultDTO = resultEntity != null
+                ? transfusionResultMapper.toDetailDTO(resultEntity)
+                : null;
+        result.setResult(resultDTO);
+
+        List<TransfusionRequestDetailEntity> details = transfusionEntity.getDetails();
+        List<TransfusionRequestDetailDTO> requestDetails = transfusionRequestDetailMapper.toTransfusionRequestDetailDtoList(details);
+        result.setRequest(requestDetails);
+
+        List<TransfusionAssignmentEntity> assignments = transfusionEntity.getDetailsAssignment();
+        List<TransfusionAssignmentDTO> assignmentDTOs = transfusionAssignmentMapper.toTransfusionAssignmentDtoList(assignments);
+        result.setAssignments(assignmentDTOs);
+
+        return result;
     }
 
 }

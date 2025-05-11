@@ -16,7 +16,7 @@ public class UnitDTO {
     private Long id;
     private Integer donationId;
     private String unitType;
-    private BigDecimal volumen;
+    private BigDecimal volume;
     private String bloodType;
     private String anticoagulant;
     private String bagType;

@@ -1,9 +1,6 @@
 package com.yawarSoft.Modules.Transfusion.Services.Interfaces;
 
-import com.yawarSoft.Modules.Transfusion.Dto.Response.ExistTransfusionDTO;
-import com.yawarSoft.Modules.Transfusion.Dto.Response.TransfusionDetailDTO;
-import com.yawarSoft.Modules.Transfusion.Dto.Response.TranfusionListDTO;
-import com.yawarSoft.Modules.Transfusion.Dto.Response.TransfusionByPatientDTO;
+import com.yawarSoft.Modules.Transfusion.Dto.Response.*;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
@@ -16,4 +13,6 @@ public interface TransfusionRequestService {
     ExistTransfusionDTO existsByCode(Long id);
 
     TransfusionDetailDTO getDetailTransfusion(Long id);
+
+    TransfusionGetDTO getTranfusion(Long id);
 }

@@ -26,6 +26,7 @@ public class PhysicalAssessmentDTO {
     private BigDecimal monocytes;
     private Integer platelets;
     private String observation;
+
     private Integer createdById;
     private String createdByName;
     private LocalDateTime createdAt;

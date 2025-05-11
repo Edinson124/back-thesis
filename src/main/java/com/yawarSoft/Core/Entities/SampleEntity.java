@@ -22,23 +22,25 @@ public class SampleEntity {
     @JoinColumn(name = "id_donation", nullable = false)
     private DonationEntity donation;
 
+    @Column(nullable = false, length = 50)
+    private String test;
+
     @Column(nullable = false, length = 20)
     private String status;
-
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal volumen;
 
     @Column(name = "label_url")
     private String labelUrl;
 
-    @Column(name = "created_by", nullable = false)
-    private Integer createdBy;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
+    private UserEntity createdBy;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_by")
-    private Integer updatedBy;
+    @ManyToOne
+    @JoinColumn(name = "updated_by", referencedColumnName = "id")
+    private UserEntity updatedBy;
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

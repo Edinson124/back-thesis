@@ -1,8 +1,10 @@
 package com.yawarSoft.Modules.Storage.Service.Implemetations;
 
+import com.yawarSoft.Core.Entities.DonationEntity;
 import com.yawarSoft.Core.Entities.UnitEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
+import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
 import com.yawarSoft.Modules.Storage.Dto.UnitDTO;
 import com.yawarSoft.Modules.Storage.Enums.UnitStatus;
@@ -17,10 +19,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UnitServiceImpl implements UnitService {
@@ -247,6 +250,14 @@ public class UnitServiceImpl implements UnitService {
         // Aquí puedes mapear UnitEntity → UnitListDTO
         return unitsPage.map(unitMapper::toListDTO);
 
+    }
+
+    @Override
+    public List<UnitExtractionDTO> getUnitsByDonation(Long idDonation) {
+        List<UnitEntity> units = unitRepository.findByDonationId(idDonation);
+        return units.stream()
+                .map(unitMapper::toExtractionDTO)
+                .toList();
     }
 
 }

@@ -1,5 +1,7 @@
 package com.yawarSoft.Modules.Storage.Controllers;
 
+import com.yawarSoft.Modules.Donation.Dto.SampleDTO;
+import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
 import com.yawarSoft.Modules.Storage.Dto.UnitDTO;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
@@ -8,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/units")
@@ -74,4 +77,11 @@ public class UnitController {
     public UnitDTO getUnitById(@PathVariable Long id) {
         return unitService.getUnitById(id);
     }
+
+    @GetMapping("/get/{idDonation}")
+    public List<UnitExtractionDTO> getUnitsByDonation(@PathVariable Long idDonation) {
+        return unitService.getUnitsByDonation(idDonation);
+    }
+
+
 }

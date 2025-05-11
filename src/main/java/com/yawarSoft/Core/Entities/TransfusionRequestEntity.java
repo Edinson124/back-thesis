@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -31,26 +32,44 @@ public class TransfusionRequestEntity {
     @JoinColumn(name = "id_transfusion_result")
     private TransfusionResultEntity transfusionResult;
 
-    private LocalDate date;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_attending_doctor", nullable = false)
     private UserEntity attendingDoctor;
 
+//    @Column(name = "requested_blood_type", nullable = false, length = 10)
+//    private String requestedBloodType;
+//
+//    @Column(name = "requested_rh_factor", nullable = false, length = 10)
+//    private String requestedRhFactor;
+
+    @Column(name = "has_crossmatch", nullable = false)
+    private String hasCrossmatch;
+
+    @Column(nullable = false, length = 50)
+    private String bed;
+
+    @Column(name = "medical_service", nullable = false, length = 100)
+    private String medicalService;
+
+    private LocalDateTime date;
+
+    @Column( nullable = false)
+    private String diagnosis;
+
     @Column(name = "request_reason", nullable = false, columnDefinition = "TEXT")
     private String requestReason;
-
-    @Column(name = "requested_blood_type", nullable = false, length = 10)
-    private String requestedBloodType;
-
-    @Column(name = "requested_rh_factor", nullable = false, length = 10)
-    private String requestedRhFactor;
 
     @Column(name = "priority", nullable = false, length = 20)
     private String priority;
 
     @Column(name = "status", nullable = false, length = 20)
     private String status;
+
+    @OneToMany(mappedBy = "transfusionRequest", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TransfusionRequestDetailEntity> details;
+
+    @OneToMany(mappedBy = "transfusionRequest", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TransfusionAssignmentEntity> detailsAssignment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", nullable = false)

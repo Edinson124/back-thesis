@@ -66,7 +66,8 @@ public class TransfusionAssignmentEntity {
     @Column(name = "dispensed_date")
     private LocalDateTime dispensedDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dispensed_by")
-    private UserEntity dispensedBy;
+    @Column(name = "dispensed_by_document", length = 20)
+    private String dispensedByDocument;
+    @Column(name = "dispensed_by_name", length = 100)
+    private String dispensedByName;
 }

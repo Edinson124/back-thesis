@@ -2,6 +2,7 @@ package com.yawarSoft.Modules.Storage.Mappers;
 
 import com.yawarSoft.Core.Entities.UnitEntity;
 import com.yawarSoft.Core.Utils.MapperUtils;
+import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
 import com.yawarSoft.Modules.Storage.Dto.UnitDTO;
 import org.mapstruct.Mapper;
@@ -16,4 +17,8 @@ public interface UnitMapper {
 
     @Mapping(source = "donation.id", target = "donationId")
     UnitDTO toDTO(UnitEntity unitEntity);
+
+    @Mapping(source = "unitType", target = "type")
+    @Mapping(source = "bagType", target = "bag")
+    UnitExtractionDTO toExtractionDTO(UnitEntity unitEntity);
 }

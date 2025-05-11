@@ -1,9 +1,6 @@
 package com.yawarSoft.Modules.Transfusion.Controllers;
 
-import com.yawarSoft.Modules.Transfusion.Dto.Response.ExistTransfusionDTO;
-import com.yawarSoft.Modules.Transfusion.Dto.Response.TransfusionDetailDTO;
-import com.yawarSoft.Modules.Transfusion.Dto.Response.TranfusionListDTO;
-import com.yawarSoft.Modules.Transfusion.Dto.Response.TransfusionByPatientDTO;
+import com.yawarSoft.Modules.Transfusion.Dto.Response.*;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.TransfusionRequestService;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -50,5 +47,10 @@ public class TransfusionRequestController {
     @GetMapping("/detail/{id}")
     public TransfusionDetailDTO getDetailTransfusion(@PathVariable Long id) {
         return transfusionService.getDetailTransfusion(id);
+    }
+
+    @GetMapping("/{id}")
+    public TransfusionGetDTO getTranfusion(@PathVariable Long id) {
+        return transfusionService.getTranfusion(id);
     }
 }
