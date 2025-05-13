@@ -57,6 +57,9 @@ public class UnitEntity {
     @Column(name = "serology_result")
     private String serologyResult;
 
+    @Column(name = "reason_discard")
+    private String reasonDiscard;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
     private UserEntity createdBy;
@@ -70,4 +73,11 @@ public class UnitEntity {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "discard_by", referencedColumnName = "id")
+    private UserEntity discardBy;
+
+    @Column(name = "discard_at")
+    private LocalDateTime discardAt;
 }

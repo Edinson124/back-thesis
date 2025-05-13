@@ -145,13 +145,14 @@ public class UnitServiceImpl implements UnitService {
                 );
             }
 
-            if (type != null && !type.isBlank()) {
-                predicates.add(cb.equal(root.get("unitType"), type));
-            }
-
             // Filtrar por unidades en cuarentena (status = 'Disponible')
             predicates.add(cb.equal(root.get("bloodBank").get("id"), bloodBankId));
-            predicates.add(cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()));
+            predicates.add(
+                    cb.or(
+                            cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()),
+                            cb.equal(root.get("status"), UnitStatus.FRACTIONATED.getLabel())
+                    )
+            );
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };

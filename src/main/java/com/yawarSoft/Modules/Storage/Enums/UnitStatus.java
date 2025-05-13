@@ -8,6 +8,7 @@ public enum UnitStatus {
     RESERVED("Reservado"),
     QUARANTINED("En cuarentena"),
     FRACTIONATED("Fraccionado"),
+    DISCARD("Descartado"),
     REACTIVE("Reactivo");
 
     private final String label;
