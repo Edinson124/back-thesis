@@ -1,4 +1,4 @@
-package com.yawarSoft.Controllers;
+package com.yawarSoft.Core.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.io.ClassPathResource;

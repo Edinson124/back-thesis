@@ -1,6 +1,6 @@
-package com.yawarSoft.Modules.Network.Services.Interfaces;
+package com.yawarSoft.Modules.Laboratory.Services.Interfaces;
 
-import com.yawarSoft.Modules.Network.Dto.NetworkDTO;
+import com.yawarSoft.Modules.Laboratory.Dto.NetworkDTO;
 import org.springframework.data.domain.Page;
 
 public interface BBNetworkService {

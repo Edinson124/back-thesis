@@ -9,4 +9,5 @@ public class YawarSoftApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(YawarSoftApplication.class, args);
 	}
+
 }

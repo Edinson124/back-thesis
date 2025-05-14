@@ -1,5 +1,8 @@
 package com.yawarSoft.Modules.Admin.Enums;
 
+import lombok.Getter;
+
+@Getter
 public enum RoleEnum {
     ADMINISTRADOR(1, "Administrador"),
     MEDICO_BANCO_DE_SANGRE(2, "Medico de banco de sangre"),
@@ -13,14 +16,6 @@ public enum RoleEnum {
     RoleEnum(int id, String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public static RoleEnum fromId(int id) {

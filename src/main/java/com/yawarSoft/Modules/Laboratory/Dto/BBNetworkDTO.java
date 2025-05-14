@@ -1,19 +1,19 @@
-package com.yawarSoft.Modules.Network.Dto;
+package com.yawarSoft.Modules.Laboratory.Dto;
 
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NetworkDTO {
+public class BBNetworkDTO {
 
     private Integer id;
     private String name;
     private String description;
 
-    List<BloodBankNetworkDetailsDTO> bloodBankDetails;
+    private Set<BloodBankNetworkDetailsDTO> bloodBanks;
 }

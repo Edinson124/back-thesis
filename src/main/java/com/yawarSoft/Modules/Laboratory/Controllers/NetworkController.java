@@ -1,8 +1,8 @@
-package com.yawarSoft.Modules.Network.Controllers;
+package com.yawarSoft.Modules.Laboratory.Controllers;
 
 import com.yawarSoft.Core.Dto.ApiResponse;
-import com.yawarSoft.Modules.Network.Dto.NetworkDTO;
-import com.yawarSoft.Modules.Network.Services.Interfaces.BBNetworkService;
+import com.yawarSoft.Modules.Laboratory.Dto.NetworkDTO;
+import com.yawarSoft.Modules.Laboratory.Services.Interfaces.BBNetworkService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

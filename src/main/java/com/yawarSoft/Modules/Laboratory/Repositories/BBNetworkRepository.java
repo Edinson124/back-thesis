@@ -1,4 +1,4 @@
-package com.yawarSoft.Modules.Network.Repositories;
+package com.yawarSoft.Modules.Laboratory.Repositories;
 
 import com.yawarSoft.Core.Entities.NetworkEntity;
 import org.springframework.data.domain.Page;

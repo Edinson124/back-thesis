@@ -1,6 +1,8 @@
 package com.yawarSoft.Core.Utils;
 
+import com.yawarSoft.Core.Services.Interfaces.ParameterEncryptService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +23,9 @@ public class AESGCMEncryptionUtil {
     private final SecretKey secretKey;
 
     @Autowired
-    public AESGCMEncryptionUtil(@Value("${aes.encryption.key}") String base64Key) throws Exception {
-        byte[] keyBytes = Base64.getDecoder().decode(base64Key); // Genera una clave de 256 bits
+    public AESGCMEncryptionUtil(@Qualifier("dummy") ParameterEncryptService parameterEncryptService) throws Exception {
+        String base64Key = parameterEncryptService.getParameterValue();  // Usa el nombre parámetro
+        byte[] keyBytes = Base64.getDecoder().decode(base64Key); // Decodifica la clave en base64
         this.secretKey = new SecretKeySpec(keyBytes, AES);
     }
 

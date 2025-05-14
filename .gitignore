@@ -33,3 +33,5 @@ build/
 .vscode/
 
 src/main/resources/img_profile/
+
+src/main/resources/application.properties

@@ -1,7 +1,7 @@
-package com.yawarSoft.Modules.Network.Mappers;
+package com.yawarSoft.Modules.Laboratory.Mappers;
 
-import com.yawarSoft.Modules.Network.Dto.BloodBankNetworkDetailsDTO;
-import com.yawarSoft.Modules.Network.Dto.NetworkDTO;
+import com.yawarSoft.Modules.Laboratory.Dto.BloodBankNetworkDetailsDTO;
+import com.yawarSoft.Modules.Laboratory.Dto.NetworkDTO;
 import com.yawarSoft.Core.Entities.BloodBankNetworkEntity;
 import com.yawarSoft.Core.Entities.NetworkEntity;
 import com.yawarSoft.Core.Entities.UserEntity;

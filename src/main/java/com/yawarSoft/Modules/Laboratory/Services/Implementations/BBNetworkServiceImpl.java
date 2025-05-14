@@ -1,15 +1,15 @@
-package com.yawarSoft.Modules.Network.Services.Implementations;
+package com.yawarSoft.Modules.Laboratory.Services.Implementations;
 
 import com.yawarSoft.Core.Errors.ResourceNotFoundException;
-import com.yawarSoft.Modules.Network.Dto.BloodBankNetworkDetailsDTO;
-import com.yawarSoft.Modules.Network.Dto.NetworkDTO;
+import com.yawarSoft.Modules.Laboratory.Dto.BloodBankNetworkDetailsDTO;
+import com.yawarSoft.Modules.Laboratory.Dto.NetworkDTO;
 import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.BloodBankNetworkEntity;
 import com.yawarSoft.Core.Entities.NetworkEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
-import com.yawarSoft.Modules.Network.Mappers.BBNetworkMapper;
-import com.yawarSoft.Modules.Network.Repositories.BBNetworkRepository;
-import com.yawarSoft.Modules.Network.Services.Interfaces.BBNetworkService;
+import com.yawarSoft.Modules.Laboratory.Mappers.BBNetworkMapper;
+import com.yawarSoft.Modules.Laboratory.Repositories.BBNetworkRepository;
+import com.yawarSoft.Modules.Laboratory.Services.Interfaces.BBNetworkService;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.BloodBankService;
 import com.yawarSoft.Core.Utils.UserUtils;
 import org.springframework.data.domain.Page;
