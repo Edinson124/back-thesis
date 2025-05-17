@@ -25,11 +25,11 @@ public class TransfusionResultEntity {
     @Column(name = "transfusion_date", nullable = false)
     private LocalDateTime transfusionDate;
 
-    @Column(name = "transfusion_doctor_name")
-    private String transfusionDoctorName;
+    @Column(name = "transfusion_by_name")
+    private String transfusioByName;
 
-    @Column(name = "transfusion_doctor_license_number")
-    private String transfusionDoctorLicenseNumber;
+    @Column(name = "transfusion_by_license_number")
+    private String transfusionByLicenseNumber;
 
     @Column(name = "has_reaction")
     private Boolean hasReaction;

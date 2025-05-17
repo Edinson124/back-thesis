@@ -1,7 +1,6 @@
 package com.yawarSoft.Core.Services.Implementations;
 
 import com.yawarSoft.Core.Services.Interfaces.ParameterEncryptService;
-import com.yawarSoft.Core.Utils.AwsParameterService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
