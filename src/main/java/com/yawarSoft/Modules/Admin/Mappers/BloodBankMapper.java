@@ -5,6 +5,7 @@ import com.yawarSoft.Core.Utils.MapperUtils;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankListDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankSelectOptionDTO;
+import com.yawarSoft.Modules.Admin.Dto.Reponse.BloodBankOptionsAddNetworkDTO;
 import com.yawarSoft.Modules.Admin.Repositories.Projections.BloodBankProjectionSelect;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -31,4 +32,6 @@ public interface BloodBankMapper {
 
     @Mapping(source = "bloodBankType", target = "bloodBankType")
     List<BloodBankSelectOptionDTO> toSelectDtoListFromProjectionList(List<BloodBankProjectionSelect> projections);
+
+    BloodBankOptionsAddNetworkDTO toOptionNetworkDTO(BloodBankEntity bloodBankEntity);
 }

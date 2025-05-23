@@ -1,6 +1,7 @@
 package com.yawarSoft.Core.Utils;
 
 import com.yawarSoft.Core.Services.Interfaces.ParameterEncryptService;
+import com.yawarSoft.Core.Services.Interfaces.ParameterHashService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -15,8 +16,8 @@ public class HmacUtil {
     private static final String HMAC_ALGORITHM = "HmacSHA256";
     private final SecretKeySpec secretKeySpec;
 
-    public HmacUtil(@Qualifier("dummy") ParameterEncryptService parameterEncryptService) {
-        String secretKey = parameterEncryptService.getParameterValue();
+    public HmacUtil(@Qualifier("dummy") ParameterHashService parameterHashService) {
+        String secretKey = parameterHashService.getParameterValue();
         this.secretKeySpec = new SecretKeySpec(secretKey.getBytes(), HMAC_ALGORITHM);
     }
 

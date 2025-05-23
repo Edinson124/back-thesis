@@ -5,6 +5,7 @@ import com.yawarSoft.Modules.Admin.Dto.BloodBankDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankListDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankSelectOptionDTO;
 import com.yawarSoft.Core.Entities.BloodBankEntity;
+import com.yawarSoft.Modules.Admin.Dto.Reponse.BloodBankOptionsAddNetworkDTO;
 import com.yawarSoft.Modules.Admin.Dto.UserListDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -27,4 +28,6 @@ public interface BloodBankService {
 
     String updateBloodBankProfileImage(Integer bloodBankId, MultipartFile profileImage) throws IOException;
     ResponseEntity<ApiResponse> deleteBloodBankProfileImage(Integer bloodBankId);
+
+    Page<BloodBankOptionsAddNetworkDTO> getBloodBankOptionsNetwork(int page, int size, String name);
 }

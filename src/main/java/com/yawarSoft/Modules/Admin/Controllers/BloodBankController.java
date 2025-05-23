@@ -4,6 +4,7 @@ import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankListDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankSelectOptionDTO;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankDTO;
+import com.yawarSoft.Modules.Admin.Dto.Reponse.BloodBankOptionsAddNetworkDTO;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.BloodBankService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -38,6 +39,14 @@ public class BloodBankController {
                                            @RequestParam(required = false) String province,
                                            @RequestParam(required = false) String district) {
         return bloodBankService.getBloodBankPaginated(page, size, name, region, province,district);
+    }
+
+    @GetMapping("/optionsNetwork")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Page<BloodBankOptionsAddNetworkDTO> getBloodBankOptionsNetwork(@RequestParam(defaultValue = "0") int page,
+                                                                          @RequestParam(defaultValue = "6") int size,
+                                                                          @RequestParam(required = false) String name) {
+        return bloodBankService.getBloodBankOptionsNetwork(page, size, name);
     }
 
     @GetMapping("/{id}")

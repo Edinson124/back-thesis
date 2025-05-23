@@ -1,4 +1,4 @@
-package com.yawarSoft.Modules.Laboratory.Dto;
+package com.yawarSoft.Modules.Admin.Dto;
 
 import lombok.*;
 
@@ -14,6 +14,7 @@ public class BBNetworkDTO {
     private Integer id;
     private String name;
     private String description;
+    private String status;
 
     private Set<BloodBankNetworkDetailsDTO> bloodBanks;
 }

@@ -1,4 +1,4 @@
-package com.yawarSoft.Modules.Laboratory.Dto;
+package com.yawarSoft.Modules.Admin.Dto;
 
 import lombok.*;
 
