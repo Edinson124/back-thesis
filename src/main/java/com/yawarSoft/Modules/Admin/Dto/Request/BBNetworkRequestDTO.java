@@ -1,6 +1,5 @@
 package com.yawarSoft.Modules.Admin.Dto.Request;
 
-import com.yawarSoft.Modules.Admin.Dto.BloodBankNetworkDetailsDTO;
 import lombok.*;
 
 import java.util.Set;
@@ -10,7 +9,8 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class BBNetworkCreateDTO {
+public class BBNetworkRequestDTO {
+    private Integer id;
     private String name;
     private String description;
     private Set<Integer> idBloodBanks;

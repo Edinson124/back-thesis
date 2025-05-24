@@ -2,7 +2,7 @@ package com.yawarSoft.Modules.Admin.Controllers;
 
 import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Modules.Admin.Dto.NetworkDTO;
-import com.yawarSoft.Modules.Admin.Dto.Request.BBNetworkCreateDTO;
+import com.yawarSoft.Modules.Admin.Dto.Request.BBNetworkRequestDTO;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.BBNetworkService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -64,10 +64,19 @@ public class NetworkController {
 
     @PostMapping("")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> createNetworkBB(@RequestBody BBNetworkCreateDTO bbNetworkCreateDTO) {
-        Integer id = bbNetworkService.createNetworkBB(bbNetworkCreateDTO);
+    public ResponseEntity<ApiResponse> createNetworkBB(@RequestBody BBNetworkRequestDTO bbNetworkRequestDTO) {
+        Integer id = bbNetworkService.createNetworkBB(bbNetworkRequestDTO);
         Map<String, Object> payload = Map.of("id", id);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse(HttpStatus.CREATED, "Red creada exitosamente", payload));
+    }
+
+    @PutMapping("{networkId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> updateNetworkBB(@PathVariable Integer networkId ,@RequestBody BBNetworkRequestDTO bbNetworkRequestDTO) {
+        Integer id = bbNetworkService.updateNetworkBB(networkId,bbNetworkRequestDTO);
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(HttpStatus.OK, "Red editada exitosamente", payload));
     }
 }

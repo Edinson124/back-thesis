@@ -41,6 +41,7 @@ public class BloodBankController {
         return bloodBankService.getBloodBankPaginated(page, size, name, region, province,district);
     }
 
+
     @GetMapping("/optionsNetwork")
     @PreAuthorize("hasRole('ADMIN')")
     public Page<BloodBankOptionsAddNetworkDTO> getBloodBankOptionsNetwork(@RequestParam(defaultValue = "0") int page,

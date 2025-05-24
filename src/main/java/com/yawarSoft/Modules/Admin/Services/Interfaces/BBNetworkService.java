@@ -1,7 +1,7 @@
 package com.yawarSoft.Modules.Admin.Services.Interfaces;
 
 import com.yawarSoft.Modules.Admin.Dto.NetworkDTO;
-import com.yawarSoft.Modules.Admin.Dto.Request.BBNetworkCreateDTO;
+import com.yawarSoft.Modules.Admin.Dto.Request.BBNetworkRequestDTO;
 import org.springframework.data.domain.Page;
 
 public interface BBNetworkService {
@@ -10,5 +10,7 @@ public interface BBNetworkService {
     void associateBloodBank(Integer networkId, Integer bloodBankId);
     void disassociateBloodBank(Integer networkId, Integer bloodBankId);
 
-    Integer createNetworkBB(BBNetworkCreateDTO bbNetworkCreateDTO);
+    Integer createNetworkBB(BBNetworkRequestDTO bbNetworkRequestDTO);
+
+    Integer updateNetworkBB(Integer networkId, BBNetworkRequestDTO bbNetworkRequestDTO);
 }
