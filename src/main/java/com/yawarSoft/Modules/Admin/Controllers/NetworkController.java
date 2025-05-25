@@ -27,7 +27,7 @@ public class NetworkController {
             @RequestParam(required = false) Integer idBloodBank,
             @RequestParam(required = false, defaultValue = "") String name,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "6") int size
     ) {
         Page<NetworkDTO> networks = bbNetworkService.searchByNameWithActualBloodBank(idBloodBank,name, page, size);
         return ResponseEntity.ok(networks);

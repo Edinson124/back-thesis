@@ -1,5 +1,6 @@
 package com.yawarSoft.Modules.Admin.Mappers;
 
+import com.yawarSoft.Core.Utils.MapperUtils;
 import com.yawarSoft.Modules.Admin.Dto.BloodBankNetworkDetailsDTO;
 import com.yawarSoft.Modules.Admin.Dto.NetworkDTO;
 import com.yawarSoft.Core.Entities.BloodBankNetworkEntity;
@@ -8,8 +9,9 @@ import com.yawarSoft.Core.Entities.UserEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = MapperUtils.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BBNetworkMapper {
 
     @Mapping(target = "bloodBankDetails", source = "bloodBankRelations")

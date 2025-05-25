@@ -153,6 +153,9 @@ public class UnitServiceImpl implements UnitService {
                             cb.equal(root.get("status"), UnitStatus.FRACTIONATED.getLabel())
                     )
             );
+            if (bloodType != null && !bloodType.isBlank()) {
+                predicates.add(cb.equal(root.get("bloodType"), bloodType));
+            }
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
@@ -241,8 +244,10 @@ public class UnitServiceImpl implements UnitService {
             if (type != null && !type.isBlank()) {
                 predicates.add(cb.equal(root.get("unitType"), type));
             }
+            if (bloodType != null && !bloodType.isBlank()) {
+                predicates.add(cb.equal(root.get("bloodType"), bloodType));
+            }
 
-            // Filtrar por unidades en cuarentena (status = 'Disponible')
             predicates.add(cb.equal(root.get("bloodBank").get("id"), bloodBankId));
 
             return cb.and(predicates.toArray(new Predicate[0]));
