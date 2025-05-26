@@ -1,5 +1,6 @@
 package com.yawarSoft.Core.Utils;
 
+import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.PersonEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import org.mapstruct.Context;
@@ -8,6 +9,16 @@ import org.mapstruct.Named;
 import java.util.Optional;
 
 public class MapperUtils {
+
+    @Named("getUbication")
+    public static String getFullName(BloodBankEntity bloodBank) {
+        if (bloodBank == null) return null;
+        return String.join("/",
+                Optional.ofNullable(bloodBank.getRegion()).orElse(""),
+                Optional.ofNullable(bloodBank.getProvince()).orElse(""),
+                Optional.ofNullable(bloodBank.getDistrict()).orElse("")
+        ).trim();
+    }
 
     @Named("getFullName")
     public static String getFullName(UserEntity coordinator) {

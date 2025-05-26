@@ -1,10 +1,16 @@
 package com.yawarSoft.Modules.Network.Services.Implementations;
 
+import com.yawarSoft.Core.Entities.NetworkEntity;
 import com.yawarSoft.Core.Entities.ShipmentRequestEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
+import com.yawarSoft.Modules.Admin.Enums.NetworkBBStatus;
+import com.yawarSoft.Modules.Network.Dto.BloodBankNetworkCollaborationDTO;
+import com.yawarSoft.Modules.Network.Dto.NetworkCollaborationDTO;
 import com.yawarSoft.Modules.Network.Dto.ShipmentRequestTableDTO;
+import com.yawarSoft.Modules.Network.Mappers.NetworkCollaborationMapper;
 import com.yawarSoft.Modules.Network.Mappers.ShipmentRequestMapper;
+import com.yawarSoft.Modules.Network.Repositories.NetworkRepository;
 import com.yawarSoft.Modules.Network.Repositories.ShipmentRequestRepository;
 import com.yawarSoft.Modules.Network.Services.Interfaces.ShipmentRequestService;
 import jakarta.persistence.criteria.Predicate;
@@ -17,18 +23,24 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ShipmentRequestServiceImpl implements ShipmentRequestService {
     private final ShipmentRequestRepository shipmentRequestRepository;
     private final AuthenticatedUserService authenticatedUserService;
+    private final NetworkRepository networkRepository;
     private final ShipmentRequestMapper shipmentRequestMapper;
+    private final NetworkCollaborationMapper networkCollaborationMapper;
 
-    public ShipmentRequestServiceImpl(ShipmentRequestRepository shipmentRequestRepository, AuthenticatedUserService authenticatedUserService, ShipmentRequestMapper shipmentRequestMapper) {
+    public ShipmentRequestServiceImpl(ShipmentRequestRepository shipmentRequestRepository, AuthenticatedUserService authenticatedUserService, NetworkRepository networkRepository, ShipmentRequestMapper shipmentRequestMapper, NetworkCollaborationMapper networkCollaborationMapper) {
         this.shipmentRequestRepository = shipmentRequestRepository;
         this.authenticatedUserService = authenticatedUserService;
+        this.networkRepository = networkRepository;
         this.shipmentRequestMapper = shipmentRequestMapper;
+        this.networkCollaborationMapper = networkCollaborationMapper;
     }
 
     @Override
@@ -122,4 +134,31 @@ public class ShipmentRequestServiceImpl implements ShipmentRequestService {
         Page<ShipmentRequestEntity> shipmentsPage = shipmentRequestRepository.findAll(spec, pageable);
         return shipmentsPage.map(shipmentRequestMapper::toDto);
     }
+
+    @Override
+    public List<NetworkCollaborationDTO> getNetworkToShipments() {
+        UserEntity userAuth = authenticatedUserService.getCurrentUser();
+        Integer idBloodBank = userAuth.getBloodBank().getId();
+        String activeStatus = NetworkBBStatus.ACTIVE.name();
+
+        List<NetworkEntity> networks = networkRepository.findNetworksByBloodBankRelation(
+                idBloodBank,
+                activeStatus,
+                activeStatus
+        );
+
+        return networks.stream()
+                .peek(network -> {
+                    // Solo relaciones activas
+                    network.setBloodBankRelations(
+                            network.getBloodBankRelations().stream()
+                                    .filter(rel -> activeStatus.equals(rel.getStatus()))
+                                    .collect(Collectors.toList())
+                    );
+                })
+                .map(networkCollaborationMapper::toDto)
+                .peek(dto -> dto.getBloodBankDetails().sort(Comparator.comparing(BloodBankNetworkCollaborationDTO::getId)))
+                .collect(Collectors.toList());
+    }
+
 }

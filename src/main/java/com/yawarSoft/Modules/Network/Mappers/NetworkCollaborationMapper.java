@@ -18,8 +18,8 @@ public interface NetworkCollaborationMapper {
     @Mapping(target = "id", source = "bloodBank.id")
     @Mapping(target = "name", source = "bloodBank.name")
     @Mapping(target = "coordinatorName", source = "bloodBank.coordinator", qualifiedByName = "getFullName")
-    @Mapping(target = "createdByFullName", source = "createdBy", qualifiedByName = "getFullName")
-    @Mapping(target = "createdAt", source = "createdAt")
+    @Mapping(target = "address", source = "bloodBank.address")
+    @Mapping(target = "ubication", source = "bloodBank", qualifiedByName = "getUbication")
     @Mapping(target = "status", source = "status")
     BloodBankNetworkCollaborationDTO toDetailsDto(BloodBankNetworkEntity relationEntity);
 }

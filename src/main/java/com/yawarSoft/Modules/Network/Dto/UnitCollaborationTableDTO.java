@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UnitCollaborationTableDto {
+public class UnitCollaborationTableDTO {
 
     private Integer id;
     private Integer donationId;

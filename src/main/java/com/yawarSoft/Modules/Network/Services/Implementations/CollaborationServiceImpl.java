@@ -9,7 +9,7 @@ import com.yawarSoft.Modules.Network.Dto.BloodBankNetworkCollaborationDTO;
 import com.yawarSoft.Modules.Network.Dto.NetworkCollaborationDTO;
 import com.yawarSoft.Modules.Network.Dto.Response.OptionBloodBankNetworkDTO;
 import com.yawarSoft.Modules.Network.Dto.Response.StockNetworkDTO;
-import com.yawarSoft.Modules.Network.Dto.UnitCollaborationTableDto;
+import com.yawarSoft.Modules.Network.Dto.UnitCollaborationTableDTO;
 import com.yawarSoft.Modules.Network.Mappers.NetworkCollaborationMapper;
 import com.yawarSoft.Modules.Network.Mappers.UnitCollaborationMapper;
 import com.yawarSoft.Modules.Network.Repositories.BloodBankNetworkRepository;
@@ -142,7 +142,7 @@ public class CollaborationServiceImpl implements CollaborationService {
         };
 
         Page<UnitEntity> unitsPage = stockCollaborationRepository.findAll(spec, pageable);
-        Page<UnitCollaborationTableDto> mappedPage = unitsPage.map(unitCollaborationMapper::toTableDTO);
+        Page<UnitCollaborationTableDTO> mappedPage = unitsPage.map(unitCollaborationMapper::toTableDTO);
         return StockNetworkDTO.builder()
                 .canViewUser(true)
                 .unitsStock(mappedPage)

@@ -7,12 +7,10 @@ import com.yawarSoft.Modules.Network.Services.Interfaces.ShipmentRequestService;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/shipments")
@@ -51,5 +49,11 @@ public class ShipmentRequestController {
         Page<ShipmentRequestTableDTO> shipments =  shipmentRequestService.getMyShipments(page, size, startEntryDate, endEntryDate,
                 status, code, idBloodBank);
         return ResponseEntity.ok(shipments);
+    }
+
+    @GetMapping("/networks")
+    public ResponseEntity<List<NetworkCollaborationDTO>> getNetworkToShipments() {
+        List<NetworkCollaborationDTO> networks =  shipmentRequestService.getNetworkToShipments();
+        return ResponseEntity.ok(networks);
     }
 }
