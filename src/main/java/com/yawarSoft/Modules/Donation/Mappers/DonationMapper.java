@@ -79,6 +79,7 @@ public interface DonationMapper {
     @Mapping(source = "interviewAnswer.id", target = "idInterviewAnswer")
     @Mapping(source = "hematologicalTest.id", target = "idHematologicalTest")
     @Mapping(source = "serologyTest.id", target = "idSerologyTest")
+    @Mapping(source = "bloodExtraction.id", target = "idBloodExtraction")
     DonationRelationsDTO toDonationRelationsDTO(DonationEntity donationEntity);
 
     default String decryptFromBytes(byte[] value, AESGCMEncryptionUtil aesUtil) {

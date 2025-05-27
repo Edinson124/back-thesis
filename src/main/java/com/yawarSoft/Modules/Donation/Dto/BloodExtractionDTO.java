@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 public class BloodExtractionDTO {
 
     private Long id;
-    private LocalDateTime startDatetime;
+    private LocalDateTime startDateTime;
     private Integer durationMinutes;
-    private LocalDateTime endDatetime;
+    private LocalDateTime endDateTime;
+    private String arm;
     private Boolean adverseReactionOccurred;
     private String adverseReaction;
     private String otherReaction;

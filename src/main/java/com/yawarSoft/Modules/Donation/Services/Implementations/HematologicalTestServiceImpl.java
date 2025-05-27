@@ -8,10 +8,12 @@ import com.yawarSoft.Modules.Donation.Dto.HematologicalTestDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.HematologicalTestRequest;
 import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
 import com.yawarSoft.Modules.Donation.Enums.HematologicalTestStatus;
+import com.yawarSoft.Modules.Donation.Enums.RhFactor;
 import com.yawarSoft.Modules.Donation.Mappers.HematologicalMapper;
 import com.yawarSoft.Modules.Donation.Repositories.HematologicalTestRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.HematologicalTestService;
+import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +26,14 @@ public class HematologicalTestServiceImpl implements HematologicalTestService {
     private final HematologicalMapper hematologicalMapper;
     private final DonationService donationService;
     private final AuthenticatedUserService authenticatedUserService;
+    private final UnitService unitService;
 
-    public HematologicalTestServiceImpl(HematologicalTestRepository hematologicalTestRepository, HematologicalMapper hematologicalMapper, DonationService donationService, AuthenticatedUserService authenticatedUserService) {
+    public HematologicalTestServiceImpl(HematologicalTestRepository hematologicalTestRepository, HematologicalMapper hematologicalMapper, DonationService donationService, AuthenticatedUserService authenticatedUserService, UnitService unitService) {
         this.hematologicalTestRepository = hematologicalTestRepository;
         this.hematologicalMapper = hematologicalMapper;
         this.donationService = donationService;
         this.authenticatedUserService = authenticatedUserService;
+        this.unitService = unitService;
     }
 
     @Transactional
@@ -37,6 +41,7 @@ public class HematologicalTestServiceImpl implements HematologicalTestService {
     public Long createHematologicalTest(HematologicalTestRequest hematologicalTestRequest) {
         UserEntity userEntity = authenticatedUserService.getCurrentUser();
         Long donationId = hematologicalTestRequest.getDonationId();
+
         HematologicalTestEntity hematologicalTest = hematologicalMapper.toEntityByRequest(hematologicalTestRequest);
         hematologicalTest.setCreatedBy(userEntity);
         hematologicalTest.setCreatedAt(LocalDateTime.now());
@@ -47,6 +52,9 @@ public class HematologicalTestServiceImpl implements HematologicalTestService {
 
         donationService.updateDonorBloodType(donationId,hematologicalTestRequest.getBloodType(),hematologicalTestRequest.getRhFactor());
         donationService.updateDonationFinishedById(donationId, DonationStatus.FINISHED.getLabel());
+
+        String rh = RhFactor.getSymbolByName(hematologicalTestRequest.getRhFactor());
+        unitService.updateBloodTypeIfHematologicalTestAfter(donationId, hematologicalTestRequest.getBloodType()+rh);
         return hematologicalTestSaved.getId();
     }
 

@@ -285,7 +285,8 @@ public class DonationServiceImpl implements DonationService {
         DonationEntity donationEntity = donationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + id));
 
-        if(donationEntity.getHematologicalTest() != null && donationEntity.getSerologyTest() != null) {
+        if(donationEntity.getHematologicalTest() != null && donationEntity.getSerologyTest() != null
+                && donationEntity.getBloodExtraction() != null) {
             donationEntity.setStatus(status);
             donationRepository.save(donationEntity);
         }

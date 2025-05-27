@@ -13,6 +13,7 @@ public interface BloodExtractionMapper {
     BloodExtractionEntity toEntity(BloodExtractionRequest request);
 
     // Para mapear de Entity a DTO
+    @Mapping(source = "arm", target = "arm")
     @Mapping(source = "createdBy.id", target = "createdById")
     @Mapping(source = "createdBy", target = "createdByName", qualifiedByName = "getFullName")
     @Mapping(source = "updatedBy.id", target = "updatedById")

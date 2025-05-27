@@ -377,4 +377,9 @@ public class UnitServiceImpl implements UnitService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Integer updateBloodTypeIfHematologicalTestAfter(Long idDonation, String bloodType) {
+        return unitRepository.updateBloodTypeByDonationId(idDonation, bloodType);
+    }
+
 }

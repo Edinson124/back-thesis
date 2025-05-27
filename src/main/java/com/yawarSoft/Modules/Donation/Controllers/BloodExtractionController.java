@@ -1,8 +1,10 @@
 package com.yawarSoft.Modules.Donation.Controllers;
 
 import com.yawarSoft.Modules.Donation.Dto.BloodExtractionDTO;
+import com.yawarSoft.Modules.Donation.Dto.PhysicalAssessmentDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.BloodExtractionRequest;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.BloodExtractionService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,7 +29,11 @@ public class BloodExtractionController {
     }
 
     @GetMapping("/{id}")
-    public BloodExtractionDTO getBloodExtraction(@PathVariable("id") Long id) {
-        return bloodExtractionService.getBloodExtraction(id);
+    public ResponseEntity<BloodExtractionDTO> getBloodExtraction(@PathVariable("id") Long idDonation) {
+        BloodExtractionDTO bloodExtractionDTO = bloodExtractionService.getBloodExtraction(idDonation);
+        if (bloodExtractionDTO == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(bloodExtractionDTO);
     }
 }

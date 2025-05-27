@@ -1,8 +1,10 @@
 package com.yawarSoft.Modules.Donation.Controllers;
 
+import com.yawarSoft.Modules.Donation.Dto.InterviewAnswerDTO;
 import com.yawarSoft.Modules.Donation.Dto.PhysicalAssessmentDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.PhysicalAssessmentRequest;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.PhysicalAssessmentService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,8 +28,12 @@ public class PhysicalAssessmentController {
     }
 
     @GetMapping("/{id}")
-    public PhysicalAssessmentDTO getPhysicalAssessment(@PathVariable("id") Long id) {
-        return physicalAssessmentService.getPhysicalAssessment(id);
+    public ResponseEntity<PhysicalAssessmentDTO> getPhysicalAssessment(@PathVariable("id") Long idDonation) {
+        PhysicalAssessmentDTO physicalAssessmentDTO = physicalAssessmentService.getPhysicalAssessment(idDonation);
+        if (physicalAssessmentDTO == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(physicalAssessmentDTO);
     }
 
 }

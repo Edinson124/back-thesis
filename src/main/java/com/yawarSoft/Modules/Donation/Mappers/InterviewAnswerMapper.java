@@ -13,4 +13,5 @@ public interface InterviewAnswerMapper {
     @Mapping(source = "createdBy.id", target = "createdById")
     @Mapping(source = "createdBy", target = "createdByName", qualifiedByName = "getFullName")
     InterviewAnswerDTO toDto(InterviewAnswerEntity entity);
+
 }

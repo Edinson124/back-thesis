@@ -5,6 +5,7 @@ import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Core.Utils.UserUtils;
 import com.yawarSoft.Modules.Donation.Dto.BloodExtractionDTO;
+import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.BloodExtractionRequest;
 import com.yawarSoft.Modules.Donation.Mappers.BloodExtractionMapper;
 import com.yawarSoft.Modules.Donation.Repositories.BloodExtractionRepository;
@@ -62,7 +63,10 @@ public class BloodExtractionServiceImpl implements BloodExtractionService {
     }
 
     @Override
-    public BloodExtractionDTO getBloodExtraction(Long id) {
+    public BloodExtractionDTO getBloodExtraction(Long idDonation) {
+        DonationRelationsDTO relationsDTO = donationService.getIdsRelations(idDonation);
+        if (relationsDTO.getIdBloodExtraction() == null) {return null;}
+        Long id = relationsDTO.getIdBloodExtraction();
         BloodExtractionEntity entity = bloodExtractionRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Extracción de sangre no encontrada con ID: " + id));
         return bloodExtractionMapper.toDto(entity);

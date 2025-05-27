@@ -6,5 +6,5 @@ import com.yawarSoft.Modules.Donation.Dto.Request.PhysicalAssessmentRequest;
 public interface PhysicalAssessmentService {
     PhysicalAssessmentDTO createPhysicalAssessment(PhysicalAssessmentRequest physicalAssessmentRequest);
     PhysicalAssessmentDTO updatePhysicalAssessment(Long id,PhysicalAssessmentRequest physicalAssessmentRequest);
-    PhysicalAssessmentDTO getPhysicalAssessment(Long id);
+    PhysicalAssessmentDTO getPhysicalAssessment(Long idDonation);
 }

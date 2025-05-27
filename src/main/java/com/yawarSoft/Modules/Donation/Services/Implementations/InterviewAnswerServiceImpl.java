@@ -4,6 +4,7 @@ import com.yawarSoft.Core.Entities.InterviewAnswerEntity;
 import com.yawarSoft.Core.Entities.InterviewQuestionStructureEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
+import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
 import com.yawarSoft.Modules.Donation.Dto.InterviewAnswerDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.InterviewAnswerRequest;
 import com.yawarSoft.Modules.Donation.Dto.Response.InterviewQuestionStructureDTO;
@@ -54,8 +55,12 @@ public class InterviewAnswerServiceImpl implements InterviewAnswerService {
     }
 
     @Override
-    public InterviewAnswerEntity getInterviewAnswer(Long id) {
-        return interviewAnswerRepository.findById(id)
+    public InterviewAnswerDTO getInterviewAnswer(Long idDonation) {
+        DonationRelationsDTO relationsDTO = donationService.getIdsRelations(idDonation);
+        if (relationsDTO.getIdInterviewAnswer() == null) {return null;}
+        Long id = relationsDTO.getIdInterviewAnswer();
+        InterviewAnswerEntity interviewAnswer = interviewAnswerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Entrevista no encontrada con ID: " + id));
+        return interviewAnswerMapper.toDto(interviewAnswer);
     }
 }

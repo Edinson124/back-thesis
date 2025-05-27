@@ -34,4 +34,6 @@ public interface UnitService {
     Long unitSuitable(Long idUnit);
 
     List<UnitExtractionDTO> getUnitsTransformationByUnit(Long idDonation);
+
+    Integer updateBloodTypeIfHematologicalTestAfter(Long idDonation, String bloodType);
 }

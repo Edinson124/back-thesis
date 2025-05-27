@@ -3,6 +3,7 @@ package com.yawarSoft.Modules.Donation.Services.Implementations;
 import com.yawarSoft.Core.Entities.PhysicalAssessmentEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Utils.UserUtils;
+import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
 import com.yawarSoft.Modules.Donation.Dto.PhysicalAssessmentDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.PhysicalAssessmentRequest;
 import com.yawarSoft.Modules.Donation.Mappers.PhysicalAssesmentMapper;
@@ -54,7 +55,10 @@ public class PhysicalAssessmentServiceImpl implements PhysicalAssessmentService 
     }
 
     @Override
-    public PhysicalAssessmentDTO getPhysicalAssessment(Long id) {
+    public PhysicalAssessmentDTO getPhysicalAssessment(Long idDonation) {
+        DonationRelationsDTO relationsDTO = donationService.getIdsRelations(idDonation);
+        if (relationsDTO.getIdPhysicalAssessment() == null) {return null;}
+        Long id = relationsDTO.getIdPhysicalAssessment();
         PhysicalAssessmentEntity entity = physicalAssessmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Evaluación física no encontrada con ID: " + id));
         return physicalAssessmentMapper.toDto(entity);

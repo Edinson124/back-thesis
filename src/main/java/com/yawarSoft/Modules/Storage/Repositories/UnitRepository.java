@@ -19,4 +19,9 @@ public interface UnitRepository extends JpaRepository<UnitEntity, Long>, JpaSpec
     @Transactional
     @Query("UPDATE UnitEntity u SET u.status = :status WHERE u.id = :id")
     void updateStatusById(@Param("id") Long id, @Param("status") String status);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE UnitEntity u SET u.bloodType = :bloodType WHERE u.donation.id = :idDonation")
+    int updateBloodTypeByDonationId(@Param("idDonation") Long idDonation, @Param("bloodType") String bloodType);
 }

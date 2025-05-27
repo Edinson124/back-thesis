@@ -1,10 +1,9 @@
 package com.yawarSoft.Modules.Donation.Services.Interfaces;
 
-import com.yawarSoft.Core.Entities.InterviewAnswerEntity;
 import com.yawarSoft.Modules.Donation.Dto.InterviewAnswerDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.InterviewAnswerRequest;
 
 public interface InterviewAnswerService {
     InterviewAnswerDTO createInterviewAnswer(InterviewAnswerRequest interviewAnswerRequest);
-    InterviewAnswerEntity getInterviewAnswer(Long id);
+    InterviewAnswerDTO getInterviewAnswer(Long idDonation);
 }

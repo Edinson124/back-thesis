@@ -14,5 +14,6 @@ public class DonationRelationsDTO {
     private Long idSerologyTest;
     private Long idHematologicalTest;
     private Long idInterviewAnswer;
+    private Long idBloodExtraction;
 
 }

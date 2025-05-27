@@ -4,6 +4,7 @@ import com.yawarSoft.Core.Entities.InterviewAnswerEntity;
 import com.yawarSoft.Modules.Donation.Dto.InterviewAnswerDTO;
 import com.yawarSoft.Modules.Donation.Dto.Request.InterviewAnswerRequest;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.InterviewAnswerService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,7 +28,11 @@ public class InterviewAnswerController {
 //    }
 
     @GetMapping("/{id}")
-    public InterviewAnswerEntity getInterviewAnswer(@PathVariable("id") Long id) {
-        return interviewAnswerService.getInterviewAnswer(id);
+    public ResponseEntity<InterviewAnswerDTO> getInterviewAnswer(@PathVariable("id") Long idDonation) {
+        InterviewAnswerDTO interviewAnswer = interviewAnswerService.getInterviewAnswer(idDonation);
+        if (interviewAnswer == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(interviewAnswer);
     }
 }
