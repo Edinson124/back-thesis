@@ -327,7 +327,7 @@ public class DonationServiceImpl implements DonationService {
                 bloodType = type + rh;
             }
 
-            result.put("bloodType", bloodType != null ? bloodType : "");
+            result.put("bloodType", bloodType);
 
             String serologyResult = donationEntity.getSerologyTest() != null
                     ? donationEntity.getSerologyTest().getStatus()

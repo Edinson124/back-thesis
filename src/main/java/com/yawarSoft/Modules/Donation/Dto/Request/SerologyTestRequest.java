@@ -15,23 +15,11 @@ public class SerologyTestRequest {
     private Long donationId;
 
     private LocalDate testDate;
-
-    @JsonProperty("HIV")
-    private Boolean HIV;
-
-    @JsonProperty("HBsAg")
-    private Boolean HBsAg;
-
-    @JsonProperty("HBcAb")
-    private Boolean HBcAb;
-
-    @JsonProperty("HCV")
-    private Boolean HCV;
-
-    @JsonProperty("syphilis")
+    private Boolean hiv;
+    private Boolean hbsAg;
+    private Boolean hbcAb;
+    private Boolean hcv;
     private Boolean syphilis;
-
-    @JsonProperty("chagas")
     private Boolean chagas;
 
     @JsonProperty("htlvI_II")

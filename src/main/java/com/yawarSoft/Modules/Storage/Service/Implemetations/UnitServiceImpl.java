@@ -147,12 +147,13 @@ public class UnitServiceImpl implements UnitService {
 
             // Filtrar por unidades en cuarentena (status = 'Disponible')
             predicates.add(cb.equal(root.get("bloodBank").get("id"), bloodBankId));
-            predicates.add(
-                    cb.or(
-                            cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()),
-                            cb.equal(root.get("status"), UnitStatus.FRACTIONATED.getLabel())
-                    )
-            );
+            predicates.add(cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()));
+//            predicates.add(
+//                    cb.or(
+//                            cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()),
+//                            cb.equal(root.get("status"), UnitStatus.FRACTIONATED.getLabel())
+//                    )
+//            );
             if (bloodType != null && !bloodType.isBlank()) {
                 predicates.add(cb.equal(root.get("bloodType"), bloodType));
             }
@@ -313,12 +314,15 @@ public class UnitServiceImpl implements UnitService {
 
     @Override
     public UnitExtractionDTO editUnit(Long idUnit, UnitExtractionDTO unit) {
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
         UnitEntity unitEntity = unitRepository.findById(idUnit)
                 .orElseThrow( () -> new IllegalArgumentException("No se encontro la unidad con el id: " + idUnit));
         unitEntity.setUnitType(unit.getType());
         unitEntity.setAnticoagulant(unit.getAnticoagulant());
         unitEntity.setBagType(unit.getBag());
         unitEntity.setVolume(unit.getVolume());
+        unitEntity.setUpdatedAt(LocalDateTime.now());
+        unitEntity.setUpdatedBy(userAuthenticated);
         unitRepository.save(unitEntity);
         return unit;
     }

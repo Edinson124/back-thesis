@@ -14,10 +14,10 @@ public class SerologyTestDTO {
 
     private Long id;
     private LocalDate testDate;
-    private Boolean HIV;
-    private Boolean HBsAg;
-    private Boolean HBcAb;
-    private Boolean HCV;
+    private Boolean hiv;
+    private Boolean hbsAg;
+    private Boolean hbcAb;
+    private Boolean hcv;
     private Boolean syphilis;
     private Boolean chagas;
     private Boolean htlvI_II;

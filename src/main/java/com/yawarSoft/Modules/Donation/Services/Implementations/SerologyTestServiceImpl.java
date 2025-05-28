@@ -43,10 +43,10 @@ public class SerologyTestServiceImpl implements SerologyTestService {
         Long donationId = serologyTestRequest.getDonationId();
 
         boolean isReactive = (
-                Boolean.TRUE.equals(serologyTestRequest.getHIV()) ||
-                        Boolean.TRUE.equals(serologyTestRequest.getHBsAg()) ||
-                        Boolean.TRUE.equals(serologyTestRequest.getHBcAb()) ||
-                        Boolean.TRUE.equals(serologyTestRequest.getHCV()) ||
+                Boolean.TRUE.equals(serologyTestRequest.getHiv()) ||
+                        Boolean.TRUE.equals(serologyTestRequest.getHbsAg()) ||
+                        Boolean.TRUE.equals(serologyTestRequest.getHbcAb()) ||
+                        Boolean.TRUE.equals(serologyTestRequest.getHcv()) ||
                         Boolean.TRUE.equals(serologyTestRequest.getSyphilis()) ||
                         Boolean.TRUE.equals(serologyTestRequest.getChagas()) ||
                         Boolean.TRUE.equals(serologyTestRequest.getHtlvI_II())
