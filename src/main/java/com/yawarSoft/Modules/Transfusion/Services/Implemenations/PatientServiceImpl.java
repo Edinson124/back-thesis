@@ -4,12 +4,19 @@ import com.yawarSoft.Core.Entities.DonorEntity;
 import com.yawarSoft.Core.Entities.PatientEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.HmacUtil;
+import com.yawarSoft.Core.Utils.UserUtils;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
+import com.yawarSoft.Modules.Donation.Enums.DonorStatus;
 import com.yawarSoft.Modules.Transfusion.Dto.PatientGetDTO;
+import com.yawarSoft.Modules.Transfusion.Dto.Request.PatientDocumentRequest;
+import com.yawarSoft.Modules.Transfusion.Dto.Request.PatientRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Mappers.PatientMapper;
 import com.yawarSoft.Modules.Transfusion.Repositories.PatientRepository;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.PatientService;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class PatientServiceImpl implements PatientService {
@@ -72,6 +79,37 @@ public class PatientServiceImpl implements PatientService {
                 .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado con documento: " + documentNumber));
 
         return patientMapper.toGetDto(patientEntity, aesGCMEncryptionUtil);
+    }
+
+    @Override
+    public Long createPatient(PatientRequestDTO patientRequestDTO) {
+        String combinedInfo = patientRequestDTO.getDocumentType() + '|' + patientRequestDTO.getDocumentNumber();
+        String searchHash = hmacUtil.generateHmac(combinedInfo);
+
+        if (patientRepository.existsBySearchHash(searchHash)) {
+            throw new IllegalArgumentException("El documento ya existe en el sistema");
+        }
+        PatientEntity patientEntity = patientMapper.toEntity(patientRequestDTO, aesGCMEncryptionUtil);
+        patientEntity.setSearchHash(searchHash);
+        patientEntity.setCreatedBy(UserUtils.getAuthenticatedUser());
+        PatientEntity patientSaved = patientRepository.save(patientEntity);
+        return patientSaved.getId();
+    }
+
+    @Override
+    public PatientGetDTO updatePatient(PatientRequestDTO patientRequestDTO) {
+        String docInfoPatient = patientRequestDTO.getDocumentType() + '|' + patientRequestDTO.getDocumentNumber();
+        String searchHash = hmacUtil.generateHmac(docInfoPatient);
+
+        PatientEntity existingPatient = patientRepository.findBySearchHash(searchHash)
+                .orElseThrow(() -> new IllegalArgumentException("Paciente no encontrado con documento: "
+                        + patientRequestDTO.getDocumentType() + " - " + patientRequestDTO.getDocumentNumber()));
+        patientMapper.updateEntityFromDto(patientRequestDTO,existingPatient,aesGCMEncryptionUtil);
+        existingPatient.setUpdatedBy(UserUtils.getAuthenticatedUser());
+        existingPatient.setUpdatedAt(LocalDateTime.now());
+
+        patientRepository.save(existingPatient);
+        return patientMapper.toGetDto(existingPatient,aesGCMEncryptionUtil);
     }
 
 }

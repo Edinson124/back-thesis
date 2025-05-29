@@ -12,6 +12,8 @@ import com.yawarSoft.Modules.Donation.Repositories.DonorRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class DonorServiceImpl implements DonorService {
 
@@ -52,7 +54,7 @@ public class DonorServiceImpl implements DonorService {
     }
 
     @Override
-    public DonorGetDTO updateDonor(DonorRequestDTO donorRequestDTO) throws Exception {
+    public DonorGetDTO updateDonor(DonorRequestDTO donorRequestDTO) {
         String docInfoDonor = donorRequestDTO.getDocumentType() + '|' + donorRequestDTO.getDocumentNumber();
         String searchHash = hmacUtil.generateHmac(docInfoDonor);
         DonorEntity existingDonor = donorRepository.findBySearchHash(searchHash)
@@ -60,26 +62,8 @@ public class DonorServiceImpl implements DonorService {
                         + donorRequestDTO.getDocumentType() + " - "+donorRequestDTO.getDocumentNumber()));
 
         donorMapper.updateEntityFromDto(donorRequestDTO,existingDonor,aesGCMEncryptionUtil);
-
-//        existingDonor.setFirstName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getFirstName()).getBytes());
-//        existingDonor.setLastName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getLastName()).getBytes());
-//        existingDonor.setSecondLastName(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getSecondLastName()).getBytes());
-//        existingDonor.setDocumentType(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getDocumentType()).getBytes());
-//        existingDonor.setDocumentNumber(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getDocumentNumber()).getBytes());
-//        existingDonor.setAddress(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getAddress()).getBytes());
-//        existingDonor.setPhone(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getPhone()).getBytes());
-//        existingDonor.setEmail(aesGCMEncryptionUtil.encrypt(donorRequestDTO.getEmail()).getBytes());
-//        existingDonor.setBirthDate(donorRequestDTO.getBirthDate());
-//        existingDonor.setGender(donorRequestDTO.getGender());
-//        existingDonor.setRegion(donorRequestDTO.getRegion());
-//        existingDonor.setProvince(donorRequestDTO.getProvince());
-//        existingDonor.setDistrict(donorRequestDTO.getDistrict());
-//
-//        existingDonor.setPlaceOfBirth(donorRequestDTO.getPlaceOfBirth());
-//        existingDonor.setPlaceOfOrigin(donorRequestDTO.getPlaceOfOrigin());
-//        existingDonor.setMaritalStatus(donorRequestDTO.getMaritalStatus());
-//        existingDonor.setTrips(donorRequestDTO.getTrips());
-//        existingDonor.setDonationRequest(donorRequestDTO.isDonationRequest());
+        existingDonor.setUpdatedBy(UserUtils.getAuthenticatedUser());
+        existingDonor.setUpdatedAt(LocalDateTime.now());
 
         donorRepository.save(existingDonor);
         return donorMapper.toGetDto(existingDonor,aesGCMEncryptionUtil);

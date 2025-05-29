@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -46,12 +47,12 @@ public class DonorEntity extends PersonEntity {
     private UserEntity createdBy;
 
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "updated_by", referencedColumnName = "id")
     private UserEntity updatedBy;
 
     @Column(name = "updated_at")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 }

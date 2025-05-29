@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,17 +19,20 @@ public class PatientEntity extends PersonEntity {
     @Column
     private String allergic;
 
+    @Column(name = "n_births")
+    private Integer numberBirths;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
     private UserEntity createdBy;
 
     @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "updated_by", referencedColumnName = "id")
     private UserEntity updatedBy;
 
     @Column(name = "updated_at")
-    private LocalDate updatedAt;
+    private LocalDateTime updatedAt;
 }

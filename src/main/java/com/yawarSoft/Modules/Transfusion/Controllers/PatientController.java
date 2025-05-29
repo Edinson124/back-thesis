@@ -1,13 +1,14 @@
 package com.yawarSoft.Modules.Transfusion.Controllers;
 
+import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.DonorDocumentCheckRequest;
-import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequest;
-import com.yawarSoft.Modules.Donation.Dto.Response.ExistDonationDTO;
+import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.PatientGetDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.Request.GetPatientRequest;
 import com.yawarSoft.Modules.Transfusion.Dto.Request.PatientDocumentRequest;
+import com.yawarSoft.Modules.Transfusion.Dto.Request.PatientRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.PatientService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,21 @@ public class PatientController {
     }
 
     @PostMapping("/search")
-    public PatientGetDTO getDonor(@RequestBody PatientDocumentRequest request) {
+    public PatientGetDTO getPatient(@RequestBody PatientDocumentRequest request) {
         return patientService.getPatient(request.documentType(),request.documentNumber());
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse> createPatient(@RequestBody PatientRequestDTO patientRequestDTO) {
+        Long id = patientService.createPatient(patientRequestDTO);
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse(HttpStatus.CREATED, "Paciente creado exitosamente", payload));
+    }
+
+    @PutMapping
+    public ResponseEntity<ApiResponse> updatePatient(@RequestBody PatientRequestDTO patientRequestDTO) {
+        PatientGetDTO patientGetDTO = patientService.updatePatient(patientRequestDTO);
+        return ResponseEntity.ok(new ApiResponse(HttpStatus.OK, "Paciente actualizado exitosamente", patientGetDTO));
     }
 }

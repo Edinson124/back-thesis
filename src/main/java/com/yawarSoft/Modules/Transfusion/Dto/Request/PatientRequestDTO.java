@@ -1,5 +1,6 @@
-package com.yawarSoft.Modules.Transfusion.Dto;
+package com.yawarSoft.Modules.Transfusion.Dto.Request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PatientGetDTO {
+public class PatientRequestDTO {
 
     private String firstName;
     private String lastName;
@@ -24,17 +25,11 @@ public class PatientGetDTO {
     private String address;
     private String phone;
     private String email;
+    private String occupation;
     private String bloodType;
     private String rhFactor;
-    private String occupation;
 
+    // PatientEntity fields
     private String allergic;
-    private String numberBirths;
-
-    //Auditoria
-    private Integer createdById;
-    private String createdByName;
-    private Integer updatedById;
-    private String updatedByName;
-
+    private Integer numberBirths;
 }
