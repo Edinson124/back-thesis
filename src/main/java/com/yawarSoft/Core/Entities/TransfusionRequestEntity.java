@@ -43,7 +43,7 @@ public class TransfusionRequestEntity {
 //    private String requestedRhFactor;
 
     @Column(name = "has_crossmatch", nullable = false)
-    private String hasCrossmatch;
+    private Boolean hasCrossmatch;
 
     @Column(nullable = false, length = 50)
     private String bed;
@@ -51,7 +51,7 @@ public class TransfusionRequestEntity {
     @Column(name = "medical_service", nullable = false, length = 100)
     private String medicalService;
 
-    private LocalDateTime date;
+    private LocalDate date;
 
     @Column( nullable = false)
     private String diagnosis;
@@ -59,8 +59,8 @@ public class TransfusionRequestEntity {
     @Column(name = "request_reason", nullable = false, columnDefinition = "TEXT")
     private String requestReason;
 
-    @Column(name = "priority", nullable = false, length = 20)
-    private String priority;
+//    @Column(name = "priority", nullable = false, length = 20)
+//    private String priority;
 
     @Column(name = "status", nullable = false, length = 20)
     private String status;

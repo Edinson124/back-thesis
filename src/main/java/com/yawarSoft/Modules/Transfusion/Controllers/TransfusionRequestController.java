@@ -1,12 +1,17 @@
 package com.yawarSoft.Modules.Transfusion.Controllers;
 
+import com.yawarSoft.Core.Dto.ApiResponse;
+import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.Response.*;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.TransfusionRequestService;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/transfusion")
@@ -52,5 +57,13 @@ public class TransfusionRequestController {
     @GetMapping("/{id}")
     public TransfusionGetDTO getTranfusion(@PathVariable Long id) {
         return transfusionService.getTranfusion(id);
+    }
+
+    @PostMapping()
+    public ResponseEntity<ApiResponse> createTransfusion(@RequestBody TransfusionRequestDTO transfusionRequestDTO) {
+        Long id = transfusionService.createTransfusion(transfusionRequestDTO);
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse(HttpStatus.CREATED, "Solicitud de tranfusión creada exitosamente", payload));
     }
 }

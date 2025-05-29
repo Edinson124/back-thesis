@@ -20,6 +20,9 @@ public interface UserService {
     UserListDTO changeStatus(Integer userId);
     Boolean existsByDocument(Integer userId, String documentNumber);
     List<UserSelectOptionDTO> getMedicUsersByBloodBank(Integer idBloodBank);
+
+    List<UserSelectOptionDTO> getMedicRequestUsers();
+
     String updateUserProfileImage(Integer userId, MultipartFile profileImage) throws IOException;
     ResponseEntity<ApiResponse> deleteUserProfileImage(Integer userId);
 }

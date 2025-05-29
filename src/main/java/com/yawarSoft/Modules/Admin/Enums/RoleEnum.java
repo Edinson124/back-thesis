@@ -8,7 +8,7 @@ public enum RoleEnum {
     MEDICO_BANCO_DE_SANGRE(2, "Medico de banco de sangre"),
     TECNOLOGO(3, "Tecnologo"),
     TECNICO(4, "Tecnico"),
-    MEDICO(5, "Medico");
+    MEDICO(5, "Medico solicitante");
 
     private final int id;
     private final String name;

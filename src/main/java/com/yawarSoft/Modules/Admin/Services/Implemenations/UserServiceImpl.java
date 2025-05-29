@@ -1,4 +1,5 @@
 package com.yawarSoft.Modules.Admin.Services.Implemenations;
+import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Core.Services.Interfaces.ImageStorageService;
 import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Modules.Admin.Dto.UserDTO;
@@ -18,6 +19,7 @@ import com.yawarSoft.Modules.Admin.Services.Interfaces.UserService;
 import com.yawarSoft.Modules.Login.Services.Interfaces.AuthService;
 import com.yawarSoft.Modules.Admin.Repositories.UserRepository;
 import com.yawarSoft.Core.Utils.PasswordGenerator;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,13 +42,14 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final BloodBankService bloodBankService;
     private final AuthService authService;
+    private final AuthenticatedUserService authenticatedUserService;
     private final UserMapper userMapper;
     private final ImageStorageService imageStorageService;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
                            RoleService roleService, AuthService authService, UserMapper userMapper,
-                           BloodBankService bloodBankService,
+                           BloodBankService bloodBankService, AuthenticatedUserService authenticatedUserService,
                            ImageStorageService imageStorageService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -54,6 +57,7 @@ public class UserServiceImpl implements UserService {
         this.authService = authService;
         this.bloodBankService = bloodBankService;
         this.userMapper = userMapper;
+        this.authenticatedUserService = authenticatedUserService;
         this.imageStorageService = imageStorageService;
     }
 
@@ -182,6 +186,15 @@ public class UserServiceImpl implements UserService {
     public List<UserSelectOptionDTO> getMedicUsersByBloodBank(Integer idBloodBank) {
         List<UserProjectionSelect> userProjectionSelectList =
                 userRepository.getUsersByRoleAndStatusAndBloodBank(idBloodBank, RoleEnum.MEDICO_BANCO_DE_SANGRE.getId(),UserStatus.ACTIVE);
+        return userMapper.toSelectDtoListFromProjectionList(userProjectionSelectList);
+    }
+
+    @Override
+    public List<UserSelectOptionDTO> getMedicRequestUsers() {
+        UserEntity userAuth = authenticatedUserService.getCurrentUser();
+        Integer idBloodBank = userAuth.getBloodBank().getId();
+        List<UserProjectionSelect> userProjectionSelectList =
+                userRepository.getUsersByRoleAndStatusAndBloodBank(idBloodBank, RoleEnum.MEDICO.getId(),UserStatus.ACTIVE);
         return userMapper.toSelectDtoListFromProjectionList(userProjectionSelectList);
     }
 

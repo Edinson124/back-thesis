@@ -31,7 +31,7 @@ public interface BloodBankRepository extends JpaRepository<BloodBankEntity,Integ
 
     @Query("SELECT e.id AS id, e.name AS name, e.bloodBankType.name AS bloodBankType " +
             "FROM BloodBankEntity e " +
-            "WHERE e.status = 'ACTIVE' AND e.isInternal = true")
+            "WHERE e.status = 'ACTIVE' AND e.isInternal = true order by e.name")
     List<BloodBankProjectionSelect> getBloodBankSelect();
 
     boolean existsByName(String name);

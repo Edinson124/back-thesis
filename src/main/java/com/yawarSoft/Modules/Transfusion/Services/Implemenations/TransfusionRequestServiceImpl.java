@@ -5,11 +5,13 @@ import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.HmacUtil;
 import com.yawarSoft.Modules.Donation.Dto.Response.DonationGetDTO;
+import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.Response.*;
 import com.yawarSoft.Modules.Transfusion.Dto.TransfusionAssignmentDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.TransfusionRequestDetailDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.TransfusionResultDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.TransfusionViewDTO;
+import com.yawarSoft.Modules.Transfusion.Enums.TransfusionStatus;
 import com.yawarSoft.Modules.Transfusion.Mappers.TransfusionAssignmentMapper;
 import com.yawarSoft.Modules.Transfusion.Mappers.TransfusionRequestDetailMapper;
 import com.yawarSoft.Modules.Transfusion.Mappers.TransfusionRequestMapper;
@@ -26,6 +28,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -146,7 +149,7 @@ public class TransfusionRequestServiceImpl implements TransfusionRequestService 
         TransfusionGetDTO result = new TransfusionGetDTO();
 
         TransfusionRequestEntity transfusionEntity = transfusionRequestRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + id));
+                .orElseThrow(() -> new IllegalArgumentException("Solicitud de transfusión no encontrada con ID: " + id));
         UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
 
         Boolean canViewTransfusion = userAuthenticated.getBloodBank() != null
@@ -180,4 +183,50 @@ public class TransfusionRequestServiceImpl implements TransfusionRequestService 
         return result;
     }
 
+    @Override
+    public Long createTransfusion(TransfusionRequestDTO transfusionRequestDTO) {
+        UserEntity userAuth = authenticatedUserService.getCurrentUser();
+
+        String documentType= transfusionRequestDTO.getDocumentTypePatient();
+        String documentNumber= transfusionRequestDTO.getDocumentNumberPatient();
+
+        String combinedInfo = documentType + '|' + documentNumber;
+        String searchHash = hmacUtil.generateHmac(combinedInfo);
+
+        Long donorId = patientRepository.findIdBySearchHash(searchHash).orElse(0L);
+        if (donorId == 0) {
+            throw new IllegalArgumentException("Donante no encontrado con el documento tipo: " + documentType
+                    + " - número: " + documentNumber);
+        }
+
+        PatientEntity patient = PatientEntity.builder().id(donorId).build();
+        UserEntity attendingDoctor = UserEntity.builder().id(transfusionRequestDTO.getAttendingDoctor()).build();
+
+        TransfusionRequestEntity transfusionRequestEntity = new TransfusionRequestEntity();
+        transfusionRequestEntity.setAttendingDoctor(attendingDoctor);
+        transfusionRequestEntity.setPatient(patient);
+        transfusionRequestEntity.setBloodBank(userAuth.getBloodBank());
+        transfusionRequestEntity.setBed(transfusionRequestDTO.getBed());
+        transfusionRequestEntity.setMedicalService(transfusionRequestDTO.getMedicalService());
+        transfusionRequestEntity.setHasCrossmatch(transfusionRequestDTO.getHasCrossmatch());
+        transfusionRequestEntity.setDiagnosis(transfusionRequestDTO.getDiagnosis());
+        transfusionRequestEntity.setRequestReason(transfusionRequestDTO.getRequestReason());
+        transfusionRequestEntity.setStatus(TransfusionStatus.PENDIENTE.getLabel());
+        transfusionRequestEntity.setDate(LocalDate.now());
+
+        transfusionRequestEntity.setCreatedBy(userAuth);
+        transfusionRequestEntity.setCreatedAt(LocalDateTime.now());
+
+        List<TransfusionRequestDetailEntity> details = transfusionRequestDetailMapper.
+                toEntityByRequestCreate(transfusionRequestDTO.getRequestedUnits());
+
+        for (TransfusionRequestDetailEntity detail : details) {
+            detail.setCreatedBy(userAuth);
+            detail.setCreatedAt(LocalDateTime.now());
+            detail.setTransfusionRequest(transfusionRequestEntity);
+        }
+        transfusionRequestEntity.setDetails(details);
+        TransfusionRequestEntity transfusionSaved = transfusionRequestRepository.save(transfusionRequestEntity);
+        return transfusionSaved.getId();
+    }
 }

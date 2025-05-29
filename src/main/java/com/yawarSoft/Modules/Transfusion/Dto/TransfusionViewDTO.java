@@ -21,7 +21,7 @@ public class TransfusionViewDTO {
 
     private String attendingDoctorName;
 
-    private LocalDateTime date;
+    private LocalDate date;
     private String bed;
     private String medicalService;
     private Boolean hasCrossmatch;

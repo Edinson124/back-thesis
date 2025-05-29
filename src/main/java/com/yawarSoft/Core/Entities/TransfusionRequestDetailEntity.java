@@ -28,9 +28,6 @@ public class TransfusionRequestDetailEntity {
     @Column(name = "requested_quantity", nullable = false)
     private Integer requestedQuantity;
 
-    @Column(name = "status", nullable = false, length = 20)
-    private String status;
-
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "created_by", nullable = false)
     private UserEntity createdBy;

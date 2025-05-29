@@ -1,5 +1,6 @@
 package com.yawarSoft.Modules.Transfusion.Services.Interfaces;
 
+import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.Response.*;
 import org.springframework.data.domain.Page;
 
@@ -15,4 +16,6 @@ public interface TransfusionRequestService {
     TransfusionDetailDTO getDetailTransfusion(Long id);
 
     TransfusionGetDTO getTranfusion(Long id);
+
+    Long createTransfusion(TransfusionRequestDTO transfusionRequestDTO);
 }

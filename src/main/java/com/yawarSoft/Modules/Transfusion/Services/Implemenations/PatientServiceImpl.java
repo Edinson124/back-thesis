@@ -76,7 +76,7 @@ public class PatientServiceImpl implements PatientService {
         String combinedInfo = documentType + '|' + documentNumber;
         String searchHash = hmacUtil.generateHmac(combinedInfo);
         PatientEntity patientEntity = patientRepository.findBySearchHash(searchHash)
-                .orElseThrow(() -> new IllegalArgumentException("Donante no encontrado con documento: " + documentNumber));
+                .orElse(null);
 
         return patientMapper.toGetDto(patientEntity, aesGCMEncryptionUtil);
     }

@@ -1,21 +1,14 @@
 package com.yawarSoft.Modules.Donation.Mappers;
 
-import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.DonationEntity;
-import com.yawarSoft.Core.Entities.DonorEntity;
-import com.yawarSoft.Core.Entities.PatientEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.MapperUtils;
 import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
+import com.yawarSoft.Modules.Donation.Dto.DonationResponseDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonationViewDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
-import com.yawarSoft.Modules.Donation.Dto.DonationResponseDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DonationByDonorDTO;
-import com.yawarSoft.Modules.Donation.Dto.Response.DonationGetDTO;
 import org.mapstruct.*;
-
-import java.util.Base64;
 
 @Mapper(componentModel = "spring",uses = MapperUtils.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface DonationMapper {

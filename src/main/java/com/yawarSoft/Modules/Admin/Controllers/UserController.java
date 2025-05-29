@@ -82,6 +82,11 @@ public class UserController {
         return userService.getMedicUsersByBloodBank(idBloodBank);
     }
 
+    @GetMapping("/medicRequest")
+    public List<UserSelectOptionDTO> getMedicRequestByBloodBank() {
+        return userService.getMedicRequestUsers();
+    }
+
     @PostMapping("img-profile/{idUser}")
     public ResponseEntity<ApiResponse> uploadProfileImage(@PathVariable Integer idUser,
                                                      @RequestParam("image") MultipartFile file) {

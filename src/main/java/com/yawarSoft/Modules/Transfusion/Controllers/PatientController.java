@@ -1,8 +1,6 @@
 package com.yawarSoft.Modules.Transfusion.Controllers;
 
 import com.yawarSoft.Core.Dto.ApiResponse;
-import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.PatientGetDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.Request.GetPatientRequest;
 import com.yawarSoft.Modules.Transfusion.Dto.Request.PatientDocumentRequest;
@@ -25,11 +23,9 @@ public class PatientController {
     }
 
     @PostMapping("/validate")
-    public Map<String, String> getPatient(@RequestBody GetPatientRequest infoPatientRequest) {
-        String fullName = patientService.getFullNamePatient(
-                infoPatientRequest.documentType(),
-                infoPatientRequest.documentNumber()
-        );
+    public Map<String, String> validatePatient(@RequestBody GetPatientRequest infoPatientRequest) {
+        String fullName = patientService.getFullNamePatient(infoPatientRequest.documentType(),
+                infoPatientRequest.documentNumber());
 
         Map<String, String> response = new HashMap<>();
         response.put("name", fullName);
@@ -43,8 +39,12 @@ public class PatientController {
     }
 
     @PostMapping("/search")
-    public PatientGetDTO getPatient(@RequestBody PatientDocumentRequest request) {
-        return patientService.getPatient(request.documentType(),request.documentNumber());
+    public ResponseEntity<?> getPatient(@RequestBody PatientDocumentRequest request) {
+        PatientGetDTO responseDTO = patientService.getPatient(request.documentType(),request.documentNumber());
+        if (responseDTO == null) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(responseDTO);
     }
 
     @PostMapping

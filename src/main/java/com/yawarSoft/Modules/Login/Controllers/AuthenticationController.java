@@ -35,7 +35,7 @@ public class AuthenticationController {
                 .httpOnly(true)  // Evita acceso desde JavaScript (protección XSS)
 //                .secure(true)  // Requiere HTTPS (importante en producción)
                 .path("/")  // Disponible en toda la aplicación
-                .maxAge(expirationTimestamp)  // Expira en 2 horas
+                .maxAge(expirationTimestamp-10000)  // Expira en 2 horas
                 .sameSite("Strict")  // Protección contra CSRF
                 .build();
 
