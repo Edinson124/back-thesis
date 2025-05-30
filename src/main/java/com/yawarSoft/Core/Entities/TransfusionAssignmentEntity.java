@@ -32,9 +32,17 @@ public class TransfusionAssignmentEntity {
     @Column(name = "return_reason")
     private String returnReason;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "received_by")
-    private UserEntity receivedBy;
+    @Column(name = "received_by_document", length = 20)
+    private String receivedByDocument;
+
+    @Column(name = "received_by_name", length = 100)
+    private String receivedByName;
+
+    @Column(name = "validate_result", length = 20)
+    private String validateResult;
+
+    @Column(name = "validate_result_date")
+    private LocalDateTime validateResultDate;
 
     @Column(name = "crossmatch_result", length = 20)
     private String crossmatchResult;
@@ -66,8 +74,7 @@ public class TransfusionAssignmentEntity {
     @Column(name = "dispensed_date")
     private LocalDateTime dispensedDate;
 
-    @Column(name = "dispensed_by_document", length = 20)
-    private String dispensedByDocument;
-    @Column(name = "dispensed_by_name", length = 100)
-    private String dispensedByName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "dispensed_by")
+    private UserEntity dispensedBy;
 }

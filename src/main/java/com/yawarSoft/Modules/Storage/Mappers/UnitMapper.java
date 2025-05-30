@@ -24,5 +24,6 @@ public interface UnitMapper {
 
     @Mapping(source = "type", target = "unitType")
     @Mapping(source = "bag", target = "bagType")
+    @Mapping(target = "fromDonation", constant = "true")
     UnitEntity toEntityByExtractionDTO(UnitExtractionDTO unitExtractionDTO);
 }

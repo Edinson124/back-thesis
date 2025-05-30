@@ -1,7 +1,6 @@
 package com.yawarSoft.Modules.Storage.Controllers;
 
 import com.yawarSoft.Core.Dto.ApiResponse;
-import com.yawarSoft.Modules.Donation.Dto.SampleDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
 import com.yawarSoft.Modules.Storage.Dto.UnitDTO;
@@ -86,9 +85,10 @@ public class UnitController {
                                                     @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate endExpirationDate,
                                                     @RequestParam(required = false) String bloodType,
                                                     @RequestParam(required = false) String type,
-                                           @RequestParam(required = false) String status) {
+                                           @RequestParam(required = false) String status,
+                                           @RequestParam(required = false) Long idTransfusion) {
         return unitService.getUnitsStock(page, size, startEntryDate, endEntryDate,
-                startExpirationDate, endExpirationDate, bloodType, type, status);
+                startExpirationDate, endExpirationDate, bloodType, type, status, idTransfusion);
     }
 
     @GetMapping("/{id}")

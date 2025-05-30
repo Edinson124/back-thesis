@@ -49,11 +49,11 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_role")
     private RoleEntity role;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_blood_bank")
     private BloodBankEntity bloodBank;
 }

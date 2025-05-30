@@ -1,15 +1,10 @@
 package com.yawarSoft.Modules.Transfusion.Services.Implemenations;
 
-import com.yawarSoft.Core.Entities.DonorEntity;
 import com.yawarSoft.Core.Entities.PatientEntity;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.HmacUtil;
 import com.yawarSoft.Core.Utils.UserUtils;
-import com.yawarSoft.Modules.Donation.Dto.DonorGetDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequestDTO;
-import com.yawarSoft.Modules.Donation.Enums.DonorStatus;
 import com.yawarSoft.Modules.Transfusion.Dto.PatientGetDTO;
-import com.yawarSoft.Modules.Transfusion.Dto.Request.PatientDocumentRequest;
 import com.yawarSoft.Modules.Transfusion.Dto.Request.PatientRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Mappers.PatientMapper;
 import com.yawarSoft.Modules.Transfusion.Repositories.PatientRepository;

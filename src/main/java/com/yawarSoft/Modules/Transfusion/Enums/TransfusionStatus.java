@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum TransfusionStatus {
     PENDIENTE("Pendiente"),
     ACEPTADA("Aceptada"),
+    LIBERADA("Liberada"),
     FINALIZADA("Finalizada"),
     NO_ATENDIDA("No atendida");
 

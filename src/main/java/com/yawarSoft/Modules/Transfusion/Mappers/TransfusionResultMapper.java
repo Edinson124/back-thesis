@@ -2,7 +2,7 @@ package com.yawarSoft.Modules.Transfusion.Mappers;
 
 import com.yawarSoft.Core.Entities.TransfusionResultEntity;
 import com.yawarSoft.Core.Utils.MapperUtils;
-import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionResultRequest;
+import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionResultRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.TransfusionResultDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,8 +18,8 @@ public interface TransfusionResultMapper {
     @Mapping(source = "updatedBy", target = "updatedByName", qualifiedByName = "getFullName")
     TransfusionResultDTO toDetailDTO(TransfusionResultEntity entity);
 
-    TransfusionResultEntity toEntityByRequest(TransfusionResultRequest request);
+    TransfusionResultEntity toEntityByRequest(TransfusionResultRequestDTO request);
 
-    void updateEntityFromRequest(TransfusionResultRequest request, @MappingTarget TransfusionResultEntity entity);
+    void updateEntityFromRequest(TransfusionResultRequestDTO request, @MappingTarget TransfusionResultEntity entity);
 
 }

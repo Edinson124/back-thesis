@@ -15,6 +15,9 @@ import com.yawarSoft.Modules.Storage.Repositories.UnitRepository;
 import com.yawarSoft.Modules.Storage.Repositories.UnitStorageRepository;
 import com.yawarSoft.Modules.Storage.Repositories.UnitTransformationRepository;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
+import com.yawarSoft.Modules.Transfusion.Services.Interfaces.TransfusionAssignmentService;
+import com.yawarSoft.Modules.Transfusion.Services.Interfaces.TransfusionBloodCompatible;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,8 +44,9 @@ public class UnitServiceImpl implements UnitService {
     private final GlobalVariableService globalVariableService;
     private final DonationService donationService;
     private final AuthenticatedUserService authenticatedUserService;
+    private final TransfusionBloodCompatible transfusionBloodCompatible;
 
-    public UnitServiceImpl(UnitRepository unitRepository, UnitTransformationRepository unitTransformationRepository, GlobalVariableService globalVariableService, UnitStorageRepository unitStorageRepository, UnitMapper unitMapper, DonationService donationService, AuthenticatedUserService authenticatedUserService) {
+    public UnitServiceImpl(UnitRepository unitRepository, UnitTransformationRepository unitTransformationRepository, GlobalVariableService globalVariableService, UnitStorageRepository unitStorageRepository, UnitMapper unitMapper, DonationService donationService, AuthenticatedUserService authenticatedUserService, TransfusionBloodCompatible transfusionBloodCompatible) {
         this.unitRepository = unitRepository;
         this.unitTransformationRepository = unitTransformationRepository;
         this.globalVariableService = globalVariableService;
@@ -50,6 +54,7 @@ public class UnitServiceImpl implements UnitService {
         this.unitMapper = unitMapper;
         this.donationService = donationService;
         this.authenticatedUserService = authenticatedUserService;
+        this.transfusionBloodCompatible = transfusionBloodCompatible;
     }
 
 
@@ -58,6 +63,7 @@ public class UnitServiceImpl implements UnitService {
                                       LocalDate startExpirationDate, LocalDate endExpirationDate, String bloodType,
                                       String type) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("id")));
+
 
         UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
         Integer bloodBankId = userAuthenticated.getBloodBank().getId();
@@ -202,8 +208,13 @@ public class UnitServiceImpl implements UnitService {
         return unitMapper.toDTO(unit);
     }
 
+
     @Override
-    public Page<UnitListDTO> getUnitsStock(int page, int size, LocalDate startEntryDate, LocalDate endEntryDate, LocalDate startExpirationDate, LocalDate endExpirationDate, String bloodType, String type, String status) {
+    public Page<UnitListDTO> getUnitsStock(int page, int size, LocalDate startEntryDate, LocalDate
+            endEntryDate, LocalDate startExpirationDate, LocalDate endExpirationDate, String bloodType,
+                                           String type, String status, Long idTransfusion) {
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("id")));
 
         UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
@@ -245,8 +256,24 @@ public class UnitServiceImpl implements UnitService {
             if (type != null && !type.isBlank()) {
                 predicates.add(cb.equal(root.get("unitType"), type));
             }
+            // Blood type: por filtro directo o por compatibilidad
+            List<String> bloodTypesToUse = new ArrayList<>();
             if (bloodType != null && !bloodType.isBlank()) {
-                predicates.add(cb.equal(root.get("bloodType"), bloodType));
+                bloodTypesToUse.add(bloodType);
+            } else if (idTransfusion != null) {
+                bloodTypesToUse = transfusionBloodCompatible.getBloodTypeCompatibleString(idTransfusion);
+            }
+
+            if (!bloodTypesToUse.isEmpty()) {
+                if (bloodTypesToUse.size() == 1) {
+                    predicates.add(cb.equal(root.get("bloodType"), bloodTypesToUse.get(0)));
+                } else {
+                    CriteriaBuilder.In<String> inClause = cb.in(root.get("bloodType"));
+                    for (String bt : bloodTypesToUse) {
+                        inClause.value(bt);
+                    }
+                    predicates.add(inClause);
+                }
             }
 
             predicates.add(cb.equal(root.get("bloodBank").get("id"), bloodBankId));
@@ -343,7 +370,7 @@ public class UnitServiceImpl implements UnitService {
         UnitEntity unitEntityGenerated = unitMapper.toEntityByExtractionDTO(unit);
         unitEntityGenerated.setExpirationDate(dateExpiration);
         unitEntityGenerated.setBloodType(unitEntityOrigin.getBloodType());
-        unitEntityGenerated.setDonation(null);
+        unitEntityGenerated.setDonation(unitEntityOrigin.getDonation());
         unitEntityGenerated.setCreatedAt(LocalDateTime.now());
         unitEntityGenerated.setCreatedBy(userAuthenticated);
         unitEntityGenerated.setBloodBank(userAuthenticated.getBloodBank());
@@ -384,6 +411,11 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public Integer updateBloodTypeIfHematologicalTestAfter(Long idDonation, String bloodType) {
         return unitRepository.updateBloodTypeByDonationId(idDonation, bloodType);
+    }
+
+    @Override
+    public void updateStatusUnit(Long idUnit, String status) {
+        unitRepository.updateStatusById(idUnit, status);
     }
 
 }

@@ -12,9 +12,9 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = MapperUtils.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TransfusionAssignmentMapper {
 
-    @Mapping(source = "bloodUnit.id", target = "bloodUnitId")
-    @Mapping(source = "bloodUnit.unitType", target = "bloodUnitType")
-    @Mapping(source = "bloodUnit.bloodType", target = "bloodUnitBloodType")
+    @Mapping(source = "bloodUnit.id", target = "idUnit")
+    @Mapping(source = "bloodUnit.unitType", target = "unitType")
+    @Mapping(source = "bloodUnit.bloodType", target = "bloodType")
     @Mapping(source = "performedTestBy.id", target = "performedTestById")
     @Mapping(source = "performedTestBy", target = "performedTestByName", qualifiedByName = "getFullName")
     @Mapping(source = "createdBy.id", target = "createdById")

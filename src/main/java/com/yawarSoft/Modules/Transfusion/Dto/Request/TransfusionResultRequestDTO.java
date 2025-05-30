@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransfusionResultRequest {
+public class TransfusionResultRequestDTO {
 
     private LocalDateTime transfusionDate;
     private String transfusionDoctorName;

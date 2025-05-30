@@ -11,20 +11,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class TransfusionAssignmentDTO {
     private Long id;
-    private Long bloodUnitId;
-    private String bloodUnitType;
-    private String bloodUnitBloodType;
-    private String status;
 
-    private String crossmatchResult;
-    private LocalDateTime crossmatchTestDate;
+    private Long idUnit;
+    private String bloodType;
+    private String unitType;
+
+    private String validateResult;
+    private LocalDateTime validateResultDate;
     private Integer performedTestById;
     private String performedTestByName;
     private String observationTest;
-
-    private LocalDateTime dispensedDate;
-    private String dispensedByDocument;
-    private String dispensedByName;
 
     private Integer createdById;
     private String createdByName;

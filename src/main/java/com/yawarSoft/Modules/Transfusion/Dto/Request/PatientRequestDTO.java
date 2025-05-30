@@ -1,6 +1,5 @@
 package com.yawarSoft.Modules.Transfusion.Dto.Request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.time.LocalDate;

@@ -3,7 +3,6 @@ package com.yawarSoft.Modules.Transfusion.Dto;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -27,4 +26,5 @@ public class TransfusionViewDTO {
     private Boolean hasCrossmatch;
     private String requestReason;
     private String diagnosis;
+    private String status;
 }

@@ -60,6 +60,9 @@ public class UnitEntity {
     @Column(name = "reason_discard")
     private String reasonDiscard;
 
+    @Column(name = "from_donation")
+    private Boolean fromDonation;
+
     @ManyToOne(optional = false)
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
     private UserEntity createdBy;

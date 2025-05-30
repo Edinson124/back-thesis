@@ -41,6 +41,7 @@ public interface TransfusionRequestMapper {
     @Mapping(source = "patient.rhFactor", target = "patientRhFactor")
     @Mapping(source = "attendingDoctor", target = "attendingDoctorName", qualifiedByName = "getFullName")
     @Mapping(source = "date", target = "date")
+    @Mapping(source = "status", target = "status")
     TransfusionViewDTO toTransfusionViewTO(TransfusionRequestEntity entity, @Context AESGCMEncryptionUtil aesUtil);
 
     default String decryptFromBytes(byte[] value, AESGCMEncryptionUtil aesUtil) {

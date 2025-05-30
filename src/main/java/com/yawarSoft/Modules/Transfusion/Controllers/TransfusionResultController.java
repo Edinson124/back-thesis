@@ -1,7 +1,7 @@
 package com.yawarSoft.Modules.Transfusion.Controllers;
 
 import com.yawarSoft.Core.Dto.ApiResponse;
-import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionResultRequest;
+import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionResultRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.TransfusionResultService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class TransfusionResultController {
     }
 
     @PostMapping("/{idTransfusion}")
-    public  ResponseEntity<ApiResponse> createTransfusionResult(@PathVariable Long idTransfusion, @RequestBody TransfusionResultRequest request) {
+    public  ResponseEntity<ApiResponse> createTransfusionResult(@PathVariable Long idTransfusion, @RequestBody TransfusionResultRequestDTO request) {
         Long id = transfusionResultService.createTransfusionResult(idTransfusion, request);
         String message = "Transfusion creada exitosamente";
         if( id==0 ){

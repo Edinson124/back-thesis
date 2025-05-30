@@ -4,7 +4,7 @@ import com.yawarSoft.Core.Entities.TransfusionRequestEntity;
 import com.yawarSoft.Core.Entities.TransfusionResultEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
-import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionResultRequest;
+import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionResultRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Mappers.TransfusionResultMapper;
 import com.yawarSoft.Modules.Transfusion.Repositories.TransfusionRequestRepository;
 import com.yawarSoft.Modules.Transfusion.Repositories.TransfusionResultRepository;
@@ -31,7 +31,7 @@ public class TransfusionResultServiceImpl implements TransfusionResultService {
 
     @Transactional
     @Override
-    public Long createTransfusionResult(Long idTransfusion, TransfusionResultRequest request) {
+    public Long createTransfusionResult(Long idTransfusion, TransfusionResultRequestDTO request) {
         UserEntity userEntity = authenticatedUserService.getCurrentUser();
         TransfusionRequestEntity transfusionEntity = transfusionRequestRepository.findById(idTransfusion)
                 .orElseThrow(() -> new IllegalArgumentException("Transfusion no encontrado con id: " + idTransfusion));
