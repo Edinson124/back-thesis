@@ -244,6 +244,9 @@ public class UnitServiceImpl implements UnitService {
             // Estado
             if (status != null && !status.isBlank()) {
                 predicates.add(cb.equal(root.get("status"), status));
+            } else if (idTransfusion != null) {
+                // No status but idTransfusion → SUITABLE
+                predicates.add(cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()));
             } else {
                 predicates.add(
                         cb.or(
