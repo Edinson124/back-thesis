@@ -1,4 +1,4 @@
-package com.yawarSoft.Modules.Donation.Enums;
+package com.yawarSoft.Modules.Laboratory.Enums;
 
 import lombok.Getter;
 

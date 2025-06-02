@@ -12,8 +12,8 @@ public final class Constants {
         return System.currentTimeMillis() + expiration.toMillis();
     }
     // Tiempo mínimo entre donaciones para hombres (4 meses)
-    public static final int DONATION_INTERVAL_MALE_MONTHS = 4;
+    public static final int DONATION_INTERVAL_MALE_MONTHS = 3;
 
     // Tiempo mínimo entre donaciones para mujeres (3 meses)
-    public static final int DONATION_INTERVAL_FEMALE_MONTHS = 3;
+    public static final int DONATION_INTERVAL_FEMALE_MONTHS = 4;
 }

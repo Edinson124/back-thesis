@@ -1,4 +1,4 @@
-package com.yawarSoft.Modules.Donation.Dto.Request;
+package com.yawarSoft.Modules.Laboratory.Dto.Request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;

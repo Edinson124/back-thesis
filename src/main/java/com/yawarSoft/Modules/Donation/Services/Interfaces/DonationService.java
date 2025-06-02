@@ -1,6 +1,7 @@
 package com.yawarSoft.Modules.Donation.Services.Interfaces;
 
 import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
+import com.yawarSoft.Modules.Donation.Dto.Request.DeferralDonationRequest;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
 import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonationResponseDTO;
@@ -38,4 +39,6 @@ public interface DonationService {
     boolean updateDonorBloodType(Long donationId, String bloodType, String rhFactor);
 
     Map<String, String> getBloodTypeAndSerology(Long id);
+
+    Long finishDonationWithDeferral(Long idDonation, DeferralDonationRequest deferralDonationRequest);
 }

@@ -1,10 +1,9 @@
-package com.yawarSoft.Modules.Donation.Controllers;
+package com.yawarSoft.Modules.Laboratory.Controllers;
 
 import com.yawarSoft.Core.Dto.ApiResponse;
-import com.yawarSoft.Modules.Donation.Dto.HematologicalTestDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.SerologyTestRequest;
-import com.yawarSoft.Modules.Donation.Dto.SerologyTestDTO;
-import com.yawarSoft.Modules.Donation.Services.Interfaces.SerologyTestService;
+import com.yawarSoft.Modules.Laboratory.Dto.Request.SerologyTestRequest;
+import com.yawarSoft.Modules.Laboratory.Dto.SerologyTestDTO;
+import com.yawarSoft.Modules.Laboratory.Services.Interfaces.SerologyTestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,9 +1,9 @@
-package com.yawarSoft.Modules.Donation.Mappers;
+package com.yawarSoft.Modules.Laboratory.Mappers;
 
 import com.yawarSoft.Core.Entities.SerologyTestEntity;
 import com.yawarSoft.Core.Utils.MapperUtils;
-import com.yawarSoft.Modules.Donation.Dto.Request.SerologyTestRequest;
-import com.yawarSoft.Modules.Donation.Dto.SerologyTestDTO;
+import com.yawarSoft.Modules.Laboratory.Dto.Request.SerologyTestRequest;
+import com.yawarSoft.Modules.Laboratory.Dto.SerologyTestDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

@@ -1,18 +1,18 @@
-package com.yawarSoft.Modules.Donation.Services.Implementations;
+package com.yawarSoft.Modules.Laboratory.Services.Implementations;
 
 import com.yawarSoft.Core.Entities.HematologicalTestEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
-import com.yawarSoft.Modules.Donation.Dto.HematologicalTestDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.HematologicalTestRequest;
+import com.yawarSoft.Modules.Laboratory.Dto.HematologicalTestDTO;
+import com.yawarSoft.Modules.Laboratory.Dto.Request.HematologicalTestRequest;
 import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
-import com.yawarSoft.Modules.Donation.Enums.HematologicalTestStatus;
+import com.yawarSoft.Modules.Laboratory.Enums.HematologicalTestStatus;
 import com.yawarSoft.Modules.Donation.Enums.RhFactor;
-import com.yawarSoft.Modules.Donation.Mappers.HematologicalMapper;
-import com.yawarSoft.Modules.Donation.Repositories.HematologicalTestRepository;
+import com.yawarSoft.Modules.Laboratory.Mappers.HematologicalMapper;
+import com.yawarSoft.Modules.Laboratory.Repositories.HematologicalTestRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
-import com.yawarSoft.Modules.Donation.Services.Interfaces.HematologicalTestService;
+import com.yawarSoft.Modules.Laboratory.Services.Interfaces.HematologicalTestService;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

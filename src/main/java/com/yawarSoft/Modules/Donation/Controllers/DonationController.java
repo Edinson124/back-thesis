@@ -4,6 +4,7 @@ package com.yawarSoft.Modules.Donation.Controllers;
 import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Modules.Donation.Dto.DonationResponseDTO;
 import com.yawarSoft.Modules.Donation.Dto.DonationUpdateDTO;
+import com.yawarSoft.Modules.Donation.Dto.Request.DeferralDonationRequest;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonorRequest;
 import com.yawarSoft.Modules.Donation.Dto.Response.DateDonationDTO;
@@ -82,5 +83,10 @@ public class DonationController {
     @GetMapping("/{id}")
         public DonationGetDTO getDonation(@PathVariable("id") Long id){
         return donationService.getDonationById(id);
+    }
+
+    @PostMapping("/deferral/{idDonation}")
+    public Long finishDonationWithDeferral(@PathVariable("idDonation") Long idDonation, @RequestBody DeferralDonationRequest deferralDonationRequest){
+        return donationService.finishDonationWithDeferral(idDonation, deferralDonationRequest);
     }
 }

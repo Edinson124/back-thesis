@@ -1,17 +1,17 @@
-package com.yawarSoft.Modules.Donation.Services.Implementations;
+package com.yawarSoft.Modules.Laboratory.Services.Implementations;
 
 import com.yawarSoft.Core.Entities.SerologyTestEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Modules.Donation.Dto.DonationRelationsDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.SerologyTestRequest;
-import com.yawarSoft.Modules.Donation.Dto.SerologyTestDTO;
+import com.yawarSoft.Modules.Laboratory.Dto.Request.SerologyTestRequest;
+import com.yawarSoft.Modules.Laboratory.Dto.SerologyTestDTO;
 import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
-import com.yawarSoft.Modules.Donation.Enums.SerologyTestStatus;
-import com.yawarSoft.Modules.Donation.Mappers.SerologyTestMapper;
-import com.yawarSoft.Modules.Donation.Repositories.SerologyTestRepository;
+import com.yawarSoft.Modules.Laboratory.Enums.SerologyTestStatus;
+import com.yawarSoft.Modules.Laboratory.Mappers.SerologyTestMapper;
+import com.yawarSoft.Modules.Laboratory.Repositories.SerologyTestRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
-import com.yawarSoft.Modules.Donation.Services.Interfaces.SerologyTestService;
+import com.yawarSoft.Modules.Laboratory.Services.Interfaces.SerologyTestService;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

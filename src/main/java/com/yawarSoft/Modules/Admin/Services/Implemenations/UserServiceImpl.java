@@ -146,9 +146,8 @@ public class UserServiceImpl implements UserService {
         AuthEntity auth = new AuthEntity();
         auth.setUsername(user.getDocumentNumber()); // Usar número de documento como username
         // TODO: cambiar a randomPassword
-        //auth.setPassword(passwordEncoder.encode(randomPassword));
-        //Por el momento se pondrá 1234 - para desarrollo
-        auth.setPassword(passwordEncoder.encode("1234"));
+        auth.setPassword(passwordEncoder.encode(randomPassword));
+//        auth.setPassword(passwordEncoder.encode("1234"));
         auth.setUser(userSaved);
         authService.saveAuth(auth);
 

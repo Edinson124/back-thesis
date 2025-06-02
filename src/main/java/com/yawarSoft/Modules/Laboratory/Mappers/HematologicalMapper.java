@@ -1,10 +1,9 @@
-package com.yawarSoft.Modules.Donation.Mappers;
+package com.yawarSoft.Modules.Laboratory.Mappers;
 
 import com.yawarSoft.Core.Entities.HematologicalTestEntity;
 import com.yawarSoft.Core.Utils.MapperUtils;
-import com.yawarSoft.Modules.Donation.Dto.HematologicalTestDTO;
-import com.yawarSoft.Modules.Donation.Dto.Request.HematologicalTestRequest;
-import com.yawarSoft.Modules.Donation.Dto.Request.SerologyTestRequest;
+import com.yawarSoft.Modules.Laboratory.Dto.HematologicalTestDTO;
+import com.yawarSoft.Modules.Laboratory.Dto.Request.HematologicalTestRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

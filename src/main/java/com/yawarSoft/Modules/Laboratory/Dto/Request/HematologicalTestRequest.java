@@ -1,22 +1,18 @@
-package com.yawarSoft.Modules.Donation.Dto;
+package com.yawarSoft.Modules.Laboratory.Dto.Request;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class HematologicalTestDTO {
-    private Long id;
+public class HematologicalTestRequest {
+
+    private Long donationId;
     private LocalDate testDate;
     private String bloodType;
     private String rhFactor;
@@ -28,12 +24,5 @@ public class HematologicalTestDTO {
     private Integer platelets;
     private BigDecimal leukocytes;
     private BigDecimal monocytes;
-    private String status;
     private String observations;
-    private Integer createdById;
-    private String createdByName;
-    private LocalDateTime createdAt;
-    private Integer updatedById;
-    private String updatedByName;
-    private LocalDateTime updatedAt;
 }

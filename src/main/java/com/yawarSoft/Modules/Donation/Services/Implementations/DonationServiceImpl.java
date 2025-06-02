@@ -6,20 +6,20 @@ import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.Constants;
 import com.yawarSoft.Core.Utils.UserUtils;
 import com.yawarSoft.Modules.Donation.Dto.*;
+import com.yawarSoft.Modules.Donation.Dto.Request.DeferralDonationRequest;
 import com.yawarSoft.Modules.Donation.Dto.Request.DonationCreateRequest;
 import com.yawarSoft.Modules.Donation.Dto.Response.DateDonationDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DonationByDonorDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.DonationGetDTO;
 import com.yawarSoft.Modules.Donation.Dto.Response.ExistDonationDTO;
-import com.yawarSoft.Modules.Donation.Enums.DonationStatus;
-import com.yawarSoft.Modules.Donation.Enums.DonorGender;
-import com.yawarSoft.Modules.Donation.Enums.RhFactor;
-import com.yawarSoft.Modules.Donation.Enums.SerologyTestStatus;
+import com.yawarSoft.Modules.Donation.Enums.*;
 import com.yawarSoft.Modules.Donation.Mappers.DonationMapper;
 import com.yawarSoft.Modules.Donation.Mappers.DonorMapper;
 import com.yawarSoft.Modules.Donation.Repositories.DonationRepository;
+import com.yawarSoft.Modules.Donation.Repositories.DonorRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
+import com.yawarSoft.Modules.Laboratory.Enums.SerologyTestStatus;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.PatientService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +38,7 @@ import java.util.Optional;
 public class DonationServiceImpl implements DonationService {
 
     private final DonationRepository donationRepository;
+    private final DonorRepository donorRepository;
     private final DonationMapper donationMapper;
     private final DonorMapper donorMapper;
     private final PatientService patientService;
@@ -46,9 +47,10 @@ public class DonationServiceImpl implements DonationService {
     private final AuthenticatedUserService authenticatedUserService;
 
 
-    public DonationServiceImpl(DonationRepository donationRepository, DonationMapper donationMapper, DonorMapper donorMapper,
+    public DonationServiceImpl(DonationRepository donationRepository, DonorRepository donorRepository, DonationMapper donationMapper, DonorMapper donorMapper,
                                PatientService patientService, DonorService donorService, AESGCMEncryptionUtil aesGCMEncryptionUtil, AuthenticatedUserService authenticatedUserService) {
         this.donationRepository = donationRepository;
+        this.donorRepository = donorRepository;
         this.donationMapper = donationMapper;
         this.donorMapper = donorMapper;
         this.patientService = patientService;
@@ -160,14 +162,20 @@ public class DonationServiceImpl implements DonationService {
                 : Constants.DONATION_INTERVAL_FEMALE_MONTHS;
         LocalDate dateEnabledDonation = dateDonation.plusMonths(requiredMonths);
         boolean isEnableDonation = !LocalDate.now().isBefore(dateEnabledDonation);
+        boolean requiredAdvertisement = calculateAdvertisement(donor.getStatus(),isEnableDonation);
 
         DateDonationDTO dto = new DateDonationDTO();
         dto.setDonationId(donationEntity.getId());
         dto.setDateDonation(dateDonation);
         dto.setDateEnabledDonation(dateEnabledDonation);
         dto.setIsEnableDonation(isEnableDonation);
+        dto.setRequiredAdvertisement(requiredAdvertisement);
 
         return dto;
+    }
+    private boolean calculateAdvertisement(String status, Boolean isEnableDonation) {
+        if (!status.equals(DonorStatus.ELIGIBLE.getLabel())) return false;
+        return !isEnableDonation;
     }
 
     @Override
@@ -337,6 +345,47 @@ public class DonationServiceImpl implements DonationService {
 
         return result;
     }
+
+    @Transactional
+    @Override
+    public Long finishDonationWithDeferral(Long idDonation, DeferralDonationRequest deferralDonationRequest) {
+        DonationEntity donationEntity = donationRepository.findById(idDonation)
+                .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + idDonation));
+
+        Long idDonor = donationEntity.getDonor().getId();
+        String deferralReason = deferralDonationRequest.getReason();
+        DeferralType deferralType;
+
+        try {
+            deferralType = DeferralType.valueOf(deferralReason);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Tipo de deferral inválido: " + deferralReason);
+        }
+
+        String donorStatus;
+        String donationStatus;
+        LocalDate deferralEndDate = null;
+
+        switch (deferralType) {
+            case PERMANENTE -> {
+                donorStatus = DonorStatus.PERMANENTLY_DEFERRED.getLabel();
+                donationStatus = DonationStatus.FINISHED_PERM_DEFER.getLabel();
+            }
+            case TEMPORAL -> {
+                donorStatus = DonorStatus.TEMPORARILY_DEFERRED.getLabel();
+                donationStatus = DonationStatus.FINISHED_TEMP_DEFER.getLabel();
+                deferralEndDate = LocalDate.now().plusDays(deferralDonationRequest.getDays());
+            }
+            default -> throw new IllegalArgumentException("Tipo de deferral no soportado: " + deferralType);
+        }
+
+        donationEntity.setStatus(donationStatus);
+        donationRepository.save(donationEntity);
+
+        donorRepository.updateDonorDeferralById(idDonor, donorStatus, deferralEndDate, deferralReason);
+        return  idDonation;
+    }
+
 
 
 }

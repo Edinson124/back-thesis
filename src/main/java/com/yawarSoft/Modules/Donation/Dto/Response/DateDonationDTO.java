@@ -15,4 +15,5 @@ public class DateDonationDTO {
     private LocalDate dateDonation;
     private LocalDate dateEnabledDonation;
     private Boolean isEnableDonation;
+    private Boolean requiredAdvertisement;
 }

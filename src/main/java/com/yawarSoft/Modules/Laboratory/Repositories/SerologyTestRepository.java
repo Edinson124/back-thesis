@@ -1,4 +1,4 @@
-package com.yawarSoft.Modules.Donation.Repositories;
+package com.yawarSoft.Modules.Laboratory.Repositories;
 
 import com.yawarSoft.Core.Entities.SerologyTestEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
