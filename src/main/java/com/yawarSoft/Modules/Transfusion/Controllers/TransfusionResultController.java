@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/transfusion-result")
+@RequestMapping("/api/transfusion-result")
 public class TransfusionResultController {
 
     private final TransfusionResultService transfusionResultService;

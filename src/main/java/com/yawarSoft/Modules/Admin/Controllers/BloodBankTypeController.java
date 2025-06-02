@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/blood-bank-type")
+@RequestMapping("/api/blood-bank-type")
 public class BloodBankTypeController {
 
 

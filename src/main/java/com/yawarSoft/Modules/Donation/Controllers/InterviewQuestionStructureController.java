@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/interview-structure")
+@RequestMapping("/api/interview-structure")
 public class InterviewQuestionStructureController {
 
     private final InterviewQuestionStructureService interviewQuestionStructureService;

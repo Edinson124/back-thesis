@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 
 @RestController
-@RequestMapping("/collaboration")
+@RequestMapping("/api/collaboration")
 public class CollaborationController {
 
     private final CollaborationService collaborationService;

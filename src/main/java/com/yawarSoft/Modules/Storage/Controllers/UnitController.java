@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/units")
+@RequestMapping("/api/units")
 public class UnitController {
 
     private final UnitService unitService;

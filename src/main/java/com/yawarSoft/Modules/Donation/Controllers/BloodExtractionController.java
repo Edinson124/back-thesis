@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/blood-extraction")
+@RequestMapping("/api/blood-extraction")
 public class BloodExtractionController {
 
     private final BloodExtractionService bloodExtractionService;

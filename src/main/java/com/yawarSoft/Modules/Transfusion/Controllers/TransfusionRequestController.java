@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/transfusion")
+@RequestMapping("/api/transfusion")
 public class TransfusionRequestController {
 
 

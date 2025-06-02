@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/interview-answer")
+@RequestMapping("/api/interview-answer")
 public class InterviewAnswerController {
 
     private final InterviewAnswerService interviewAnswerService;

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/bb-network")
+@RequestMapping("/api/bb-network")
 public class NetworkController {
 
     private final BBNetworkService bbNetworkService;

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/transfusion-assignment")
+@RequestMapping("/api/transfusion-assignment")
 public class TransfusionAssignmentController {
 
     private final TransfusionAssignmentService transfusionAssignmentService;

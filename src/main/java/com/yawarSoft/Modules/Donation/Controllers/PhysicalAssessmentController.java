@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/physical")
+@RequestMapping("/api/physical")
 public class PhysicalAssessmentController {
 
     private final PhysicalAssessmentService physicalAssessmentService;

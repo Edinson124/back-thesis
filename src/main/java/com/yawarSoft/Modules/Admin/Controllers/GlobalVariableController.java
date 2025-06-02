@@ -10,7 +10,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/variables")
+@RequestMapping("/api/variables")
 public class GlobalVariableController {
 
     private final GlobalVariableService globalVariableService;

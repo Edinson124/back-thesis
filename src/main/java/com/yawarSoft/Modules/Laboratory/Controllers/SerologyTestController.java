@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/serology-test")
+@RequestMapping("/api/serology-test")
 public class SerologyTestController {
 
     private final SerologyTestService serologyTestService;

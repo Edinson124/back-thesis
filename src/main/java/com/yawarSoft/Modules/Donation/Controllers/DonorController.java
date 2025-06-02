@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/donors")
+@RequestMapping("/api/donors")
 public class DonorController {
 
     private final DonorService donorService;
