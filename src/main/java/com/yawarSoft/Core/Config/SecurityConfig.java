@@ -42,8 +42,8 @@ public class SecurityConfig {
                     http.requestMatchers("/customError").permitAll();
                     http.requestMatchers("/error").permitAll();
                     http.requestMatchers("/access-denied").permitAll();
-                    http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/ubication/**").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/ubication/**").permitAll();
 
 //                    // EndPoints Privados
 //                    http.requestMatchers(HttpMethod.GET, "/method/get").hasAuthority("READ");

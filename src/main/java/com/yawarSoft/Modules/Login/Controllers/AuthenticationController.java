@@ -17,7 +17,7 @@ import java.time.Duration;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @PreAuthorize("permitAll()")
 public class AuthenticationController {
 

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/ubication")
+@RequestMapping("/api/ubication")
 public class UbicationController {
 
     private final Map<String, Object> data;

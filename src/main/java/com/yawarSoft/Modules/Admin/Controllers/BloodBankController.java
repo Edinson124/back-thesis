@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/blood-bank")
+@RequestMapping("/api/blood-bank")
 public class BloodBankController {
     private final BloodBankService bloodBankService;
 
