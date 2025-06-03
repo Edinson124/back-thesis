@@ -26,4 +26,12 @@ public interface DonorRepository extends JpaRepository<DonorEntity, Long> {
                                  @Param("status") String status,
                                  @Param("deferralEndDate") LocalDate deferralEndDate,
                                  @Param("deferralReason") String deferralReason);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE DonorEntity d SET d.status =:status1, " +
+            "d.deferralEndDate = null,d.deferralReason = null " +
+            "WHERE d.status =:status2 AND d.deferralEndDate <= :today")
+    int updateDeferredDonorsToEligible(String status1,String status2, LocalDate today);
+
 }

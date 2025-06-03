@@ -353,13 +353,13 @@ public class DonationServiceImpl implements DonationService {
                 .orElseThrow(() -> new IllegalArgumentException("Donación no encontrada con ID: " + idDonation));
 
         Long idDonor = donationEntity.getDonor().getId();
-        String deferralReason = deferralDonationRequest.getReason();
+        String deferralTypeRequest = deferralDonationRequest.getType();
         DeferralType deferralType;
 
         try {
-            deferralType = DeferralType.valueOf(deferralReason);
+            deferralType = DeferralType.valueOf(deferralTypeRequest);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Tipo de deferral inválido: " + deferralReason);
+            throw new IllegalArgumentException("Tipo de deferral inválido: " + deferralTypeRequest);
         }
 
         String donorStatus;
@@ -382,7 +382,7 @@ public class DonationServiceImpl implements DonationService {
         donationEntity.setStatus(donationStatus);
         donationRepository.save(donationEntity);
 
-        donorRepository.updateDonorDeferralById(idDonor, donorStatus, deferralEndDate, deferralReason);
+        donorRepository.updateDonorDeferralById(idDonor, donorStatus, deferralEndDate, deferralDonationRequest.getReason());
         return  idDonation;
     }
 

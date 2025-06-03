@@ -1,4 +1,5 @@
 package com.yawarSoft.Modules.Admin.Services.Implemenations;
+import com.yawarSoft.Core.Services.Implementations.EmailService;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Core.Services.Interfaces.ImageStorageService;
 import com.yawarSoft.Core.Dto.ApiResponse;
@@ -19,7 +20,6 @@ import com.yawarSoft.Modules.Admin.Services.Interfaces.UserService;
 import com.yawarSoft.Modules.Login.Services.Interfaces.AuthService;
 import com.yawarSoft.Modules.Admin.Repositories.UserRepository;
 import com.yawarSoft.Core.Utils.PasswordGenerator;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,12 +45,13 @@ public class UserServiceImpl implements UserService {
     private final AuthenticatedUserService authenticatedUserService;
     private final UserMapper userMapper;
     private final ImageStorageService imageStorageService;
+    private final EmailService emailService;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
                            RoleService roleService, AuthService authService, UserMapper userMapper,
                            BloodBankService bloodBankService, AuthenticatedUserService authenticatedUserService,
-                           ImageStorageService imageStorageService) {
+                           ImageStorageService imageStorageService, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleService = roleService;
@@ -59,6 +60,7 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
         this.authenticatedUserService = authenticatedUserService;
         this.imageStorageService = imageStorageService;
+        this.emailService = emailService;
     }
 
     @Override
@@ -150,7 +152,8 @@ public class UserServiceImpl implements UserService {
 //        auth.setPassword(passwordEncoder.encode("1234"));
         auth.setUser(userSaved);
         authService.saveAuth(auth);
-
+        // Enviar email
+//        emailService.sendCredentialsEmail(user.getEmail(), auth.getUsername(), randomPassword);
         return userDto;
     }
 

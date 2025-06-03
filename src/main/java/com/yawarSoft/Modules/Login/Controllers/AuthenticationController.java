@@ -4,6 +4,7 @@ import com.yawarSoft.Core.Utils.Constants;
 import com.yawarSoft.Modules.Login.Dto.AuthLoginRequest;
 import com.yawarSoft.Modules.Login.Dto.AuthResponse;
 import com.yawarSoft.Modules.Login.Services.Implementations.UserDetailServiceImpl;
+import com.yawarSoft.Modules.Login.Services.Interfaces.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class AuthenticationController {
 
     @Autowired
     private UserDetailServiceImpl userDetailService;
+    @Autowired
+    private AuthService authService;
 
     @PostMapping("/login")
     public ResponseEntity<?> loginCookie(@RequestBody @Valid AuthLoginRequest userRequest){
@@ -39,10 +42,12 @@ public class AuthenticationController {
                 .sameSite("Strict")  // Protección contra CSRF
                 .build();
 
+        String userFullName = authService.getUserFullName(authResponse.username());
         // 🔥 Retornar el `username` en el body, pero el JWT en la cookie
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString()) // Enviar la cookie en el header
-                .body(Map.of("username", authResponse.username(), "session_time", expirationTimestamp)); // Enviar solo el username en el body
+                .body(Map.of("username", authResponse.username(), "session_time", expirationTimestamp
+                ,"fullName", userFullName)); // Enviar solo el username en el body
     }
 
     @PostMapping("/logout")
