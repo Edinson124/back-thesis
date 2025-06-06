@@ -12,13 +12,16 @@ import java.util.List;
 @NoArgsConstructor
 public class TransfusionRequestDTO {
 
-    private String documentNumberPatient;
-    private String documentTypePatient;
+    private String patientDocumentNumber;
+    private String patientDocumentType;
+    private String patientName;
+    private String patientBloodType;
+    private String patientRhFactor;
     private Integer attendingDoctor;
     private String bed;
     private String medicalService;
     private Boolean hasCrossmatch;
     private String diagnosis;
     private String requestReason;
-    private List<TransfusionRequestDetailDTO> requestedUnits;
+    private List<TransfusionRequestDetailDTO> request;
 }

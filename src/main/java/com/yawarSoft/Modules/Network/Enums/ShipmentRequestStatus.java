@@ -4,12 +4,11 @@ import lombok.Getter;
 
 @Getter
 public enum ShipmentRequestStatus {
-    SUITABLE("Apto"),
-    RESERVED("Reservado"),
-    QUARANTINED("En cuarentena"),
-    FRACTIONATED("Fraccionado"),
-    DISCARD("Descartado"),
-    REACTIVE("Reactivo");
+    PENDING("Pendiente"),
+    SENT("Solicitado"),
+    REFUSED("Rechazado"),
+    RELEASED("Liberado"),
+    COMPLETED("Finalizado");
 
     private final String label;
 

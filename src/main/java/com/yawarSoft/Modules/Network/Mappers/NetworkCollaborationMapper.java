@@ -1,5 +1,6 @@
 package com.yawarSoft.Modules.Network.Mappers;
 
+import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.BloodBankNetworkEntity;
 import com.yawarSoft.Core.Entities.NetworkEntity;
 import com.yawarSoft.Core.Utils.MapperUtils;
@@ -21,5 +22,13 @@ public interface NetworkCollaborationMapper {
     @Mapping(target = "address", source = "bloodBank.address")
     @Mapping(target = "ubication", source = "bloodBank", qualifiedByName = "getUbication")
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "type", source = "bloodBank.bloodBankType.name")
     BloodBankNetworkCollaborationDTO toDetailsDto(BloodBankNetworkEntity relationEntity);
+
+    @Mapping(target = "coordinatorName", source = "coordinator", qualifiedByName = "getFullName")
+    @Mapping(target = "ubication", source = ".", qualifiedByName = "getUbication")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "type", source = "bloodBankType.name")
+    BloodBankNetworkCollaborationDTO toDetailsDtoByBloodBank(BloodBankEntity relationEntity);
+
 }

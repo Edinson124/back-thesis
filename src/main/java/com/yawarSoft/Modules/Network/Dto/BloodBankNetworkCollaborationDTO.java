@@ -14,4 +14,5 @@ public class BloodBankNetworkCollaborationDTO {
     private String address;
     private String ubication;
     private String status;
+    private String type;
 }

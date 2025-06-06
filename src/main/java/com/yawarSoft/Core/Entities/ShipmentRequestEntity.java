@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 
@@ -34,6 +35,12 @@ public class ShipmentRequestEntity {
     @Column(length = 20, nullable = false)
     private String status;
 
+    @Column
+    private String reason;
+
+    @Column
+    private String details;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "release_accepted_by")
     private UserEntity releaseAcceptedBy;
@@ -61,4 +68,10 @@ public class ShipmentRequestEntity {
 
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "shipmentRequest", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ShipmentRequestDetailEntity> unitsRequest;
+
+    @OneToMany(mappedBy = "shipmentRequest", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ShipmentXUnitEntity> unitsAssigned;
 }

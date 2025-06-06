@@ -187,8 +187,8 @@ public class TransfusionRequestServiceImpl implements TransfusionRequestService 
     public Long createTransfusion(TransfusionRequestDTO transfusionRequestDTO) {
         UserEntity userAuth = authenticatedUserService.getCurrentUser();
 
-        String documentType= transfusionRequestDTO.getDocumentTypePatient();
-        String documentNumber= transfusionRequestDTO.getDocumentNumberPatient();
+        String documentType= transfusionRequestDTO.getPatientDocumentType();
+        String documentNumber= transfusionRequestDTO.getPatientDocumentNumber();
 
         String combinedInfo = documentType + '|' + documentNumber;
         String searchHash = hmacUtil.generateHmac(combinedInfo);
@@ -218,7 +218,7 @@ public class TransfusionRequestServiceImpl implements TransfusionRequestService 
         transfusionRequestEntity.setCreatedAt(LocalDateTime.now());
 
         List<TransfusionRequestDetailEntity> details = transfusionRequestDetailMapper.
-                toEntityByRequestCreate(transfusionRequestDTO.getRequestedUnits());
+                toEntityByRequestCreate(transfusionRequestDTO.getRequest());
 
         for (TransfusionRequestDetailEntity detail : details) {
             detail.setCreatedBy(userAuth);
