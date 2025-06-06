@@ -23,7 +23,8 @@ public interface UnitService {
 
     Page<UnitListDTO> getUnitsStock(int page, int size, LocalDate startEntryDate, LocalDate endEntryDate,
                                     LocalDate startExpirationDate, LocalDate endExpirationDate,
-                                    String bloodType, String type, String status, Long idTransfusion);
+                                    String bloodType, String type, String status, Long idTransfusion,
+                                    Boolean onlySuitable);
 
     List<UnitExtractionDTO> getUnitsByDonation(Long idDonation);
 
@@ -40,4 +41,6 @@ public interface UnitService {
     Integer updateBloodTypeIfHematologicalTestAfter(Long idDonation, String bloodType);
 
     void updateStatusUnit(Long idUnit, String status);
+
+    Integer updateBloodBankActual(List<Long> unitIds, Integer idBloodBank);
 }

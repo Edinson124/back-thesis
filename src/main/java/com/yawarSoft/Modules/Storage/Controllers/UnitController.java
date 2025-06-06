@@ -86,9 +86,10 @@ public class UnitController {
                                                     @RequestParam(required = false) String bloodType,
                                                     @RequestParam(required = false) String type,
                                            @RequestParam(required = false) String status,
-                                           @RequestParam(required = false) Long idTransfusion) {
+                                           @RequestParam(required = false) Long idTransfusion,
+                                           @RequestParam(required = false) Boolean onlySuitable) {
         return unitService.getUnitsStock(page, size, startEntryDate, endEntryDate,
-                startExpirationDate, endExpirationDate, bloodType, type, status, idTransfusion);
+                startExpirationDate, endExpirationDate, bloodType, type, status, idTransfusion,onlySuitable);
     }
 
     @GetMapping("/{id}")

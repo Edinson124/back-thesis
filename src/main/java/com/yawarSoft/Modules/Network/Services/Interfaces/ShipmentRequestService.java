@@ -29,5 +29,9 @@ public interface ShipmentRequestService {
 
     Integer sendShipment(Integer idShipment);
 
-    ShipmentWithAssignmentDTO getShipmentWithAssignment(Integer idShipment);
+    ShipmentWithAssignmentDTO getShipmentWithAssignment(Integer idShipment, int mode);
+
+    Integer freeUnits(Integer idShipment);
+
+    Integer confirmReception(Integer idShipment);
 }

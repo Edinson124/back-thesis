@@ -79,20 +79,42 @@ public class ShipmentRequestController {
     public ResponseEntity<ApiResponse> editShipment(@PathVariable Integer idShipment,@RequestBody ShipmentRequestDTO shipmentRequestDTO) {
         Integer id = shipmentRequestService.editShipment(idShipment,shipmentRequestDTO);
         Map<String, Object> payload = Map.of("id", id);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse(HttpStatus.CREATED, "Solicitud de transferencia editada exitosamente", payload));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(HttpStatus.OK, "Solicitud de transferencia editada exitosamente", payload));
     }
 
     @PutMapping("/send/{idShipment}")
     public ResponseEntity<ApiResponse> sendShipment(@PathVariable Integer idShipment) {
         Integer id = shipmentRequestService.sendShipment(idShipment);
         Map<String, Object> payload = Map.of("id", id);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse(HttpStatus.CREATED, "Solicitud de transferencia editada exitosamente", payload));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(HttpStatus.OK, "Solicitud de transferencia editada exitosamente", payload));
     }
 
-    @GetMapping("/assignment/{idShipment}")
-    public ShipmentWithAssignmentDTO getShipmentWithAssignment(@PathVariable Integer idShipment) {
-        return shipmentRequestService.getShipmentWithAssignment(idShipment);
+    @GetMapping("/response/assignment/{idShipment}")
+    public ShipmentWithAssignmentDTO getShipmentWithAssignmentResponse(@PathVariable Integer idShipment) {
+        return shipmentRequestService.getShipmentWithAssignment(idShipment,1);
     }
+
+    @GetMapping("/view/assignment/{idShipment}")
+    public ShipmentWithAssignmentDTO getShipmentWithAssignment(@PathVariable Integer idShipment) {
+        return shipmentRequestService.getShipmentWithAssignment(idShipment,2);
+    }
+
+    @PostMapping("/freeUnit/{idShipment}")
+    public ResponseEntity<ApiResponse> freeUnits(@PathVariable Integer idShipment) {
+        Integer id = shipmentRequestService.freeUnits(idShipment);
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(HttpStatus.OK, "Liberacipon de unidades exitosa", payload));
+    }
+
+    @PostMapping("/reception/{idShipment}")
+    public ResponseEntity<ApiResponse> confirmReception(@PathVariable Integer idShipment) {
+        Integer id = shipmentRequestService.confirmReception(idShipment);
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(HttpStatus.OK, "Liberacipon de unidades exitosa", payload));
+    }
+
 }

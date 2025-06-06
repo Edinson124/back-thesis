@@ -212,7 +212,7 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public Page<UnitListDTO> getUnitsStock(int page, int size, LocalDate startEntryDate, LocalDate
             endEntryDate, LocalDate startExpirationDate, LocalDate endExpirationDate, String bloodType,
-                                           String type, String status, Long idTransfusion) {
+                                           String type, String status, Long idTransfusion, Boolean onlySuitable) {
 
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("id")));
@@ -244,7 +244,7 @@ public class UnitServiceImpl implements UnitService {
             // Estado
             if (status != null && !status.isBlank()) {
                 predicates.add(cb.equal(root.get("status"), status));
-            } else if (idTransfusion != null) {
+            } else if (idTransfusion != null || (onlySuitable != null && onlySuitable)) {
                 // No status but idTransfusion → SUITABLE
                 predicates.add(cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()));
             } else {
@@ -263,7 +263,7 @@ public class UnitServiceImpl implements UnitService {
             List<String> bloodTypesToUse = new ArrayList<>();
             if (bloodType != null && !bloodType.isBlank()) {
                 bloodTypesToUse.add(bloodType);
-            } else if (idTransfusion != null) {
+            } else if (idTransfusion != null ) {
                 bloodTypesToUse = transfusionBloodCompatible.getBloodTypeCompatibleString(idTransfusion);
             }
 
@@ -419,6 +419,11 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public void updateStatusUnit(Long idUnit, String status) {
         unitRepository.updateStatusById(idUnit, status);
+    }
+
+    @Override
+    public Integer updateBloodBankActual(List<Long> unitIds, Integer idBloodBank) {
+        return unitRepository.updateUnitsBankByIds(unitIds, idBloodBank, UnitStatus.SUITABLE.getLabel());
     }
 
 }

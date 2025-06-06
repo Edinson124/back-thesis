@@ -17,6 +17,7 @@ import com.yawarSoft.Modules.Network.Mappers.ShipmentXUnitMapper;
 import com.yawarSoft.Modules.Network.Repositories.NetworkRepository;
 import com.yawarSoft.Modules.Network.Repositories.ShipmentRequestRepository;
 import com.yawarSoft.Modules.Network.Services.Interfaces.ShipmentRequestService;
+import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
@@ -34,6 +35,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class ShipmentRequestServiceImpl implements ShipmentRequestService {
+
+    private final UnitService unitService;
     private final ShipmentRequestRepository shipmentRequestRepository;
     private final AuthenticatedUserService authenticatedUserService;
     private final NetworkRepository networkRepository;
@@ -41,7 +44,8 @@ public class ShipmentRequestServiceImpl implements ShipmentRequestService {
     private final NetworkCollaborationMapper networkCollaborationMapper;
     private final ShipmentXUnitMapper shipmentXUnitMapper;
 
-    public ShipmentRequestServiceImpl(ShipmentRequestRepository shipmentRequestRepository, AuthenticatedUserService authenticatedUserService, NetworkRepository networkRepository, ShipmentRequestMapper shipmentRequestMapper, NetworkCollaborationMapper networkCollaborationMapper, ShipmentXUnitMapper shipmentXUnitMapper) {
+    public ShipmentRequestServiceImpl(UnitService unitService, ShipmentRequestRepository shipmentRequestRepository, AuthenticatedUserService authenticatedUserService, NetworkRepository networkRepository, ShipmentRequestMapper shipmentRequestMapper, NetworkCollaborationMapper networkCollaborationMapper, ShipmentXUnitMapper shipmentXUnitMapper) {
+        this.unitService = unitService;
         this.shipmentRequestRepository = shipmentRequestRepository;
         this.authenticatedUserService = authenticatedUserService;
         this.networkRepository = networkRepository;
@@ -292,15 +296,19 @@ public class ShipmentRequestServiceImpl implements ShipmentRequestService {
     }
 
     @Override
-    public ShipmentWithAssignmentDTO getShipmentWithAssignment(Integer idShipment) {
+    public ShipmentWithAssignmentDTO getShipmentWithAssignment(Integer idShipment, int mode) {
+        //1 mode -> response origin bank
+        //2 mode -> view destination bank
         ShipmentWithAssignmentDTO shipmentWithAssignmentDTO = new ShipmentWithAssignmentDTO();
         UserEntity userAuth = authenticatedUserService.getCurrentUser();
         ShipmentRequestEntity shipmentRequest = shipmentRequestRepository
                 .findById(idShipment).orElseThrow(()->new IllegalArgumentException("Solicitud de transferencia no encontrada"));
+
         Integer bloodBankUser = userAuth.getBloodBank().getId();
         Integer bloodBankDestination = shipmentRequest.getDestinationBank().getId();
         Integer bloodBankOrigin = shipmentRequest.getOriginBank().getId();
-        if (!Objects.equals(bloodBankUser, bloodBankDestination) && !Objects.equals(bloodBankUser, bloodBankOrigin)) {
+        if ((mode == 1 && !Objects.equals(bloodBankUser, bloodBankOrigin)) ||
+                (mode == 2 && !Objects.equals(bloodBankUser, bloodBankDestination))) {
             shipmentWithAssignmentDTO.setCanViewRequest(false);
             return shipmentWithAssignmentDTO;
         }
@@ -313,6 +321,42 @@ public class ShipmentRequestServiceImpl implements ShipmentRequestService {
         shipmentWithAssignmentDTO.setAssignment(shipmentXUnitMapper.toDto(shipmentRequest.getUnitsAssigned()));
 
         return shipmentWithAssignmentDTO;
+    }
+
+    @Override
+    public Integer freeUnits(Integer idShipment) {
+        UserEntity userAuth = authenticatedUserService.getCurrentUser();
+        ShipmentRequestEntity shipmentRequest = shipmentRequestRepository
+                .findById(idShipment).orElseThrow(()->new IllegalArgumentException("Solicitud de transferencia no encontrada"));
+        shipmentRequest.setStatus(ShipmentRequestStatus.RELEASED.getLabel());
+        shipmentRequest.setReleaseAcceptedDate(LocalDateTime.now());
+        shipmentRequest.setReleaseAcceptedBy(userAuth);
+        shipmentRequestRepository.save(shipmentRequest);
+        return idShipment;
+    }
+
+    @Transactional
+    @Override
+    public Integer confirmReception(Integer idShipment) {
+        UserEntity userAuth = authenticatedUserService.getCurrentUser();
+        ShipmentRequestEntity shipmentRequest = shipmentRequestRepository
+                .findById(idShipment).orElseThrow(()->new IllegalArgumentException("Solicitud de transferencia no encontrada"));
+
+        // Obtener todas las unidades asignadas en esta solicitud
+        List<ShipmentXUnitEntity> assignedUnits = shipmentRequest.getUnitsAssigned();
+        List<Long> unitIds = shipmentRequest.getUnitsAssigned()
+                .stream()
+                .map(u -> u.getBloodUnit().getId())
+                .toList();
+
+        unitService.updateBloodBankActual(unitIds, userAuth.getBloodBank().getId());
+        // Cambiar estado y registrar recepción
+        shipmentRequest.setStatus(ShipmentRequestStatus.COMPLETED.getLabel());
+        shipmentRequest.setReceivedDate(LocalDateTime.now());
+        shipmentRequest.setReceivedBy(userAuth);
+
+        shipmentRequestRepository.save(shipmentRequest);
+        return idShipment;
     }
 
 }
