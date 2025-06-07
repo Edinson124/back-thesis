@@ -41,7 +41,7 @@ public class JWTTokenValidator extends OncePerRequestFilter {
 
         try {
             // Si la solicitud es para logout, no validar el token y continuar
-            if (request.getRequestURI().equals("/auth/logout")) {
+            if (request.getRequestURI().equals("/api/auth/logout")) {
                 filterChain.doFilter(request, response);
                 return;
             }

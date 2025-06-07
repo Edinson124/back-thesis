@@ -3,6 +3,7 @@ package com.yawarSoft.Modules.Admin.Services.Implemenations;
 import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.BloodBankTypeEntity;
+import com.yawarSoft.Core.Entities.BloodStorageEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.ImageStorageService;
 import com.yawarSoft.Core.Utils.UserUtils;
@@ -13,6 +14,7 @@ import com.yawarSoft.Modules.Admin.Dto.Reponse.BloodBankOptionsAddNetworkDTO;
 import com.yawarSoft.Modules.Admin.Enums.BloodBankStatus;
 import com.yawarSoft.Modules.Admin.Mappers.BloodBankMapper;
 import com.yawarSoft.Modules.Admin.Repositories.BloodBankRepository;
+import com.yawarSoft.Modules.Admin.Repositories.BloodStorageRepository;
 import com.yawarSoft.Modules.Admin.Repositories.Projections.BloodBankProjectionSelect;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.BloodBankService;
 import jakarta.persistence.criteria.Predicate;
@@ -38,11 +40,13 @@ public class BloodBankServiceImpl implements BloodBankService {
     private final BloodBankRepository bloodBankRepository;
     private final BloodBankMapper bloodBankMapper;
     private final ImageStorageService imageStorageService;
+    private final BloodStorageRepository bloodStorageRepository;
 
-    public BloodBankServiceImpl(BloodBankRepository bloodBankRepository, BloodBankMapper bloodBankMapper, ImageStorageService imageStorageService) {
+    public BloodBankServiceImpl(BloodBankRepository bloodBankRepository, BloodBankMapper bloodBankMapper, ImageStorageService imageStorageService, BloodStorageRepository bloodStorageRepository) {
         this.bloodBankRepository = bloodBankRepository;
         this.bloodBankMapper = bloodBankMapper;
         this.imageStorageService = imageStorageService;
+        this.bloodStorageRepository = bloodStorageRepository;
     }
 
     @Override
@@ -119,6 +123,19 @@ public class BloodBankServiceImpl implements BloodBankService {
         bloodBank.setIsInternal(true);
 
         BloodBankEntity bloodBankSaved = bloodBankRepository.saveAndFlush(bloodBank);
+        BloodStorageEntity storage = BloodStorageEntity.builder()
+                .bloodBank(bloodBankSaved)
+                .totalBlood(0)
+                .erythrocyteConcentrate(0)
+                .freshFrozenPlasma(0)
+                .cryoprecipitate(0)
+                .platelet(0)
+                .plateletApheresis(0)
+                .redBloodCellsApheresis(0)
+                .plasmaApheresis(0)
+                .build();
+
+        bloodStorageRepository.save(storage);
         return bloodBankMapper.toDTO(bloodBankSaved);
     }
 

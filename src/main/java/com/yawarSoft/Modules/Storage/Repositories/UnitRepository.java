@@ -32,4 +32,7 @@ public interface UnitRepository extends JpaRepository<UnitEntity, Long>, JpaSpec
     int updateUnitsBankByIds(@Param("unitIds") List<Long> unitIds,
                               @Param("destinationBankId") Integer destinationBankId,
                              @Param("status") String status);
+
+    @Query("SELECT u.unitType FROM UnitEntity u WHERE u.id = :id")
+    String findTypeById(@Param("id") Long id);
 }

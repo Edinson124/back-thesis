@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -42,12 +43,12 @@ public class AuthenticationController {
                 .sameSite("Strict")  // Protección contra CSRF
                 .build();
 
-        String userFullName = authService.getUserFullName(authResponse.username());
+        List<String> reponse = authService.getUserFullNameAndRoleName(authResponse.username());
         // 🔥 Retornar el `username` en el body, pero el JWT en la cookie
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString()) // Enviar la cookie en el header
                 .body(Map.of("username", authResponse.username(), "session_time", expirationTimestamp
-                ,"fullName", userFullName)); // Enviar solo el username en el body
+                ,"fullName", reponse.getFirst(),"role",reponse.get(1)));
     }
 
     @PostMapping("/logout")

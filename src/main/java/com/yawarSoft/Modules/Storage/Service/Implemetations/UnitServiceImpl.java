@@ -3,6 +3,7 @@ package com.yawarSoft.Modules.Storage.Service.Implemetations;
 import com.yawarSoft.Core.Entities.*;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Modules.Admin.Dto.GlobalVariableDTO;
+import com.yawarSoft.Modules.Admin.Services.Interfaces.BloodStorageService;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.GlobalVariableService;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
@@ -45,8 +46,9 @@ public class UnitServiceImpl implements UnitService {
     private final DonationService donationService;
     private final AuthenticatedUserService authenticatedUserService;
     private final TransfusionBloodCompatible transfusionBloodCompatible;
+    private final BloodStorageService bloodStorageService;
 
-    public UnitServiceImpl(UnitRepository unitRepository, UnitTransformationRepository unitTransformationRepository, GlobalVariableService globalVariableService, UnitStorageRepository unitStorageRepository, UnitMapper unitMapper, DonationService donationService, AuthenticatedUserService authenticatedUserService, TransfusionBloodCompatible transfusionBloodCompatible) {
+    public UnitServiceImpl(UnitRepository unitRepository, UnitTransformationRepository unitTransformationRepository, GlobalVariableService globalVariableService, UnitStorageRepository unitStorageRepository, UnitMapper unitMapper, DonationService donationService, AuthenticatedUserService authenticatedUserService, TransfusionBloodCompatible transfusionBloodCompatible, BloodStorageService bloodStorageService) {
         this.unitRepository = unitRepository;
         this.unitTransformationRepository = unitTransformationRepository;
         this.globalVariableService = globalVariableService;
@@ -55,6 +57,7 @@ public class UnitServiceImpl implements UnitService {
         this.donationService = donationService;
         this.authenticatedUserService = authenticatedUserService;
         this.transfusionBloodCompatible = transfusionBloodCompatible;
+        this.bloodStorageService = bloodStorageService;
     }
 
 
@@ -339,6 +342,7 @@ public class UnitServiceImpl implements UnitService {
         unitStorage.setEntryDate(LocalDateTime.now());
         unitStorage.setCreatedBy(userAuthenticated);
         unitStorageRepository.save(unitStorage);
+
         return unit;
     }
 
@@ -391,15 +395,21 @@ public class UnitServiceImpl implements UnitService {
         unitTransformation.setCreatedBy(userAuthenticated);
         unitTransformation.setCreatedAt(LocalDateTime.now());
         unitTransformationRepository.save(unitTransformation);
+        bloodStorageService.addBloodStorage(userAuthenticated.getBloodBank().getId(),result.getUnitType());
 
         unitRepository.updateStatusById(unitEntityOrigin.getId(), UnitStatus.FRACTIONATED.getLabel());
+        bloodStorageService.minusBloodStorage(userAuthenticated.getBloodBank().getId(),unitEntityOrigin.getUnitType());
         return unit;
     }
 
+    @Transactional
     @Override
     public Long unitSuitable(Long idUnit) {
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
         String status = UnitStatus.SUITABLE.getLabel();
         unitRepository.updateStatusById(idUnit, status);
+        String unitType = unitRepository.findTypeById(idUnit);
+        bloodStorageService.minusBloodStorage(userAuthenticated.getBloodBank().getId(),unitType);
         return idUnit;
     }
 
