@@ -40,6 +40,9 @@ public class StorageRecordEntity {
     @Column(name = "related_request_id")
     private Long relatedRequestId;
 
+    @Column(name = "from_donation")
+    private Boolean fromDonation  = true;
+
     @Column(name = "created_by", nullable = false)
     private Integer createdBy;
 

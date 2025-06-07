@@ -3,6 +3,7 @@ package com.yawarSoft.Modules.Storage.Controllers;
 import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
+import com.yawarSoft.Modules.Storage.Dto.Request.DiscardReason;
 import com.yawarSoft.Modules.Storage.Dto.UnitDTO;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import org.springframework.data.domain.Page;
@@ -44,6 +45,22 @@ public class UnitController {
     @PutMapping("/quarantined/unitSuitable/{idUnit}")
     public ResponseEntity<ApiResponse> unitSuitable(@PathVariable Long idUnit) {
         Long id = unitService.unitSuitable(idUnit);
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(HttpStatus.OK, "Cambio de unidad ha estado apta", payload));
+    }
+
+    @PutMapping("/quarantined/discard/{idUnit}")
+    public ResponseEntity<ApiResponse> unitQuarantinedDiscard(@PathVariable Long idUnit, @RequestBody DiscardReason reason) {
+        Long id = unitService.discardUnit(idUnit,0, reason.getReason());
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(HttpStatus.OK, "Cambio de unidad ha estado apta", payload));
+    }
+
+    @PutMapping("/discard/{idUnit}")
+    public ResponseEntity<ApiResponse> unitDiscard(@PathVariable Long idUnit, @RequestBody DiscardReason reason) {
+        Long id = unitService.discardUnit(idUnit,1,reason.getReason());
         Map<String, Object> payload = Map.of("id", id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse(HttpStatus.OK, "Cambio de unidad ha estado apta", payload));

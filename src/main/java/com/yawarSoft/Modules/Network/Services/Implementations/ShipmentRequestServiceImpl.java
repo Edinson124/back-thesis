@@ -17,6 +17,7 @@ import com.yawarSoft.Modules.Network.Mappers.ShipmentXUnitMapper;
 import com.yawarSoft.Modules.Network.Repositories.NetworkRepository;
 import com.yawarSoft.Modules.Network.Repositories.ShipmentRequestRepository;
 import com.yawarSoft.Modules.Network.Services.Interfaces.ShipmentRequestService;
+import com.yawarSoft.Modules.Storage.Service.Interfaces.BloodStorageService;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.Predicate;
@@ -43,8 +44,9 @@ public class ShipmentRequestServiceImpl implements ShipmentRequestService {
     private final ShipmentRequestMapper shipmentRequestMapper;
     private final NetworkCollaborationMapper networkCollaborationMapper;
     private final ShipmentXUnitMapper shipmentXUnitMapper;
+    private final BloodStorageService bloodStorageService;
 
-    public ShipmentRequestServiceImpl(UnitService unitService, ShipmentRequestRepository shipmentRequestRepository, AuthenticatedUserService authenticatedUserService, NetworkRepository networkRepository, ShipmentRequestMapper shipmentRequestMapper, NetworkCollaborationMapper networkCollaborationMapper, ShipmentXUnitMapper shipmentXUnitMapper) {
+    public ShipmentRequestServiceImpl(UnitService unitService, ShipmentRequestRepository shipmentRequestRepository, AuthenticatedUserService authenticatedUserService, NetworkRepository networkRepository, ShipmentRequestMapper shipmentRequestMapper, NetworkCollaborationMapper networkCollaborationMapper, ShipmentXUnitMapper shipmentXUnitMapper, BloodStorageService bloodStorageService) {
         this.unitService = unitService;
         this.shipmentRequestRepository = shipmentRequestRepository;
         this.authenticatedUserService = authenticatedUserService;
@@ -52,6 +54,7 @@ public class ShipmentRequestServiceImpl implements ShipmentRequestService {
         this.shipmentRequestMapper = shipmentRequestMapper;
         this.networkCollaborationMapper = networkCollaborationMapper;
         this.shipmentXUnitMapper = shipmentXUnitMapper;
+        this.bloodStorageService = bloodStorageService;
     }
 
     @Override
@@ -356,6 +359,10 @@ public class ShipmentRequestServiceImpl implements ShipmentRequestService {
         shipmentRequest.setReceivedBy(userAuth);
 
         shipmentRequestRepository.save(shipmentRequest);
+        for(ShipmentXUnitEntity xUnit : assignedUnits){
+            bloodStorageService.minusBloodStorage(shipmentRequest.getOriginBank().getId(),xUnit.getBloodUnit().getUnitType(),1);
+            bloodStorageService.addBloodStorage(shipmentRequest.getDestinationBank().getId(),xUnit.getBloodUnit().getUnitType(),1);
+        }
         return idShipment;
     }
 

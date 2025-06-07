@@ -6,6 +6,7 @@ import com.yawarSoft.Core.Entities.UnitEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Modules.Storage.Enums.UnitStatus;
+import com.yawarSoft.Modules.Storage.Service.Interfaces.BloodStorageService;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
 import com.yawarSoft.Modules.Transfusion.Dto.Request.DispensedAssignUnitRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionAssignResultDTO;
@@ -31,13 +32,15 @@ public class TransfusionAssignmentServiceImpl implements TransfusionAssignmentSe
     private final AuthenticatedUserService authenticatedUserService;
     private final UnitService unitService;
     private final TransfusionAssignmentMapper transfusionAssignmentMapper;
+    private final BloodStorageService bloodStorageService;
 
-    public TransfusionAssignmentServiceImpl(TransfusionRequestRepository transfusionRequestRepository, TransfusionAssignmentRepository transfusionAssignmentRepository, AuthenticatedUserService authenticatedUserService, UnitService unitService, TransfusionAssignmentMapper transfusionAssignmentMapper) {
+    public TransfusionAssignmentServiceImpl(TransfusionRequestRepository transfusionRequestRepository, TransfusionAssignmentRepository transfusionAssignmentRepository, AuthenticatedUserService authenticatedUserService, UnitService unitService, TransfusionAssignmentMapper transfusionAssignmentMapper, BloodStorageService bloodStorageService) {
         this.transfusionRequestRepository = transfusionRequestRepository;
         this.transfusionAssignmentRepository = transfusionAssignmentRepository;
         this.authenticatedUserService = authenticatedUserService;
         this.unitService = unitService;
         this.transfusionAssignmentMapper = transfusionAssignmentMapper;
+        this.bloodStorageService = bloodStorageService;
     }
 
 
@@ -61,12 +64,14 @@ public class TransfusionAssignmentServiceImpl implements TransfusionAssignmentSe
                 .findByIdWithUnit(assignSaved.getId())
                 .orElseThrow(() -> new RuntimeException("No se encontró la asignación"));
         unitService.updateStatusUnit(idUnit, UnitStatus.RESERVED.getLabel());
+        bloodStorageService.minusBloodStorage(userAuth.getBloodBank().getId(),assignFinal.getBloodUnit().getUnitType(),1);
         return transfusionAssignmentMapper.toTransfusionAssignmentDto(assignFinal);
     }
 
     @Transactional
     @Override
     public Long deleteTransfusionAssignment(Long idTransfusionAssignment) {
+        UserEntity userAuth = authenticatedUserService.getCurrentUser();
         TransfusionAssignmentEntity transfusionAssignment = transfusionAssignmentRepository.findById(idTransfusionAssignment)
                 .orElseThrow(() -> new IllegalArgumentException("Transfusión no encontrada con ID: " + idTransfusionAssignment));
 
@@ -74,6 +79,8 @@ public class TransfusionAssignmentServiceImpl implements TransfusionAssignmentSe
         transfusionAssignmentRepository.deleteById(idTransfusionAssignment);
 
         unitService.updateStatusUnit(idUnit, UnitStatus.SUITABLE.getLabel());
+        bloodStorageService.addBloodStorage(userAuth.getBloodBank().getId(),
+                transfusionAssignment.getBloodUnit().getUnitType(),1);
         return transfusionAssignment.getId();
     }
 
@@ -81,11 +88,13 @@ public class TransfusionAssignmentServiceImpl implements TransfusionAssignmentSe
     @Transactional
     @Override
     public TransfusionAssignmentDTO saveValidateResult(Long idTransfusionAssignment, TransfusionAssignResultDTO request) {
+        UserEntity userAuth = authenticatedUserService.getCurrentUser();
         TransfusionAssignmentEntity transfusionAssignment = transfusionAssignmentRepository.findById(idTransfusionAssignment)
                 .orElseThrow(() -> new IllegalArgumentException("Transfusión no encontrada con ID: " + idTransfusionAssignment));
 
-        String resultString = request.getType() ? TransfusionAssingmentResult.COMPATIBLE.getLabel() : TransfusionAssingmentResult.INCOMPATIBLE.getLabel();
-        UserEntity userAuth = authenticatedUserService.getCurrentUser();
+        String resultString = request.getType()
+                ? TransfusionAssingmentResult.COMPATIBLE.getLabel()
+                : TransfusionAssingmentResult.INCOMPATIBLE.getLabel();
 
         transfusionAssignment.setObservationTest(request.getObservation());
         transfusionAssignment.setPerformedTestBy(userAuth);
@@ -99,9 +108,11 @@ public class TransfusionAssignmentServiceImpl implements TransfusionAssignmentSe
         if (request.getType()) {
             unitService.updateStatusUnit(idUnit, UnitStatus.RESERVED.getLabel());
             unitEntity.setStatus(UnitStatus.RESERVED.getLabel());
+            bloodStorageService.minusBloodStorage(userAuth.getBloodBank().getId(), unitEntity.getUnitType(),1);
         } else {
             unitService.updateStatusUnit(idUnit, UnitStatus.SUITABLE.getLabel());
-            unitEntity.setStatus(UnitStatus.RESERVED.getLabel());
+            unitEntity.setStatus(UnitStatus.SUITABLE.getLabel());
+            bloodStorageService.addBloodStorage(userAuth.getBloodBank().getId(), unitEntity.getUnitType(),1);
         }
         transfusionAssignment.setBloodUnit(unitEntity);
 

@@ -1,4 +1,4 @@
-package com.yawarSoft.Modules.Admin.Repositories;
+package com.yawarSoft.Modules.Storage.Repositories;
 
 import com.yawarSoft.Core.Entities.BloodStorageEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

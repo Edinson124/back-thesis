@@ -18,7 +18,14 @@ public interface UnitRepository extends JpaRepository<UnitEntity, Long>, JpaSpec
     @Modifying
     @Transactional
     @Query("UPDATE UnitEntity u SET u.status = :status WHERE u.id = :id")
-    void updateStatusById(@Param("id") Long id, @Param("status") String status);
+    int updateStatusById(@Param("id") Long id, @Param("status") String status);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE UnitEntity u SET u.status = :status WHERE u.id = :id AND u.status <> :excludedStatus")
+    int updateStatusTransformation(@Param("id") Long id,
+                                   @Param("status") String status,
+                                   @Param("excludedStatus") String excludedStatus);
 
     @Modifying
     @Transactional

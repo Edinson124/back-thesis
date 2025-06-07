@@ -3,7 +3,7 @@ package com.yawarSoft.Modules.Storage.Service.Implemetations;
 import com.yawarSoft.Core.Entities.*;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Modules.Admin.Dto.GlobalVariableDTO;
-import com.yawarSoft.Modules.Admin.Services.Interfaces.BloodStorageService;
+import com.yawarSoft.Modules.Storage.Service.Interfaces.BloodStorageService;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.GlobalVariableService;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
@@ -16,7 +16,6 @@ import com.yawarSoft.Modules.Storage.Repositories.UnitRepository;
 import com.yawarSoft.Modules.Storage.Repositories.UnitStorageRepository;
 import com.yawarSoft.Modules.Storage.Repositories.UnitTransformationRepository;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitService;
-import com.yawarSoft.Modules.Transfusion.Services.Interfaces.TransfusionAssignmentService;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.TransfusionBloodCompatible;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;
@@ -375,6 +374,7 @@ public class UnitServiceImpl implements UnitService {
         LocalDate dateExpiration = date.plusDays(days);
 
         UnitEntity unitEntityGenerated = unitMapper.toEntityByExtractionDTO(unit);
+        unitEntityGenerated.setDonation(unitEntityOrigin.getDonation());
         unitEntityGenerated.setExpirationDate(dateExpiration);
         unitEntityGenerated.setBloodType(unitEntityOrigin.getBloodType());
         unitEntityGenerated.setDonation(unitEntityOrigin.getDonation());
@@ -384,6 +384,7 @@ public class UnitServiceImpl implements UnitService {
         unitEntityGenerated.setEntryDate(date);
         unitEntityGenerated.setStatus(UnitStatus.SUITABLE.getLabel());
         unitEntityGenerated.setSerologyResult(unitEntityOrigin.getSerologyResult());
+        unitEntityGenerated.setFromDonation(false);
 
         UnitEntity result = unitRepository.save(unitEntityGenerated);
         unit.setId(result.getId());
@@ -395,10 +396,13 @@ public class UnitServiceImpl implements UnitService {
         unitTransformation.setCreatedBy(userAuthenticated);
         unitTransformation.setCreatedAt(LocalDateTime.now());
         unitTransformationRepository.save(unitTransformation);
-        bloodStorageService.addBloodStorage(userAuthenticated.getBloodBank().getId(),result.getUnitType());
+        bloodStorageService.addBloodStorage(userAuthenticated.getBloodBank().getId(),result.getUnitType(),1);
 
-        unitRepository.updateStatusById(unitEntityOrigin.getId(), UnitStatus.FRACTIONATED.getLabel());
-        bloodStorageService.minusBloodStorage(userAuthenticated.getBloodBank().getId(),unitEntityOrigin.getUnitType());
+        int rowsUpdate = unitRepository.updateStatusTransformation(unitEntityOrigin.getId(), UnitStatus.FRACTIONATED.getLabel(),UnitStatus.FRACTIONATED.getLabel());
+        if (rowsUpdate > 0) {// solo si se hizo la transformación, descontamos del inventario
+            bloodStorageService.minusBloodStorage(userAuthenticated.getBloodBank().getId(),
+                    unitEntityOrigin.getUnitType(),1);
+        }
         return unit;
     }
 
@@ -409,7 +413,32 @@ public class UnitServiceImpl implements UnitService {
         String status = UnitStatus.SUITABLE.getLabel();
         unitRepository.updateStatusById(idUnit, status);
         String unitType = unitRepository.findTypeById(idUnit);
-        bloodStorageService.minusBloodStorage(userAuthenticated.getBloodBank().getId(),unitType);
+        bloodStorageService.addBloodStorage(userAuthenticated.getBloodBank().getId(),unitType,1);
+        return idUnit;
+    }
+
+    @Transactional
+    @Override
+    public Long discardUnit(Long idUnit, Integer mode, String reason) {
+        //mode 0-> discard quarantined
+        //mode 1-> discard suitable
+        UserEntity userAuth = authenticatedUserService.getCurrentUser();
+        UnitEntity unitEntity = unitRepository.findById(idUnit)
+                .orElseThrow( () -> new IllegalArgumentException("No se encontro la unidad con el id: " + idUnit));
+        String status = UnitStatus.DISCARD.getLabel();
+        LocalDateTime date = LocalDateTime.now();
+        unitEntity.setStatus(status);
+        unitEntity.setUpdatedAt(date);
+        unitEntity.setUpdatedBy(userAuth);
+        unitEntity.setDiscardBy(userAuth);
+        unitEntity.setDiscardAt(date);
+        unitEntity.setReasonDiscard(reason);
+        unitRepository.save(unitEntity);
+
+        if(mode == 1){
+            String unitType = unitRepository.findTypeById(idUnit);
+            bloodStorageService.addBloodStorage(userAuth.getBloodBank().getId(),unitType,1);
+        }
         return idUnit;
     }
 

@@ -18,6 +18,8 @@ public interface TransfusionResultMapper {
     @Mapping(source = "updatedBy", target = "updatedByName", qualifiedByName = "getFullName")
     TransfusionResultDTO toDetailDTO(TransfusionResultEntity entity);
 
+    @Mapping(source = "transfusionDoctorName", target = "transfusionByName")
+    @Mapping(source = "transfusionDoctorLicenseNumber", target = "transfusionByLicenseNumber")
     TransfusionResultEntity toEntityByRequest(TransfusionResultRequestDTO request);
 
     void updateEntityFromRequest(TransfusionResultRequestDTO request, @MappingTarget TransfusionResultEntity entity);

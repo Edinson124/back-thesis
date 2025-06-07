@@ -4,6 +4,7 @@ import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
 import com.yawarSoft.Modules.Storage.Dto.UnitDTO;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +36,9 @@ public interface UnitService {
     UnitExtractionDTO saveUnitTransformation(Long idUnit, UnitExtractionDTO unit);
 
     Long unitSuitable(Long idUnit);
+
+    @Transactional
+    Long discardUnit(Long idUnit, Integer mode, String reason);
 
     List<UnitExtractionDTO> getUnitsTransformationByUnit(Long idDonation);
 

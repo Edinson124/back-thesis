@@ -1,12 +1,11 @@
-package com.yawarSoft.Modules.Admin.Services.Implemenations;
+package com.yawarSoft.Modules.Storage.Service.Implemetations;
 
+import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.BloodStorageEntity;
-import com.yawarSoft.Modules.Admin.Repositories.BloodStorageRepository;
-import com.yawarSoft.Modules.Admin.Services.Interfaces.BloodStorageService;
-import com.yawarSoft.Modules.Storage.Enums.UnitStatus;
+import com.yawarSoft.Modules.Storage.Repositories.BloodStorageRepository;
+import com.yawarSoft.Modules.Storage.Service.Interfaces.BloodStorageService;
 import com.yawarSoft.Modules.Storage.Enums.UnitTypes;
 import org.springframework.stereotype.Service;
-import static com.yawarSoft.Modules.Storage.Enums.UnitTypes.*;
 
 
 import java.util.Arrays;
@@ -21,23 +20,41 @@ public class BloodStorageServiceImpl implements BloodStorageService {
     }
 
     @Override
-    public int addBloodStorage(Integer idBloodBank, String unitType) {
+    public int addBloodStorage(Integer idBloodBank, String unitType, Integer delta) {
         BloodStorageEntity storage = bloodStorageRepository.findById(idBloodBank)
                 .orElseThrow(() -> new IllegalStateException("No se encontró el registro de almacenamiento para el banco de sangre."));
 
-        updateBloodStorage(storage, unitType, 1);
+        updateBloodStorage(storage, unitType, delta);
         bloodStorageRepository.save(storage);
         return idBloodBank;
     }
 
     @Override
-    public int minusBloodStorage(Integer idBloodBank, String unitType) {
+    public int minusBloodStorage(Integer idBloodBank, String unitType,Integer delta) {
         BloodStorageEntity storage = bloodStorageRepository.findById(idBloodBank)
                 .orElseThrow(() -> new IllegalStateException("No se encontró el registro de almacenamiento para el banco de sangre."));
 
-        updateBloodStorage(storage, unitType, -1);
+        updateBloodStorage(storage, unitType, -delta);
         bloodStorageRepository.save(storage);
         return idBloodBank;
+    }
+
+    @Override
+    public void initBloodStirage(Integer idBloodBank) {
+        BloodBankEntity bloodBank = BloodBankEntity.builder().id(idBloodBank).build();
+        BloodStorageEntity storage = BloodStorageEntity.builder()
+                .bloodBank(bloodBank)
+                .totalBlood(0)
+                .erythrocyteConcentrate(0)
+                .freshFrozenPlasma(0)
+                .cryoprecipitate(0)
+                .platelet(0)
+                .plateletApheresis(0)
+                .redBloodCellsApheresis(0)
+                .plasmaApheresis(0)
+                .build();
+
+        bloodStorageRepository.save(storage);
     }
 
 

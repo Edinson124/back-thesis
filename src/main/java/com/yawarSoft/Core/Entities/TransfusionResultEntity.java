@@ -26,7 +26,7 @@ public class TransfusionResultEntity {
     private LocalDateTime transfusionDate;
 
     @Column(name = "transfusion_by_name")
-    private String transfusioByName;
+    private String transfusionByName;
 
     @Column(name = "transfusion_by_license_number")
     private String transfusionByLicenseNumber;
