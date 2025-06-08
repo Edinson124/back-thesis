@@ -13,4 +13,5 @@ public class ExistTransfusionDTO {
     private Boolean canViewTransfusion ;
     private Long transfusionId;
     private Long transfusionResultId;
+    private Boolean isResultRegistrationAllowed;
 }

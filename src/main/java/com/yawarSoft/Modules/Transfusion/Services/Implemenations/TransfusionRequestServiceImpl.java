@@ -122,6 +122,7 @@ public class TransfusionRequestServiceImpl implements TransfusionRequestService 
             result.setCanViewTransfusion(false);
             result.setTransfusionId(null);
             result.setTransfusionResultId(null);
+            result.setIsResultRegistrationAllowed(false);
         } else {
             UserEntity userEntity = authenticatedUserService.getCurrentUser();
             // Verificar si el banco de sangre de la donación es el mismo que el banco de sangre del usuario
@@ -129,6 +130,10 @@ public class TransfusionRequestServiceImpl implements TransfusionRequestService 
             result.setTransfusionActualExists(true);
             result.setCanViewTransfusion(canViewTransfusion);
             result.setTransfusionId(transfusionEntity.getId());
+            result.setIsResultRegistrationAllowed(false);
+            if(transfusionEntity.getStatus().equals(TransfusionStatus.LIBERADA.getLabel())){
+                result.setIsResultRegistrationAllowed(true);
+            }
             if (transfusionEntity.getTransfusionResult() != null) {
                 result.setTransfusionResultId(transfusionEntity.getTransfusionResult().getId());
             } else {

@@ -5,6 +5,8 @@ import com.yawarSoft.Core.Entities.TransfusionResultEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionResultRequestDTO;
+import com.yawarSoft.Modules.Transfusion.Dto.Response.TransfusionResultCreateDTO;
+import com.yawarSoft.Modules.Transfusion.Enums.TransfusionStatus;
 import com.yawarSoft.Modules.Transfusion.Mappers.TransfusionResultMapper;
 import com.yawarSoft.Modules.Transfusion.Repositories.TransfusionRequestRepository;
 import com.yawarSoft.Modules.Transfusion.Repositories.TransfusionResultRepository;
@@ -31,13 +33,21 @@ public class TransfusionResultServiceImpl implements TransfusionResultService {
 
     @Transactional
     @Override
-    public Long createTransfusionResult(Long idTransfusion, TransfusionResultRequestDTO request) {
+    public TransfusionResultCreateDTO createTransfusionResult(Long idTransfusion, TransfusionResultRequestDTO request) {
         UserEntity userEntity = authenticatedUserService.getCurrentUser();
+        TransfusionResultCreateDTO result = new TransfusionResultCreateDTO();
         TransfusionRequestEntity transfusionEntity = transfusionRequestRepository.findById(idTransfusion)
                 .orElseThrow(() -> new IllegalArgumentException("Transfusion no encontrado con id: " + idTransfusion));
 
+        if (!transfusionEntity.getStatus().equals(TransfusionStatus.LIBERADA.getLabel())) {
+            result.setId(-1L);
+            result.setCreated(false);
+            return result;
+        }
         if (transfusionEntity.getTransfusionResult() != null) {
-            return 0L;
+            result.setId(0L);
+            result.setCreated(false);
+            return result;
         }
 
         TransfusionResultEntity transfusionResultEntity = transfusionResultMapper.toEntityByRequest(request);
@@ -49,7 +59,8 @@ public class TransfusionResultServiceImpl implements TransfusionResultService {
 
         transfusionEntity.setTransfusionResult(transfusionResultSaved);
         transfusionRequestRepository.save(transfusionEntity);
-
-        return transfusionResultSaved.getId();
+        result.setId(transfusionResultSaved.getId() );
+        result.setCreated(true);
+        return result;
     }
 }

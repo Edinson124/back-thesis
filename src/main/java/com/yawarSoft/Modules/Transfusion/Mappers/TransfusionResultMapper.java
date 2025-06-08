@@ -12,6 +12,8 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", uses = MapperUtils.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TransfusionResultMapper {
 
+    @Mapping(source = "transfusionByName", target = "transfusionDoctorName")
+    @Mapping(source = "transfusionByLicenseNumber", target = "transfusionDoctorLicenseNumber")
     @Mapping(source = "createdBy.id", target = "createdById")
     @Mapping(source = "createdBy", target = "createdByName", qualifiedByName = "getFullName")
     @Mapping(source = "updatedBy.id", target = "updatedById")
