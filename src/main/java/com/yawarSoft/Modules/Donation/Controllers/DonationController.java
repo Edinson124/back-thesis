@@ -81,8 +81,14 @@ public class DonationController {
     }
 
     @GetMapping("/{id}")
-        public DonationGetDTO getDonation(@PathVariable("id") Long id){
+    public DonationGetDTO getDonation(@PathVariable("id") Long id){
         return donationService.getDonationById(id);
+    }
+
+    @GetMapping("/status/{id}")
+    public Map<String, Object> getDonationStatus(@PathVariable("id") Long id){
+        String status = donationService.getDonationStatus(id);
+        return Map.of("status", status);
     }
 
     @PostMapping("/deferral/{idDonation}")

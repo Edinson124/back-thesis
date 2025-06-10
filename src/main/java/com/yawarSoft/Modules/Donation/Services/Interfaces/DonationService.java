@@ -41,4 +41,6 @@ public interface DonationService {
     Map<String, String> getBloodTypeAndSerology(Long id);
 
     Long finishDonationWithDeferral(Long idDonation, DeferralDonationRequest deferralDonationRequest);
+
+    String getDonationStatus(Long id);
 }

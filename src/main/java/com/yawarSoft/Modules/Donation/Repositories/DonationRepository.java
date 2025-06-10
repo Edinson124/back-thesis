@@ -45,4 +45,6 @@ public interface DonationRepository extends JpaRepository<DonationEntity, Long> 
     @Query("UPDATE DonationEntity d SET d.hematologicalTest.id = :hematologicalTestId WHERE d.id = :donationId")
     int updateHematologicalTest(@Param("donationId") Long donationId, @Param("hematologicalTestId") Long hematologicalTestId);
 
+    @Query("SELECT d.status FROM DonationEntity d WHERE d.id = :id")
+    String findStatusById(@Param("id") Long id);
 }

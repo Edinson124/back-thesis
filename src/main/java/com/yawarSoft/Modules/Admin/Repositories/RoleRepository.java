@@ -18,7 +18,7 @@ public interface RoleRepository extends JpaRepository<RoleEntity,Integer> {
 
     //Se envia listado de string y se retorna solo los que conincidan en la base de datos
     List<RoleEntity> findRoleEntitiesByNameIn(List<String> rolesName);
-    List<RoleEntity> findByStatus(String status);
+    List<RoleEntity> findByStatusOrderByNameAsc(String status);
 
     @Query("SELECT DISTINCT r FROM RoleEntity r WHERE " +
             "(:search IS NULL OR :search = '' OR r.name LIKE CONCAT('%', :search, '%')) AND " +

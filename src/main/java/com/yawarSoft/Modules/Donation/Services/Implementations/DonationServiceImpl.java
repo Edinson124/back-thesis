@@ -20,6 +20,7 @@ import com.yawarSoft.Modules.Donation.Repositories.DonorRepository;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonorService;
 import com.yawarSoft.Modules.Laboratory.Enums.SerologyTestStatus;
+import com.yawarSoft.Modules.Storage.Service.Interfaces.UnitsDonationService;
 import com.yawarSoft.Modules.Transfusion.Services.Interfaces.PatientService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +38,7 @@ import java.util.Optional;
 @Service
 public class DonationServiceImpl implements DonationService {
 
+    private final UnitsDonationService unitsDonationService;
     private final DonationRepository donationRepository;
     private final DonorRepository donorRepository;
     private final DonationMapper donationMapper;
@@ -47,8 +49,9 @@ public class DonationServiceImpl implements DonationService {
     private final AuthenticatedUserService authenticatedUserService;
 
 
-    public DonationServiceImpl(DonationRepository donationRepository, DonorRepository donorRepository, DonationMapper donationMapper, DonorMapper donorMapper,
+    public DonationServiceImpl(UnitsDonationService unitsDonationService, DonationRepository donationRepository, DonorRepository donorRepository, DonationMapper donationMapper, DonorMapper donorMapper,
                                PatientService patientService, DonorService donorService, AESGCMEncryptionUtil aesGCMEncryptionUtil, AuthenticatedUserService authenticatedUserService) {
+        this.unitsDonationService = unitsDonationService;
         this.donationRepository = donationRepository;
         this.donorRepository = donorRepository;
         this.donationMapper = donationMapper;
@@ -272,8 +275,9 @@ public class DonationServiceImpl implements DonationService {
         DonorGetDTO donorGetDTO = donorMapper.toGetDto(donationEntity.getDonor(),aesGCMEncryptionUtil);
         result.setDonor(donorGetDTO);
         DonationViewDTO donationViewDTO = donationMapper.toDonationViewDTO(donationEntity,aesGCMEncryptionUtil);
+        Integer countUnits = unitsDonationService.countUnitByDonation(id);
+        donationViewDTO.setHasUnits(countUnits>0);
         result.setDonation(donationViewDTO);
-
         return result;
     }
 
@@ -386,6 +390,12 @@ public class DonationServiceImpl implements DonationService {
         return  idDonation;
     }
 
-
-
+    @Override
+    public String getDonationStatus(Long id) {
+        String status = donationRepository.findStatusById(id);
+        if (status == null) {
+            throw new IllegalArgumentException("Donation not found with id: " + id);
+        }
+        return status;
+    }
 }

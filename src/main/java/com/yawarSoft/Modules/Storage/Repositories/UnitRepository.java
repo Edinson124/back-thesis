@@ -42,4 +42,6 @@ public interface UnitRepository extends JpaRepository<UnitEntity, Long>, JpaSpec
 
     @Query("SELECT u.unitType FROM UnitEntity u WHERE u.id = :id")
     String findTypeById(@Param("id") Long id);
+
+    int countByDonation_Id(Long idDonation);
 }

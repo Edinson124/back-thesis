@@ -48,7 +48,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<RoleSelectDTO> getRolesSelectActive() {
-        List<RoleEntity> roles = roleRepository.findByStatus(RoleStatus.ACTIVE.name());
+        List<RoleEntity> roles = roleRepository.findByStatusOrderByNameAsc(RoleStatus.ACTIVE.name());
         return roles.stream()
                 .map(roleMapper::toSelectDTO)
                 .collect(Collectors.toList());

@@ -4,7 +4,6 @@ import com.yawarSoft.Core.Entities.*;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Core.Utils.AESGCMEncryptionUtil;
 import com.yawarSoft.Core.Utils.HmacUtil;
-import com.yawarSoft.Modules.Donation.Dto.Response.DonationGetDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.Request.TransfusionRequestDTO;
 import com.yawarSoft.Modules.Transfusion.Dto.Response.*;
 import com.yawarSoft.Modules.Transfusion.Dto.TransfusionAssignmentDTO;
@@ -31,7 +30,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TransfusionRequestServiceImpl implements TransfusionRequestService {

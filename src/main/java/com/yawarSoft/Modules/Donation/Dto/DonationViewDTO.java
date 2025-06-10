@@ -65,4 +65,6 @@ public class DonationViewDTO {
     private String updatedByName;
     private LocalDateTime updatedAt;
 
+    private Boolean hasUnits;
+
 }
