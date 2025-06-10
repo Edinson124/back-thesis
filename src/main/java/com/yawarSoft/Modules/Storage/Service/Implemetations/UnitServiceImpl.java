@@ -155,13 +155,13 @@ public class UnitServiceImpl implements UnitService {
 
             // Filtrar por unidades en cuarentena (status = 'Disponible')
             predicates.add(cb.equal(root.get("bloodBank").get("id"), bloodBankId));
-            predicates.add(cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()));
-//            predicates.add(
-//                    cb.or(
-//                            cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()),
-//                            cb.equal(root.get("status"), UnitStatus.FRACTIONATED.getLabel())
-//                    )
-//            );
+//            predicates.add(cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()));
+            predicates.add(
+                    cb.or(
+                            cb.equal(root.get("status"), UnitStatus.SUITABLE.getLabel()),
+                            cb.equal(root.get("status"), UnitStatus.FRACTIONATED.getLabel())
+                    )
+            );
             if (bloodType != null && !bloodType.isBlank()) {
                 predicates.add(cb.equal(root.get("bloodType"), bloodType));
             }
@@ -382,7 +382,7 @@ public class UnitServiceImpl implements UnitService {
         unitEntityGenerated.setCreatedBy(userAuthenticated);
         unitEntityGenerated.setBloodBank(userAuthenticated.getBloodBank());
         unitEntityGenerated.setEntryDate(date);
-        unitEntityGenerated.setStatus(UnitStatus.SUITABLE.getLabel());
+        unitEntityGenerated.setStatus(UnitStatus.NO_STAMP.getLabel());
         unitEntityGenerated.setSerologyResult(unitEntityOrigin.getSerologyResult());
         unitEntityGenerated.setFromDonation(false);
 
@@ -396,8 +396,6 @@ public class UnitServiceImpl implements UnitService {
         unitTransformation.setCreatedBy(userAuthenticated);
         unitTransformation.setCreatedAt(LocalDateTime.now());
         unitTransformationRepository.save(unitTransformation);
-        bloodStorageService.addBloodStorage(userAuthenticated.getBloodBank().getId(),result.getUnitType(),1);
-
         int rowsUpdate = unitRepository.updateStatusTransformation(unitEntityOrigin.getId(), UnitStatus.FRACTIONATED.getLabel(),UnitStatus.FRACTIONATED.getLabel());
         if (rowsUpdate > 0) {// solo si se hizo la transformación, descontamos del inventario
             bloodStorageService.minusBloodStorage(userAuthenticated.getBloodBank().getId(),
@@ -408,11 +406,20 @@ public class UnitServiceImpl implements UnitService {
 
     @Transactional
     @Override
-    public Long unitSuitable(Long idUnit) {
+    public Long unitSuitable(Long idUnit, String stamp) {
         UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
-        String status = UnitStatus.SUITABLE.getLabel();
-        unitRepository.updateStatusById(idUnit, status);
-        String unitType = unitRepository.findTypeById(idUnit);
+        boolean exists = unitRepository.existsByStampPronahebas(stamp);
+        if(exists){
+            return 0L;
+        }
+        UnitEntity unitEntity = unitRepository.findById(idUnit)
+                .orElseThrow( () -> new IllegalArgumentException("No se encontro la unidad con el id: " + idUnit));
+        unitEntity.setStatus(UnitStatus.SUITABLE.getLabel());
+        unitEntity.setUpdatedAt(LocalDateTime.now());
+        unitEntity.setUpdatedBy(userAuthenticated);
+        unitEntity.setStampPronahebas(stamp);
+        unitRepository.save(unitEntity);
+        String unitType = unitEntity.getUnitType();
         bloodStorageService.addBloodStorage(userAuthenticated.getBloodBank().getId(),unitType,1);
         return idUnit;
     }
@@ -437,7 +444,7 @@ public class UnitServiceImpl implements UnitService {
 
         if(mode == 1){
             String unitType = unitRepository.findTypeById(idUnit);
-            bloodStorageService.addBloodStorage(userAuth.getBloodBank().getId(),unitType,1);
+            bloodStorageService.minusBloodStorage(userAuth.getBloodBank().getId(),unitType,1);
         }
         return idUnit;
     }
@@ -463,6 +470,30 @@ public class UnitServiceImpl implements UnitService {
     @Override
     public Integer updateBloodBankActual(List<Long> unitIds, Integer idBloodBank) {
         return unitRepository.updateUnitsBankByIds(unitIds, idBloodBank, UnitStatus.SUITABLE.getLabel());
+    }
+
+    @Override
+    public Boolean verifyStamp(String stamp) {
+        //used -> return false
+        return !unitRepository.existsByStampPronahebas(stamp);
+    }
+
+    @Override
+    public Boolean saveStampUnitTransformation(Long idUnit, String stamp) {
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+        boolean exists = unitRepository.existsByStampPronahebas(stamp);
+        if(exists){
+            return false;
+        }
+        UnitEntity unitEntity = unitRepository.findById(idUnit)
+                .orElseThrow( () -> new IllegalArgumentException("No se encontro el id: " + idUnit));
+        unitEntity.setStampPronahebas(stamp);
+        unitEntity.setUpdatedAt(LocalDateTime.now());
+        unitEntity.setUpdatedBy(userAuthenticated);
+        unitEntity.setStatus(UnitStatus.SUITABLE.getLabel());
+        unitRepository.save(unitEntity);
+        bloodStorageService.addBloodStorage(userAuthenticated.getBloodBank().getId(),unitEntity.getUnitType(),1);
+        return true;
     }
 
 }

@@ -15,11 +15,11 @@ import jakarta.persistence.*;
 public class BloodStorageEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_blood_bank", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
+    @JoinColumn(name = "id", nullable = false)
     private BloodBankEntity bloodBank;
 
     @Column(name = "total_blood", nullable = false, columnDefinition = "INTEGER DEFAULT 0")

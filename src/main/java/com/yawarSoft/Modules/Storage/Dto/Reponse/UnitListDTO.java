@@ -13,6 +13,7 @@ public class UnitListDTO {
 
     private Integer id;
     private Integer donationId;
+    private String stampPronahebas;
     private String unitType;
     private String bloodType;
     private String serologyResult;

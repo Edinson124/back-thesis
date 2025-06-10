@@ -44,4 +44,11 @@ public interface UnitRepository extends JpaRepository<UnitEntity, Long>, JpaSpec
     String findTypeById(@Param("id") Long id);
 
     int countByDonation_Id(Long idDonation);
+
+    boolean existsByStampPronahebas(String stampPronahebas);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE UnitEntity u SET u.stampPronahebas = :stamp WHERE u.id = :unitId")
+    int updateStampByUnitId(@Param("unitId") Long unitId, @Param("stamp") String stamp);
 }

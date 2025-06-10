@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 public class UnitExtractionDTO {
 
     private Long id;
+    private String stampPronahebas;
     private String type;
     private String bag;
     private BigDecimal volume;

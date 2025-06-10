@@ -10,7 +10,8 @@ public enum UnitStatus {
     FRACTIONATED("Fraccionado"),
     DISCARD("Descartado"),
     REACTIVE("Reactivo"),
-    TRANSFUSED("Transfundido"),;
+    TRANSFUSED("Transfundido"),
+    NO_STAMP("Sin sello");
 
     private final String label;
 

@@ -42,12 +42,18 @@ public class UnitController {
                 startExpirationDate, endExpirationDate, bloodType, type);
     }
 
-    @PutMapping("/quarantined/unitSuitable/{idUnit}")
-    public ResponseEntity<ApiResponse> unitSuitable(@PathVariable Long idUnit) {
-        Long id = unitService.unitSuitable(idUnit);
+    @PutMapping("/quarantined/unitSuitable/{idUnit}/{stamp}")
+    public ResponseEntity<ApiResponse> unitSuitable(@PathVariable Long idUnit, @PathVariable String stamp) {
+        Long id = unitService.unitSuitable(idUnit,stamp);
         Map<String, Object> payload = Map.of("id", id);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new ApiResponse(HttpStatus.OK, "Cambio de unidad ha estado apta", payload));
+    }
+
+    @GetMapping("/verify/stamp/{stamp}")
+    public Map<String, Object> verifyStamp(@PathVariable String stamp) {
+        Boolean available = unitService.verifyStamp(stamp);
+        return Map.of("available", available);
     }
 
     @PutMapping("/quarantined/discard/{idUnit}")
@@ -55,7 +61,7 @@ public class UnitController {
         Long id = unitService.discardUnit(idUnit,0, reason.getReason());
         Map<String, Object> payload = Map.of("id", id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ApiResponse(HttpStatus.OK, "Cambio de unidad ha estado apta", payload));
+                .body(new ApiResponse(HttpStatus.OK, "Cambio de unidad ha estado descartado", payload));
     }
 
     @PutMapping("/discard/{idUnit}")
@@ -63,7 +69,7 @@ public class UnitController {
         Long id = unitService.discardUnit(idUnit,1,reason.getReason());
         Map<String, Object> payload = Map.of("id", id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ApiResponse(HttpStatus.OK, "Cambio de unidad ha estado apta", payload));
+                .body(new ApiResponse(HttpStatus.OK, "Cambio de unidad ha estado descartado", payload));
     }
 
     @GetMapping("/transformation")
@@ -132,6 +138,12 @@ public class UnitController {
     @PostMapping("/transformation/save/{idUnit}")
     public UnitExtractionDTO saveUnitTransformation(@PathVariable Long idUnit, @RequestBody UnitExtractionDTO unit) {
         return unitService.saveUnitTransformation(idUnit, unit);
+    }
+
+    @PutMapping("/transformation/stamp/{idUnit}/{stamp}")
+    public Map<String, Object> saveUnitStampTransformation(@PathVariable Long idUnit, @PathVariable String stamp) {
+        Boolean register = unitService.saveStampUnitTransformation(idUnit, stamp);
+        return Map.of("register", register);
     }
 
 }

@@ -19,6 +19,9 @@ public class UnitEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "stamp_pronahebas", length = 6)
+    private String stampPronahebas;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_donation")
     private DonationEntity donation;

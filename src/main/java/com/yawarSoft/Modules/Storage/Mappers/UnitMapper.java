@@ -13,6 +13,7 @@ import org.mapstruct.ReportingPolicy;
 public interface UnitMapper {
 
     @Mapping(source = "donation.id", target = "donationId")
+    @Mapping(source = "stampPronahebas", target = "stampPronahebas")
     UnitListDTO toListDTO(UnitEntity unitEntity);
 
     @Mapping(source = "donation.id", target = "donationId")
@@ -20,6 +21,7 @@ public interface UnitMapper {
 
     @Mapping(source = "unitType", target = "type")
     @Mapping(source = "bagType", target = "bag")
+    @Mapping(source = "stampPronahebas", target = "stampPronahebas")
     UnitExtractionDTO toExtractionDTO(UnitEntity unitEntity);
 
     @Mapping(source = "type", target = "unitType")

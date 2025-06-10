@@ -35,7 +35,7 @@ public interface UnitService {
 
     UnitExtractionDTO saveUnitTransformation(Long idUnit, UnitExtractionDTO unit);
 
-    Long unitSuitable(Long idUnit);
+    Long unitSuitable(Long idUnit, String stamp);
 
     @Transactional
     Long discardUnit(Long idUnit, Integer mode, String reason);
@@ -47,4 +47,8 @@ public interface UnitService {
     void updateStatusUnit(Long idUnit, String status);
 
     Integer updateBloodBankActual(List<Long> unitIds, Integer idBloodBank);
+
+    Boolean verifyStamp(String stamp);
+
+    Boolean saveStampUnitTransformation(Long idUnit, String stamp);
 }
