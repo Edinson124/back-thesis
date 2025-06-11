@@ -17,6 +17,7 @@ public interface ShipmentXUnitMapper {
     @Mapping(target = "bloodType", source = "bloodUnit.bloodType")
     @Mapping(target = "unitType", source = "bloodUnit.unitType")
     @Mapping(target = "expirationDate", source = "bloodUnit.expirationDate")
+    @Mapping(target = "stampPronahebas", source = "bloodUnit.stampPronahebas")
     ShipmentXUnitDTO toDto(ShipmentXUnitEntity entity);
 
     List<ShipmentXUnitDTO> toDto(List<ShipmentXUnitEntity> entity);

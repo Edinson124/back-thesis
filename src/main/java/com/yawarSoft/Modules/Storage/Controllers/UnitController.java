@@ -120,6 +120,12 @@ public class UnitController {
         return unitService.getUnitById(id);
     }
 
+    @GetMapping("/view/{id}")
+    public Map<String, Object> canViewUnitStock(@PathVariable Long id) {
+        Boolean canView = unitService.canViewUnitStock(id);
+        return Map.of("canView", canView);
+    }
+
     @GetMapping("/get/{idDonation}")
     public List<UnitExtractionDTO> getUnitsByDonation(@PathVariable Long idDonation) {
         return unitService.getUnitsByDonation(idDonation);

@@ -51,4 +51,6 @@ public interface UnitService {
     Boolean verifyStamp(String stamp);
 
     Boolean saveStampUnitTransformation(Long idUnit, String stamp);
+
+    Boolean canViewUnitStock(Long id);
 }

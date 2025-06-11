@@ -1,21 +1,22 @@
 package com.yawarSoft.Modules.Network.Services.Implementations;
 
-import com.yawarSoft.Core.Entities.BloodBankNetworkEntity;
-import com.yawarSoft.Core.Entities.UnitEntity;
-import com.yawarSoft.Core.Entities.UserEntity;
+import com.yawarSoft.Core.Entities.*;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Modules.Admin.Enums.NetworkBBStatus;
 import com.yawarSoft.Modules.Network.Dto.BloodBankNetworkCollaborationDTO;
 import com.yawarSoft.Modules.Network.Dto.NetworkCollaborationDTO;
 import com.yawarSoft.Modules.Network.Dto.Response.OptionBloodBankNetworkDTO;
 import com.yawarSoft.Modules.Network.Dto.Response.StockNetworkDTO;
+import com.yawarSoft.Modules.Network.Dto.Response.UnitInfoCollaboration;
 import com.yawarSoft.Modules.Network.Dto.UnitCollaborationTableDTO;
 import com.yawarSoft.Modules.Network.Mappers.NetworkCollaborationMapper;
 import com.yawarSoft.Modules.Network.Mappers.UnitCollaborationMapper;
 import com.yawarSoft.Modules.Network.Repositories.BloodBankNetworkRepository;
 import com.yawarSoft.Modules.Network.Repositories.NetworkRepository;
+import com.yawarSoft.Modules.Network.Repositories.ShipmentRequestRepository;
 import com.yawarSoft.Modules.Network.Repositories.StockCollaborationRepository;
 import com.yawarSoft.Modules.Network.Services.Interfaces.CollaborationService;
+import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Enums.UnitStatus;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
@@ -24,6 +25,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.PageImpl;
+
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -41,14 +44,16 @@ public class CollaborationServiceImpl implements CollaborationService {
     private final BloodBankNetworkRepository bloodBankNetworkRepository;
     private final NetworkCollaborationMapper networkCollaborationMapper;
     private final UnitCollaborationMapper unitCollaborationMapper;
+    private final ShipmentRequestRepository shipmentRequestRepository;
 
-    public CollaborationServiceImpl(AuthenticatedUserService authenticatedUserService, NetworkRepository networkRepository, StockCollaborationRepository stockCollaborationRepository, BloodBankNetworkRepository bloodBankNetworkRepository, NetworkCollaborationMapper networkCollaborationMapper, UnitCollaborationMapper unitCollaborationMapper) {
+    public CollaborationServiceImpl(AuthenticatedUserService authenticatedUserService, NetworkRepository networkRepository, StockCollaborationRepository stockCollaborationRepository, BloodBankNetworkRepository bloodBankNetworkRepository, NetworkCollaborationMapper networkCollaborationMapper, UnitCollaborationMapper unitCollaborationMapper, ShipmentRequestRepository shipmentRequestRepository) {
         this.authenticatedUserService = authenticatedUserService;
         this.networkRepository = networkRepository;
         this.stockCollaborationRepository = stockCollaborationRepository;
         this.bloodBankNetworkRepository = bloodBankNetworkRepository;
         this.networkCollaborationMapper = networkCollaborationMapper;
         this.unitCollaborationMapper = unitCollaborationMapper;
+        this.shipmentRequestRepository = shipmentRequestRepository;
     }
 
 
@@ -101,7 +106,7 @@ public class CollaborationServiceImpl implements CollaborationService {
         if (!canViewStock) {
             return StockNetworkDTO.builder()
                     .canViewUser(false)
-                    .unitsStock(Page.empty())
+                    .unitsStock(new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0))
                     .build();
         }
 
@@ -174,6 +179,68 @@ public class CollaborationServiceImpl implements CollaborationService {
 
         dto.setBloodBanks(mapped);
         return dto;
+    }
+
+    @Override
+    public UnitInfoCollaboration getUnitNetwork(Long idUnit, Integer idNetwork) {
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+        UnitInfoCollaboration result = new UnitInfoCollaboration();
+
+        Integer userBankId = userAuthenticated.getBloodBank().getId();
+
+        UnitEntity unitEntity = stockCollaborationRepository.findById(idUnit)
+                .orElseThrow(()->new IllegalArgumentException("No such unit"));
+        Integer unitBankId = unitEntity.getBloodBank().getId();
+
+        List<BloodBankNetworkEntity> activeNetworkBanks = bloodBankNetworkRepository
+                .findByNetworkIdAndStatusOrderByBloodBank_NameAsc(idNetwork, NetworkBBStatus.ACTIVE.name());
+
+        List<Integer> mappedIdBloodBank = activeNetworkBanks.stream()
+                .map(b -> b.getBloodBank().getId())
+                .toList();
+
+        boolean canView = mappedIdBloodBank.contains(userBankId) && mappedIdBloodBank.contains(unitBankId);
+        if(!canView){
+            result.setCanViewUnit(false);
+            return result;
+        }
+
+        DonationEntity donationEntity = unitEntity.getDonation();
+        SerologyTestEntity serologyTestEntity = donationEntity.getSerologyTest();
+
+        result.setSerology(unitCollaborationMapper.toSerologyDto(serologyTestEntity));
+        result.setUnit(unitCollaborationMapper.toUnitDTO(unitEntity));
+        result.setCanViewUnit(true);
+        return result;
+    }
+
+    @Override
+    public UnitInfoCollaboration getUnitShipment(Long idUnit, Integer idShipment) {
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+        UnitInfoCollaboration result = new UnitInfoCollaboration();
+
+        Integer userBankId = userAuthenticated.getBloodBank().getId();
+
+        UnitEntity unitEntity = stockCollaborationRepository.findById(idUnit)
+                .orElseThrow(()->new IllegalArgumentException("No such unit"));
+
+        ShipmentRequestEntity shipmentRequest = shipmentRequestRepository.findById(idShipment)
+                .orElseThrow(()->new IllegalArgumentException("No such shipment"));
+        Integer idOriginBank = shipmentRequest.getOriginBank().getId();
+        Integer idDestinationBank = shipmentRequest.getDestinationBank().getId();
+
+        if(userBankId != idOriginBank && userBankId != idDestinationBank){
+            result.setCanViewUnit(false);
+            return result;
+        }
+
+        DonationEntity donationEntity = unitEntity.getDonation();
+        SerologyTestEntity serologyTestEntity = donationEntity.getSerologyTest();
+
+        result.setSerology(unitCollaborationMapper.toSerologyDto(serologyTestEntity));
+        result.setUnit(unitCollaborationMapper.toUnitDTO(unitEntity));
+        result.setCanViewUnit(true);
+        return result;
     }
 
 }

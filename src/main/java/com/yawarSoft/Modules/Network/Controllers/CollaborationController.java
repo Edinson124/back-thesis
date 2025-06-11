@@ -3,7 +3,9 @@ package com.yawarSoft.Modules.Network.Controllers;
 import com.yawarSoft.Modules.Network.Dto.NetworkCollaborationDTO;
 import com.yawarSoft.Modules.Network.Dto.Response.OptionBloodBankNetworkDTO;
 import com.yawarSoft.Modules.Network.Dto.Response.StockNetworkDTO;
+import com.yawarSoft.Modules.Network.Dto.Response.UnitInfoCollaboration;
 import com.yawarSoft.Modules.Network.Services.Interfaces.CollaborationService;
+import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/collaboration")
@@ -58,5 +61,15 @@ public class CollaborationController {
                                          @RequestParam(required = false) String type) {
         return collaborationService.getUnitsStock(idBloodBank, idNetwork, page, size, startEntryDate, endEntryDate,
                 startExpirationDate, endExpirationDate, bloodType, type);
+    }
+
+    @GetMapping("/view/unit/{idUnit}/{idNetwork}")
+    public UnitInfoCollaboration getUnitNetwork(@PathVariable Long idUnit, @PathVariable Integer idNetwork) {
+        return collaborationService.getUnitNetwork(idUnit, idNetwork);
+    }
+
+    @GetMapping("/view/unit/shipment/{idUnit}/{idShipment}")
+    public UnitInfoCollaboration getUnitShipment(@PathVariable Long idUnit, @PathVariable Integer idShipment) {
+        return collaborationService.getUnitShipment(idUnit, idShipment);
     }
 }

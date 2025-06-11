@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class ShipmentXUnitDTO {
     private Integer id;
+    private String stampPronahebas;
     private Long idUnit;
     private String bloodType;
     private String unitType;

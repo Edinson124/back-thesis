@@ -496,4 +496,12 @@ public class UnitServiceImpl implements UnitService {
         return true;
     }
 
+    @Override
+    public Boolean canViewUnitStock(Long id) {
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+        UnitEntity unitEntity = unitRepository.findById(id)
+                .orElseThrow( () -> new IllegalArgumentException("No se encontro el id: " + id));
+        return userAuthenticated.getBloodBank().getId().equals(unitEntity.getBloodBank().getId());
+    }
+
 }

@@ -3,10 +3,13 @@ package com.yawarSoft.Modules.Network.Services.Interfaces;
 import com.yawarSoft.Modules.Network.Dto.NetworkCollaborationDTO;
 import com.yawarSoft.Modules.Network.Dto.Response.OptionBloodBankNetworkDTO;
 import com.yawarSoft.Modules.Network.Dto.Response.StockNetworkDTO;
+import com.yawarSoft.Modules.Network.Dto.Response.UnitInfoCollaboration;
+import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitExtractionDTO;
 import com.yawarSoft.Modules.Storage.Dto.Reponse.UnitListDTO;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface CollaborationService {
     Page<NetworkCollaborationDTO> searchNetworksByUserAndOptionalFilters(String name, Integer idBloodBank, int page, int size);
@@ -16,4 +19,8 @@ public interface CollaborationService {
                                   LocalDate endExpirationDate, String bloodType, String type);
 
     OptionBloodBankNetworkDTO getBBOptionsNetwork(Integer networkId);
+
+    UnitInfoCollaboration getUnitNetwork(Long idUnit, Integer idNetwork);
+
+    UnitInfoCollaboration getUnitShipment(Long idUnit, Integer idShipment);
 }
