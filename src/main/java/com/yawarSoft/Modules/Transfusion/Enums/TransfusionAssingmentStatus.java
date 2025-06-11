@@ -4,7 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum TransfusionAssingmentStatus {
-    ACTIVE("Activo");
+    PENDING("Pendiente"),
+    DISPATCHED ("Liberada"),
+    APPROVED("Aprobado"),
+    REJECTED("Rechazada");
 
     private final String label;
 

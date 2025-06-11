@@ -13,8 +13,10 @@ public class TransfusionAssignmentDTO {
     private Long id;
 
     private Long idUnit;
+    private String stampPronahebas;
     private String bloodType;
     private String unitType;
+    private String status;
 
     private String validateResult;
     private LocalDateTime validateResultDate;

@@ -11,8 +11,8 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = MapperUtils.class, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface TransfusionAssignmentMapper {
-
     @Mapping(source = "bloodUnit.id", target = "idUnit")
+    @Mapping(source = "bloodUnit.stampPronahebas", target = "stampPronahebas")
     @Mapping(source = "bloodUnit.unitType", target = "unitType")
     @Mapping(source = "bloodUnit.bloodType", target = "bloodType")
     @Mapping(source = "performedTestBy.id", target = "performedTestById")
@@ -21,6 +21,7 @@ public interface TransfusionAssignmentMapper {
     @Mapping(source = "createdBy", target = "createdByName", qualifiedByName = "getFullName")
     @Mapping(source = "updatedBy.id", target = "updatedById")
     @Mapping(source = "updatedBy", target = "updatedByName", qualifiedByName = "getFullName")
+    @Mapping(source = "status", target = "status")
     TransfusionAssignmentDTO toTransfusionAssignmentDto(TransfusionAssignmentEntity entity);
 
     List<TransfusionAssignmentDTO> toTransfusionAssignmentDtoList(List<TransfusionAssignmentEntity> entityList);

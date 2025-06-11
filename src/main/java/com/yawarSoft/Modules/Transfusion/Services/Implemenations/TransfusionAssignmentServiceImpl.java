@@ -55,7 +55,7 @@ public class TransfusionAssignmentServiceImpl implements TransfusionAssignmentSe
         TransfusionAssignmentEntity transfusionAssignmentEntity = new TransfusionAssignmentEntity();
         transfusionAssignmentEntity.setTransfusionRequest(transfusionRequest);
         transfusionAssignmentEntity.setBloodUnit(unitEntity);
-        transfusionAssignmentEntity.setStatus(TransfusionAssingmentStatus.ACTIVE.getLabel());
+        transfusionAssignmentEntity.setStatus(TransfusionAssingmentStatus.PENDING.getLabel());
         transfusionAssignmentEntity.setCreatedBy(userAuth);
         transfusionAssignmentEntity.setCreatedAt(LocalDateTime.now());
 
@@ -96,11 +96,15 @@ public class TransfusionAssignmentServiceImpl implements TransfusionAssignmentSe
                 ? TransfusionAssingmentResult.COMPATIBLE.getLabel()
                 : TransfusionAssingmentResult.INCOMPATIBLE.getLabel();
 
+        String assignStatus = request.getType()
+                ? TransfusionAssingmentStatus.APPROVED.getLabel()
+                : TransfusionAssingmentStatus.REJECTED.getLabel();
+
         transfusionAssignment.setObservationTest(request.getObservation());
         transfusionAssignment.setPerformedTestBy(userAuth);
         transfusionAssignment.setValidateResultDate(LocalDateTime.now());
         transfusionAssignment.setValidateResult(resultString);
-        transfusionAssignment.setStatus(TransfusionAssingmentStatus.ACTIVE.getLabel());
+        transfusionAssignment.setStatus(assignStatus);
         transfusionAssignmentRepository.save(transfusionAssignment);
 
         Long idUnit = transfusionAssignment.getBloodUnit().getId();
@@ -138,6 +142,7 @@ public class TransfusionAssignmentServiceImpl implements TransfusionAssignmentSe
                 assignment.setReceivedByName(requestDTO.getReceivedByName());
                 assignment.setDispensedBy(userAuth);
                 assignment.setDispensedDate(now);
+                assignment.setStatus(TransfusionAssingmentStatus.DISPATCHED.getLabel());
                 transfusionAssignmentRepository.save(assignment);
             }
         }

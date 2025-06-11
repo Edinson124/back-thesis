@@ -18,4 +18,6 @@ public interface TransfusionRequestService {
     TransfusionGetDTO getTranfusion(Long id);
 
     Long createTransfusion(TransfusionRequestDTO transfusionRequestDTO);
+
+    Long editTransfusion(TransfusionRequestDTO transfusionRequestDTO);
 }

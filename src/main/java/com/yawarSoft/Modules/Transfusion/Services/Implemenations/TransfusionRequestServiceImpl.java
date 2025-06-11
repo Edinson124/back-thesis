@@ -30,6 +30,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class TransfusionRequestServiceImpl implements TransfusionRequestService {
@@ -231,5 +234,62 @@ public class TransfusionRequestServiceImpl implements TransfusionRequestService 
         transfusionRequestEntity.setDetails(details);
         TransfusionRequestEntity transfusionSaved = transfusionRequestRepository.save(transfusionRequestEntity);
         return transfusionSaved.getId();
+    }
+
+    @Override
+    public Long editTransfusion(TransfusionRequestDTO transfusionRequestDTO) {
+        UserEntity userAuth = authenticatedUserService.getCurrentUser();
+
+        TransfusionRequestEntity transfusionRequest = transfusionRequestRepository.findById(transfusionRequestDTO.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Transfusion no encontrada"));
+
+        UserEntity attendingDoctor = UserEntity.builder().id(transfusionRequestDTO.getAttendingDoctor()).build();
+        transfusionRequest.setAttendingDoctor(attendingDoctor);
+        transfusionRequest.setBed(transfusionRequestDTO.getBed());
+        transfusionRequest.setMedicalService(transfusionRequestDTO.getMedicalService());
+        transfusionRequest.setHasCrossmatch(transfusionRequestDTO.getHasCrossmatch());
+        transfusionRequest.setDiagnosis(transfusionRequestDTO.getDiagnosis());
+        transfusionRequest.setRequestReason(transfusionRequestDTO.getRequestReason());
+
+        transfusionRequest.setUpdatedBy(userAuth);
+        transfusionRequest.setUpdatedAt(LocalDateTime.now());
+
+        // === MANEJO DE DETAILS ===
+        // IDs actuales en base de datos
+        Map<Long, TransfusionRequestDetailEntity> currentDetailMap = transfusionRequest.getDetails().stream()
+                .collect(Collectors.toMap(TransfusionRequestDetailEntity::getId, d -> d));
+
+        // IDs recibidos en DTO
+        Set<Long> dtoIds = transfusionRequestDTO.getRequest().stream()
+                .map(TransfusionRequestDetailDTO::getId)
+                .collect(Collectors.toSet());
+
+        // Lista final de detalles
+        List<TransfusionRequestDetailEntity> finalDetails = new ArrayList<>();
+
+        for (TransfusionRequestDetailDTO dtoDetail : transfusionRequestDTO.getRequest()) {
+            TransfusionRequestDetailEntity detailEntity = currentDetailMap.get(dtoDetail.getId());
+
+            if (detailEntity != null) {
+                // Ya existe, actualizar
+                detailEntity.setUnitType(dtoDetail.getUnitType());
+                detailEntity.setRequestedQuantity(dtoDetail.getRequestedQuantity());
+                finalDetails.add(detailEntity);
+            } else {
+                // No existe, crear nuevo (aunque tenga ID)
+                TransfusionRequestDetailEntity newDetail = TransfusionRequestDetailEntity.builder()
+                        .unitType(dtoDetail.getUnitType())
+                        .requestedQuantity(dtoDetail.getRequestedQuantity())
+                        .createdBy(userAuth)
+                        .createdAt(LocalDateTime.now())
+                        .transfusionRequest(transfusionRequest)
+                        .build();
+                finalDetails.add(newDetail);
+            }
+        }
+        transfusionRequest.getDetails().clear();
+        transfusionRequest.getDetails().addAll(finalDetails);
+        TransfusionRequestEntity saved = transfusionRequestRepository.save(transfusionRequest);
+        return saved.getId();
     }
 }

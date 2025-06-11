@@ -66,4 +66,12 @@ public class TransfusionRequestController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse(HttpStatus.CREATED, "Solicitud de tranfusión creada exitosamente", payload));
     }
+
+    @PutMapping()
+    public ResponseEntity<ApiResponse> editTransfusion(@RequestBody TransfusionRequestDTO transfusionRequestDTO) {
+        Long id = transfusionService.editTransfusion(transfusionRequestDTO);
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ApiResponse(HttpStatus.CREATED, "Solicitud de tranfusión creada exitosamente", payload));
+    }
 }
