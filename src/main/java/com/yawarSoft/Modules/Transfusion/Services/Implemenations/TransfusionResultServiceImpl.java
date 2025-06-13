@@ -58,6 +58,7 @@ public class TransfusionResultServiceImpl implements TransfusionResultService {
         TransfusionResultEntity transfusionResultSaved = transfusionResultRepository.save(transfusionResultEntity);
 
         transfusionEntity.setTransfusionResult(transfusionResultSaved);
+        transfusionEntity.setStatus(TransfusionStatus.FINALIZADA.getLabel());
         transfusionRequestRepository.save(transfusionEntity);
         result.setId(transfusionResultSaved.getId() );
         result.setCreated(true);

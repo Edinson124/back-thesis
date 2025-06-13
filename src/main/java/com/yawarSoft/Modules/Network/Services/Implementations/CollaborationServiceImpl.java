@@ -222,7 +222,7 @@ public class CollaborationServiceImpl implements CollaborationService {
         Integer userBankId = userAuthenticated.getBloodBank().getId();
 
         UnitEntity unitEntity = stockCollaborationRepository.findById(idUnit)
-                .orElseThrow(()->new IllegalArgumentException("No such unit"));
+                .orElseThrow(()->   new IllegalArgumentException("No such unit"));
 
         ShipmentRequestEntity shipmentRequest = shipmentRequestRepository.findById(idShipment)
                 .orElseThrow(()->new IllegalArgumentException("No such shipment"));
