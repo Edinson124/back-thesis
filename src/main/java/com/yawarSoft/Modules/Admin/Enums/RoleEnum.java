@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum RoleEnum {
-    ADMINISTRADOR(1, "Administrador"),
+    ADMINISTRADOR(1, "ADMIN"),
     MEDICO_BANCO_DE_SANGRE(2, "Medico de banco de sangre"),
     TECNOLOGO(3, "Tecnologo"),
     TECNICO(4, "Tecnico"),

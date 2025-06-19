@@ -56,9 +56,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
             throw new UserInactiveException("Usuario inactivo");
         }
 
-        if(!roleEntity.getName().equals(RoleEnum.ADMINISTRADOR.getName()) && userEntity.getBloodBank() == null){
+        if ((roleEntity == null || roleEntity.getId() != RoleEnum.ADMINISTRADOR.getId()) &&
+                        userEntity.getBloodBank() == null
+        ) {
             throw new UserNotBloodBankException("El usuario no tiene banco de sangre asignado.");
         }
+
 
         //Mapeando a User de Spring Security (clase que implementa interfaz UserDetails)
 
