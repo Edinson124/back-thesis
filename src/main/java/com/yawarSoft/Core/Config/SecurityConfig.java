@@ -45,6 +45,8 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/ubication/**").permitAll();
 
+                    http.requestMatchers("/fhir/**").permitAll();
+
 //                    // EndPoints Privados
 //                    http.requestMatchers(HttpMethod.GET, "/method/get").hasAuthority("READ");
 //                    http.requestMatchers(HttpMethod.POST, "/method/post").hasAuthority("CREATE");

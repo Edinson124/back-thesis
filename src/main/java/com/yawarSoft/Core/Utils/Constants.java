@@ -8,7 +8,7 @@ public final class Constants {
     }
 
     public static Long getTimeToken(){
-        Duration expiration = Duration.ofHours(2);
+        Duration expiration = Duration.ofHours(4);
         return System.currentTimeMillis() + expiration.toMillis();
     }
     // Tiempo mínimo entre donaciones para hombres (4 meses)

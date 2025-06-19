@@ -2,6 +2,8 @@ package com.yawarSoft.Core.Config;
 
 import com.yawarSoft.Core.Errors.ResourceNotFoundException;
 import com.yawarSoft.Core.Dto.ApiResponse;
+import com.yawarSoft.Core.Errors.UserInactiveException;
+import com.yawarSoft.Core.Errors.UserNotBloodBankException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -52,5 +54,21 @@ public class GlobalExceptionHandler {
         log.error("Error interno del servidor", ex);
         ApiResponse response = new ApiResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(UserInactiveException.class)
+    public ResponseEntity<ApiResponse> handleUserInactiveException(Exception ex) throws Exception {
+
+        log.error("Error usuario inactivo", ex);
+        ApiResponse response = new ApiResponse(HttpStatus.UNAUTHORIZED, "Usuario inactivo");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(UserNotBloodBankException.class)
+    public ResponseEntity<ApiResponse> handleUserNotBloodBankException(Exception ex) throws Exception {
+
+        log.error("Error usuario no tiene banco de sangre asignado", ex);
+        ApiResponse response = new ApiResponse(HttpStatus.FORBIDDEN, "Usuario sin banco asignado");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 }

@@ -153,7 +153,7 @@ public class UserServiceImpl implements UserService {
         auth.setUser(userSaved);
         authService.saveAuth(auth);
         // Enviar email
-//        emailService.sendCredentialsEmail(user.getEmail(), auth.getUsername(), randomPassword);
+        emailService.sendCredentialsEmail(user.getEmail(), auth.getUsername(), randomPassword);
         return userDto;
     }
 

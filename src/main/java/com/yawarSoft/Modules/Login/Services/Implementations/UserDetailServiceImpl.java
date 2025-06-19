@@ -2,6 +2,10 @@ package com.yawarSoft.Modules.Login.Services.Implementations;
 
 
 import com.yawarSoft.Core.Entities.RoleEntity;
+import com.yawarSoft.Core.Errors.UserInactiveException;
+import com.yawarSoft.Core.Errors.UserNotBloodBankException;
+import com.yawarSoft.Modules.Admin.Enums.RoleEnum;
+import com.yawarSoft.Modules.Admin.Enums.UserStatus;
 import com.yawarSoft.Modules.Login.Dto.AuthLoginRequest;
 import com.yawarSoft.Modules.Login.Dto.AuthResponse;
 import com.yawarSoft.Core.Entities.AuthEntity;
@@ -46,6 +50,15 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 .orElseThrow(()-> new UsernameNotFoundException("Usuario no existe"));
 
         UserEntity userEntity = authEntity.getUser();
+        RoleEntity roleEntity = userEntity.getRole();
+
+        if(userEntity.getStatus().equals(UserStatus.INACTIVE)){
+            throw new UserInactiveException("Usuario inactivo");
+        }
+
+        if(!roleEntity.getName().equals(RoleEnum.ADMINISTRADOR.getName()) && userEntity.getBloodBank() == null){
+            throw new UserNotBloodBankException("El usuario no tiene banco de sangre asignado.");
+        }
 
         //Mapeando a User de Spring Security (clase que implementa interfaz UserDetails)
 

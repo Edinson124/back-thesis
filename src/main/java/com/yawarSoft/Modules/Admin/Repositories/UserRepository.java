@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity,Integer> {
-    @Query("SELECT DISTINCT u FROM UserEntity u JOIN u.role r WHERE " +
+    @Query("SELECT DISTINCT u FROM UserEntity u LEFT JOIN u.role r WHERE " +
             "(:search IS NULL OR :search = '' OR u.firstName LIKE CONCAT('%', :search, '%') OR u.documentNumber LIKE CONCAT('%', :search, '%')) AND " +
             "(:role IS NULL OR r.id = :role) AND " +
             "(:status IS NULL OR u.status = :status) " +
