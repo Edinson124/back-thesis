@@ -384,6 +384,7 @@ public class UnitServiceImpl implements UnitService {
         unitEntityGenerated.setEntryDate(date);
         unitEntityGenerated.setStatus(UnitStatus.NO_STAMP.getLabel());
         unitEntityGenerated.setSerologyResult(unitEntityOrigin.getSerologyResult());
+        unitEntityGenerated.setStampPronahebas(null);
         unitEntityGenerated.setFromDonation(false);
 
         UnitEntity result = unitRepository.save(unitEntityGenerated);
