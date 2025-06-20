@@ -6,6 +6,7 @@ import com.yawarSoft.Modules.Storage.Repositories.BloodStorageRepository;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.BloodStorageService;
 import com.yawarSoft.Modules.Storage.Enums.UnitTypes;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Arrays;
@@ -39,22 +40,10 @@ public class BloodStorageServiceImpl implements BloodStorageService {
         return idBloodBank;
     }
 
+    @Transactional
     @Override
     public void initBloodStirage(Integer idBloodBank) {
-        BloodBankEntity bloodBank = BloodBankEntity.builder().id(idBloodBank).build();
-        BloodStorageEntity storage = BloodStorageEntity.builder()
-                .bloodBank(bloodBank)
-                .totalBlood(0)
-                .erythrocyteConcentrate(0)
-                .freshFrozenPlasma(0)
-                .cryoprecipitate(0)
-                .platelet(0)
-                .plateletApheresis(0)
-                .redBloodCellsApheresis(0)
-                .plasmaApheresis(0)
-                .build();
-
-        bloodStorageRepository.save(storage);
+        bloodStorageRepository.insertInitialStorage(idBloodBank);
     }
 
 
