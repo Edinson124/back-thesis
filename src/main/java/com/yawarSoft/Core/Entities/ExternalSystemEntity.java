@@ -15,13 +15,15 @@ public class ExternalSystemEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
+
+    // Relación al banco de sangre correspondiente
+    @ManyToOne
+    @JoinColumn(name = "id_blood_bank", nullable = false)
+    private BloodBankEntity bloodBank;
 
     @Column(name = "description")
     private String description;
-
-    @Column(name = "base_url", nullable = false)
-    private String baseUrl;
 
     @Column(name = "auth_url", nullable = false)
     private String authUrl;
@@ -33,7 +35,7 @@ public class ExternalSystemEntity {
     private String authBodyTemplate;
 
     @Column(name = "auth_headers", columnDefinition = "jsonb")
-    private String authHeaders ;
+    private String authHeaders;
 
     @Column(name = "auth_credentials_encrypted", nullable = false)
     private String authCredentialsEncrypted;
@@ -44,9 +46,7 @@ public class ExternalSystemEntity {
     @Column(name = "token_expires_at")
     private LocalDateTime tokenExpiresAt;
 
-    @Column(name = "refresh_token")
-    private String refreshToken;
-
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    private Boolean isActive = true;
+
 }

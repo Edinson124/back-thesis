@@ -2,7 +2,6 @@ package com.yawarSoft.Core.Entities;
 
 import lombok.*;
 import jakarta.persistence.*;
-
 @Entity
 @Getter
 @Setter
@@ -16,24 +15,30 @@ public class ExternalEndpointEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // FK al sistema externo
     @ManyToOne
-    @JoinColumn(name = "id_external_system", referencedColumnName = "id")
+    @JoinColumn(name = "id_external_system", nullable = false)
     private ExternalSystemEntity externalSystem;
 
-    @ManyToOne
-    @JoinColumn(name = "id_blood_bank", referencedColumnName = "id")
-    private BloodBankEntity bloodBank;
+    // Ahora NO existe id_blood_bank en esta tabla
+    // Si antes lo tenías, debes ELIMINARLO.
 
-    @Column(name = "resource_name", nullable = false)
+    @Column(name = "path_base", nullable = false)
+    private String pathBase;
+
+    @Column(name = "resource_name", nullable = false, length = 64)
     private String resourceName;
 
-    @Column(name = "endpoint_path", nullable = false)
-    private String endpointPath;
+    @Column(name = "interaction_type", nullable = false, length = 32)
+    private String interactionType;
 
-    @Column(name = "http_method", nullable = false)
-    private String httpMethod;
+    @Column(name = "parameters_template", columnDefinition = "jsonb")
+    private String parametersTemplate;
+
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
+    private Boolean isActive = true;
 
 }
