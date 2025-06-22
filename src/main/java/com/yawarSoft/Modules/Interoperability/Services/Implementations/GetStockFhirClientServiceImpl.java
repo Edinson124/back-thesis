@@ -16,6 +16,7 @@ import com.yawarSoft.Modules.Interoperability.Repositories.ExternalEndpointRepos
 import com.yawarSoft.Modules.Interoperability.Repositories.ExternalSystemRepository;
 import com.yawarSoft.Modules.Interoperability.Services.Interfaces.GetStockFhirClientService;
 import com.yawarSoft.Modules.Interoperability.Services.Interfaces.LoginExternalSystemService;
+import com.yawarSoft.Modules.Interoperability.Utils.ObservationSearchParameterHandler;
 import org.hl7.fhir.instance.model.api.IBaseBundle;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.Observation;
@@ -32,12 +33,14 @@ public class GetStockFhirClientServiceImpl implements GetStockFhirClientService 
     private final ExternalSystemRepository externalSystemRepository;
     private final ExternalEndpointRepository externalEndpointRepository;
     private final LoginExternalSystemService loginExternalSystemService;
+    private final ObservationSearchParameterHandler observationSearchParameterHandler;
 
-    public GetStockFhirClientServiceImpl(FhirContext fhirContext, ExternalSystemRepository externalSystemRepository, ExternalEndpointRepository externalEndpointRepository, LoginExternalSystemService loginExternalSystemService) {
+    public GetStockFhirClientServiceImpl(FhirContext fhirContext, ExternalSystemRepository externalSystemRepository, ExternalEndpointRepository externalEndpointRepository, LoginExternalSystemService loginExternalSystemService, ObservationSearchParameterHandler observationSearchParameterHandler) {
         this.fhirContext = fhirContext;
         this.externalSystemRepository = externalSystemRepository;
         this.externalEndpointRepository = externalEndpointRepository;
         this.loginExternalSystemService = loginExternalSystemService;
+        this.observationSearchParameterHandler = observationSearchParameterHandler;
     }
 
 
@@ -84,17 +87,7 @@ public class GetStockFhirClientServiceImpl implements GetStockFhirClientService 
         IQuery<IBaseBundle> searchQuery = client.search().forResource(Observation.class);
 
         // 7️⃣ Aplicar cada parámetro soportado
-        for (Map.Entry<String, String> entry : parametersMap.entrySet()) {
-            String key = entry.getKey();
-            String value = entry.getValue();
-
-            if ("performer".equals(key)) {
-                searchQuery = searchQuery.where(new ReferenceClientParam("performer").hasId(value));
-            } else if ("name".equals(key)) {
-                searchQuery = searchQuery.where(new StringClientParam("name").matches().value(value));
-            }
-            // Aquí puedes continuar añadiendo otros criterios soportados
-        }
+        searchQuery = observationSearchParameterHandler.applyParameters(searchQuery, parametersMap);
 
         // 8️⃣ Ejecutamos y obtenemos el Bundle
         Bundle bundle = searchQuery.returnBundle(Bundle.class).execute();
