@@ -16,4 +16,5 @@ public class BloodBankNetworkCollaborationDTO {
     private String status;
     private String type;
     private Boolean isInternal;
+    private Boolean canConnect;
 }
