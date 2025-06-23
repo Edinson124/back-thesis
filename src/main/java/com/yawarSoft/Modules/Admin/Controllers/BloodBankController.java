@@ -25,10 +25,16 @@ public class BloodBankController {
         this.bloodBankService = bloodBankService;
     }
 
+    @GetMapping("/select/internal")
+    public List<BloodBankSelectOptionDTO> getBloodBankSelectInternal() {
+        return bloodBankService.getBloodBankSelectorInternal();
+    }
+
     @GetMapping("/select")
     public List<BloodBankSelectOptionDTO> getBloodBankSelect() {
-        return bloodBankService.getBloodBankSelector();
+        return bloodBankService.getBloodBankSelectorAll();
     }
+
 
     @GetMapping("/paginated")
     @PreAuthorize("hasRole('ADMIN')")

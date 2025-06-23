@@ -24,7 +24,8 @@ public interface BloodBankService {
     BloodBankDTO createBloodBank(BloodBankDTO bloodBankDTO);
     BloodBankDTO changeStatus(Integer id);
 
-    List<BloodBankSelectOptionDTO> getBloodBankSelector();
+    List<BloodBankSelectOptionDTO> getBloodBankSelectorInternal();
+    List<BloodBankSelectOptionDTO> getBloodBankSelectorAll();
     Optional<BloodBankEntity> getBloodBankEntityById(Integer id);
 
     String updateBloodBankProfileImage(Integer bloodBankId, MultipartFile profileImage) throws IOException;

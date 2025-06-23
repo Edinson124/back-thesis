@@ -152,8 +152,14 @@ public class BloodBankServiceImpl implements BloodBankService {
     }
 
     @Override
-    public List<BloodBankSelectOptionDTO> getBloodBankSelector() {
-        List<BloodBankProjectionSelect> bloodBankSelectProjection = bloodBankRepository.getBloodBankSelect();
+    public List<BloodBankSelectOptionDTO> getBloodBankSelectorInternal() {
+        List<BloodBankProjectionSelect> bloodBankSelectProjection = bloodBankRepository.getBloodBankSelectInternal();
+        return bloodBankMapper.toSelectDtoListFromProjectionList(bloodBankSelectProjection);
+    }
+
+    @Override
+    public List<BloodBankSelectOptionDTO> getBloodBankSelectorAll() {
+        List<BloodBankProjectionSelect> bloodBankSelectProjection = bloodBankRepository.getBloodBankSelectAll();
         return bloodBankMapper.toSelectDtoListFromProjectionList(bloodBankSelectProjection);
     }
 
