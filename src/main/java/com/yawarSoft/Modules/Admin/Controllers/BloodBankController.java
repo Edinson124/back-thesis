@@ -42,6 +42,17 @@ public class BloodBankController {
         return bloodBankService.getBloodBankPaginated(page, size, name, region, province,district, isInternal);
     }
 
+    @GetMapping("/paginated/external")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Page<BloodBankListDTO> getBloodBankExternal(@RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "6") int size,
+                                               @RequestParam(required = false) String name,
+                                               @RequestParam(required = false) String region,
+                                               @RequestParam(required = false) String province,
+                                               @RequestParam(required = false) String district) {
+        return bloodBankService.getBloodBankPaginated(page, size, name, region, province,district, false);
+    }
+
 
     @GetMapping("/optionsNetwork")
     @PreAuthorize("hasRole('ADMIN')")
