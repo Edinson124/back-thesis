@@ -23,6 +23,7 @@ public interface NetworkCollaborationMapper {
     @Mapping(target = "ubication", source = "bloodBank", qualifiedByName = "getUbication")
     @Mapping(target = "status", source = "status")
     @Mapping(target = "type", source = "bloodBank.bloodBankType.name")
+    @Mapping(target = "isInternal", source = "bloodBank.isInternal")
     BloodBankNetworkCollaborationDTO toDetailsDto(BloodBankNetworkEntity relationEntity);
 
     @Mapping(target = "coordinatorName", source = "coordinator", qualifiedByName = "getFullName")

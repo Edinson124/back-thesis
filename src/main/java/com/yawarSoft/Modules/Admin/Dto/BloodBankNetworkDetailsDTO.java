@@ -21,4 +21,5 @@ public class BloodBankNetworkDetailsDTO {
     private String disassociatedByFullName;
     private LocalDateTime disassociatedAt;
     private String status;
+    private Boolean isInternal;
 }

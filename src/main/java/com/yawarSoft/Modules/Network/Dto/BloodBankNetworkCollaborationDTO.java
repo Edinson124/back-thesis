@@ -15,4 +15,5 @@ public class BloodBankNetworkCollaborationDTO {
     private String ubication;
     private String status;
     private String type;
+    private Boolean isInternal;
 }

@@ -13,4 +13,5 @@ public class BloodBankOptionsAddNetworkDTO {
     private String region;
     private String province;
     private String district;
+    private Boolean isInternal;
 }

@@ -25,6 +25,7 @@ public interface BBNetworkMapper {
     @Mapping(target = "disassociatedAt", source = "disassociatedAt")
     @Mapping(target = "disassociatedByFullName", source = "disassociatedBy", qualifiedByName = "mapFullName")
     @Mapping(target = "status", source = "status")
+    @Mapping(target = "isInternal", source = "bloodBank.isInternal")
     BloodBankNetworkDetailsDTO toDetailsDto(BloodBankNetworkEntity relationEntity);
 
     @Named("mapFullName")
