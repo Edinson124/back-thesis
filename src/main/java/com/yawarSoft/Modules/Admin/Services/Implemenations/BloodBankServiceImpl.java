@@ -3,7 +3,6 @@ package com.yawarSoft.Modules.Admin.Services.Implemenations;
 import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.BloodBankTypeEntity;
-import com.yawarSoft.Core.Entities.BloodStorageEntity;
 import com.yawarSoft.Core.Entities.UserEntity;
 import com.yawarSoft.Core.Services.Interfaces.ImageStorageService;
 import com.yawarSoft.Core.Utils.UserUtils;
@@ -14,9 +13,9 @@ import com.yawarSoft.Modules.Admin.Dto.Reponse.BloodBankOptionsAddNetworkDTO;
 import com.yawarSoft.Modules.Admin.Enums.BloodBankStatus;
 import com.yawarSoft.Modules.Admin.Mappers.BloodBankMapper;
 import com.yawarSoft.Modules.Admin.Repositories.BloodBankRepository;
-import com.yawarSoft.Modules.Storage.Repositories.BloodStorageRepository;
 import com.yawarSoft.Modules.Admin.Repositories.Projections.BloodBankProjectionSelect;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.BloodBankService;
+import com.yawarSoft.Modules.Admin.Specification.BloodBankSpecifications;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.BloodStorageService;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
@@ -51,15 +50,22 @@ public class BloodBankServiceImpl implements BloodBankService {
     }
 
     @Override
-    public Page<BloodBankListDTO> getBloodBankPaginated(int page, int size, String name, String region, String province, String district) {
+    public Page<BloodBankListDTO> getBloodBankPaginated(int page, int size,
+                                                        String name,
+                                                        String region,
+                                                        String province,
+                                                        String district,
+                                                        Boolean isInternal) {
         Pageable pageable = PageRequest.of(page, size);
 
-        name = (name != null && !name.isBlank()) ? name : null;
-        region = (region != null && !region.isBlank()) ? region : null;
-        province = (province != null && !province.isBlank()) ? province : null;
-        district = (district != null && !district.isBlank()) ? district : null;
+        Specification<BloodBankEntity> spec = Specification
+                .where(BloodBankSpecifications.hasName(name))
+                .and(BloodBankSpecifications.hasRegion(region))
+                .and(BloodBankSpecifications.hasProvince(province))
+                .and(BloodBankSpecifications.hasDistrict(district))
+                .and(BloodBankSpecifications.isInternal(isInternal));
 
-        return bloodBankRepository.findByFilters(name, region, province, district, pageable)
+        return bloodBankRepository.findAll(spec, pageable)
                 .map(bloodBankMapper::toListDTO);
     }
 
@@ -95,7 +101,6 @@ public class BloodBankServiceImpl implements BloodBankService {
         existingBloodBank.setProvince(bloodBankDTO.getProvince());
         existingBloodBank.setDistrict(bloodBankDTO.getDistrict());
         existingBloodBank.setAddress(bloodBankDTO.getAddress());
-        existingBloodBank.setStatus(bloodBankDTO.getStatus());
         existingBloodBank.setUpdatedAt(LocalDateTime.now());
         existingBloodBank.setUpdatedBy(UserUtils.getAuthenticatedUser());
         existingBloodBank.setBloodBankType(BloodBankTypeEntity.builder().id(bloodBankDTO.getIdType()).build());
@@ -121,7 +126,10 @@ public class BloodBankServiceImpl implements BloodBankService {
             bloodBank.setCoordinator(null);
         }
         bloodBank.setCreatedBy(userAuth);
-        bloodBank.setIsInternal(true);
+        bloodBank.setStatus(BloodBankStatus.ACTIVE.name());
+        if (bloodBankDTO.getIsInternal() == null) {
+            bloodBank.setIsInternal(true);
+        }
 
         BloodBankEntity bloodBankSaved = bloodBankRepository.saveAndFlush(bloodBank);
         bloodStorageService.initBloodStirage(bloodBankSaved.getId());

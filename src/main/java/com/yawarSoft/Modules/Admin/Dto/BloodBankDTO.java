@@ -19,4 +19,5 @@ public class BloodBankDTO {
     private Integer idType;
     private Integer idCoordinator;
     private String status;
+    private Boolean isInternal;
 }

@@ -20,4 +20,5 @@ public class BloodBankListDTO {
     private Integer idCoordinator;
     private String fullNameCoordinator;
     private String status;
+    private Boolean isInternal;
 }

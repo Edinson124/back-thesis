@@ -25,7 +25,7 @@ public class BloodBankEntity {
     private String address;
     private String status;
     @Column(name = "is_internal")
-    private Boolean isInternal;
+    private Boolean isInternal = true;
     @Column(name = "profile_image_url")
     private String profileImageUrl;
     @ManyToOne

@@ -17,7 +17,8 @@ import java.util.Optional;
 
 public interface BloodBankService {
 
-    Page<BloodBankListDTO> getBloodBankPaginated(int page, int size, String name, String region, String province, String district);
+    Page<BloodBankListDTO> getBloodBankPaginated(int page, int size, String name, String region,
+                                                 String province, String district, Boolean isInternal);
     BloodBankDTO getBloodBankById(int id);
     BloodBankDTO updateBloodBank(int id, BloodBankDTO bloodBankDTO);
     BloodBankDTO createBloodBank(BloodBankDTO bloodBankDTO);

@@ -37,8 +37,9 @@ public class BloodBankController {
                                            @RequestParam(required = false) String name,
                                            @RequestParam(required = false) String region,
                                            @RequestParam(required = false) String province,
-                                           @RequestParam(required = false) String district) {
-        return bloodBankService.getBloodBankPaginated(page, size, name, region, province,district);
+                                           @RequestParam(required = false) String district,
+                                           @RequestParam(required = false) Boolean isInternal) {
+        return bloodBankService.getBloodBankPaginated(page, size, name, region, province,district, isInternal);
     }
 
 
