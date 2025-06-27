@@ -5,8 +5,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.rest.client.api.IGenericClient;
 import ca.uhn.fhir.rest.client.interceptor.BearerTokenAuthInterceptor;
 import ca.uhn.fhir.rest.gclient.IQuery;
-import ca.uhn.fhir.rest.gclient.ReferenceClientParam;
-import ca.uhn.fhir.rest.gclient.StringClientParam;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yawarSoft.Core.Entities.ExternalEndpointEntity;
@@ -46,30 +44,31 @@ public class GetStockFhirClientServiceImpl implements GetStockFhirClientService 
 
     @Override
     public List<StockResponseDTO> getObservationsFromExternalSystem(Integer idBloodBank) {
-        // 1️⃣ Obtenemos el sistema externo asociado al banco de sangre
+        // Obtenemos el sistema externo asociado al banco de sangre
         ExternalSystemEntity externalSystem = externalSystemRepository.findByBloodBank_Id(idBloodBank)
                 .orElseThrow(() -> new IllegalArgumentException("No existe un sistema externo registrado para el banco de sangre con id: " + idBloodBank));
 
-        // 2️⃣ Obtenemos el endpoint de Observation
+        // Obtenemos el endpoint de Observation
         ExternalEndpointEntity observationEndpoint = externalEndpointRepository.findByExternalSystem_IdAndResourceNameAndInteractionType(
                 externalSystem.getId(),
                 "Observation",
                 "search"
         ).orElseThrow(() -> new IllegalArgumentException("No existe un endpoint de búsqueda para Observation en este sistema."));
 
-        // 3️⃣ Autenticamos para obtener el token
+        // Autenticamos para obtener el token
         String token = loginExternalSystemService.obtainToken(externalSystem);
 
-        // 4️⃣ Preparamos el cliente FHIR
+        // Preparamos el cliente FHIR
         IGenericClient client = fhirContext.newRestfulGenericClient(observationEndpoint.getPathBase());
         client.registerInterceptor(new BearerTokenAuthInterceptor(token));
 
-        // 5️⃣ Leemos los parámetros desde el template
+        // Leemos los parámetros desde el template
         Map<String, String> parametersMap = new HashMap<>();
         if (observationEndpoint.getParametersTemplate() != null) {
             try {
                 ObjectMapper mapper = new ObjectMapper();
-                Map<String, String> templateParams = mapper.readValue(observationEndpoint.getParametersTemplate(), new TypeReference<Map<String, String>>() {});
+                Map<String, String> templateParams = mapper.readValue(observationEndpoint.getParametersTemplate(),
+                        new TypeReference<Map<String, String>>() {});
 
                 // Reemplazar los placeholders (Ej. ":id_blood_bank") con el valor real
                 templateParams.forEach((key, value) -> {
@@ -83,49 +82,19 @@ public class GetStockFhirClientServiceImpl implements GetStockFhirClientService 
                 throw new RuntimeException("Error al procesar los parameters_template para Observation", e);
             }
         }
-        // 6️⃣ Ejecutamos la búsqueda
+        // Ejecutamos la búsqueda
         IQuery<IBaseBundle> searchQuery = client.search().forResource(Observation.class);
 
-        // 7️⃣ Aplicar cada parámetro soportado
+        // Aplicar cada parámetro soportado
         searchQuery = observationSearchParameterHandler.applyParameters(searchQuery, parametersMap);
 
-        // 8️⃣ Ejecutamos y obtenemos el Bundle
+        // Ejecutamos y obtenemos el Bundle
         Bundle bundle = searchQuery.returnBundle(Bundle.class).execute();
 
-        // 9️⃣ Convertimos a DTO de Stock
+        // Convertimos a DTO de Stock
         return toStockResponseList(bundle);
     }
 
-
-//    @Override
-//    public List<StockResponseDTO> getObservationsFromExternalSystem(Integer idBloodBank) {
-//
-//        // 1️⃣ Obtenemos el sistema externo asociado al banco de sangre
-//        ExternalSystemEntity externalSystem = externalSystemRepository.findByBloodBank_Id(idBloodBank)
-//                .orElseThrow(() -> new IllegalArgumentException("No existe un sistema externo registrado para el banco de sangre con id: " + idBloodBank));
-//
-//        // 2️⃣ Obtenemos el endpoint de Observation
-//        ExternalEndpointEntity observationEndpoint = externalEndpointRepository.findByExternalSystem_IdAndResourceNameAndInteractionType(
-//                externalSystem.getId(),
-//                "Observation",
-//                "search"
-//        ).orElseThrow(() -> new IllegalArgumentException("No existe un endpoint de búsqueda para Observation en este sistema."));
-//
-//        String urlBaseExterno = "http://localhost:8085"; // Por ejemplo
-//        String token = login(externalSystem);
-//
-//        String urlBaseExternoFhir = "http://localhost:8085/fhir";
-//
-//        IGenericClient client = fhirContext.newRestfulGenericClient(urlBaseExternoFhir);
-//        client.registerInterceptor(new BearerTokenAuthInterceptor(token));
-//
-//        Bundle bundle = client.search()
-//                .forResource(Observation.class)
-//                .returnBundle(Bundle.class)
-//                .execute();
-//
-//        return toStockResponseList(bundle);
-//    }
 
     public List<StockResponseDTO> toStockResponseList(Bundle bundle) {
         return bundle.getEntry().stream()
