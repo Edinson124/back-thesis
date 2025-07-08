@@ -85,6 +85,9 @@ public class ShipmentRequestServiceImpl implements ShipmentRequestService {
             // Estado
             if (status != null && !status.isBlank()) {
                 predicates.add(cb.equal(cb.lower(root.get("status")), status.toLowerCase()));
+            } else {
+            // Si no se especifica un estado, excluir los que son "Pendiente"
+                predicates.add(cb.notEqual(cb.lower(root.get("status")), ShipmentRequestStatus.PENDING.getLabel().toLowerCase()));
             }
 
             // Filtro por ID exacto (code)

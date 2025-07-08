@@ -2,6 +2,9 @@ package com.yawarSoft.Modules.Storage.Service.Implemetations;
 
 import com.yawarSoft.Core.Entities.BloodBankEntity;
 import com.yawarSoft.Core.Entities.BloodStorageEntity;
+import com.yawarSoft.Core.Entities.UserEntity;
+import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
+import com.yawarSoft.Modules.Storage.Dto.Reponse.BloodStorageDTO;
 import com.yawarSoft.Modules.Storage.Repositories.BloodStorageRepository;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.BloodStorageService;
 import com.yawarSoft.Modules.Storage.Enums.UnitTypes;
@@ -10,14 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BloodStorageServiceImpl implements BloodStorageService {
 
     private final BloodStorageRepository bloodStorageRepository;
+    private final AuthenticatedUserService authenticatedUserService;
 
-    public BloodStorageServiceImpl(BloodStorageRepository bloodStorageRepository) {
+    public BloodStorageServiceImpl(BloodStorageRepository bloodStorageRepository, AuthenticatedUserService authenticatedUserService) {
         this.bloodStorageRepository = bloodStorageRepository;
+        this.authenticatedUserService = authenticatedUserService;
     }
 
     @Override
@@ -44,6 +51,25 @@ public class BloodStorageServiceImpl implements BloodStorageService {
     @Override
     public void initBloodStirage(Integer idBloodBank) {
         bloodStorageRepository.insertInitialStorage(idBloodBank);
+    }
+
+    @Override
+    public BloodStorageDTO getBloodStorage() {
+        UserEntity userAuthenticated = authenticatedUserService.getCurrentUser();
+        Integer bloodBankId = userAuthenticated.getBloodBank().getId();
+        BloodStorageEntity bloodStorageEntity = bloodStorageRepository.findById(bloodBankId)
+                .orElseThrow(() -> new IllegalArgumentException("No se encontró almacenamiento para el banco de sangre con ID: " + bloodBankId));
+
+        return BloodStorageDTO.builder()
+                .totalBlood(bloodStorageEntity.getTotalBlood())
+                .erythrocyteConcentrate(bloodStorageEntity.getErythrocyteConcentrate())
+                .freshFrozenPlasma(bloodStorageEntity.getFreshFrozenPlasma())
+                .cryoprecipitate(bloodStorageEntity.getCryoprecipitate())
+                .platelet(bloodStorageEntity.getPlatelet())
+                .plateletApheresis(bloodStorageEntity.getPlateletApheresis())
+                .redBloodCellsApheresis(bloodStorageEntity.getRedBloodCellsApheresis())
+                .plasmaApheresis(bloodStorageEntity.getPlasmaApheresis())
+                .build();
     }
 
 

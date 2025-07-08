@@ -384,6 +384,9 @@ public class DonationServiceImpl implements DonationService {
         }
 
         donationEntity.setStatus(donationStatus);
+        donationEntity.setDeferralReason(deferralDonationRequest.getReason());
+        donationEntity.setDeferralType(deferralType.name());
+        donationEntity.setDeferralDuration(deferralDonationRequest.getDays());
         donationRepository.save(donationEntity);
 
         donorRepository.updateDonorDeferralById(idDonor, donorStatus, deferralEndDate, deferralDonationRequest.getReason());

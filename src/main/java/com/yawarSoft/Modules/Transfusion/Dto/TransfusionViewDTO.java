@@ -26,5 +26,6 @@ public class TransfusionViewDTO {
     private Boolean hasCrossmatch;
     private String requestReason;
     private String diagnosis;
+    private String priority;
     private String status;
 }

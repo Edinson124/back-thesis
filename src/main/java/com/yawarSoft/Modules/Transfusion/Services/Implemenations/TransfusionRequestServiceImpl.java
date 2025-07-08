@@ -217,6 +217,7 @@ public class TransfusionRequestServiceImpl implements TransfusionRequestService 
         transfusionRequestEntity.setHasCrossmatch(transfusionRequestDTO.getHasCrossmatch());
         transfusionRequestEntity.setDiagnosis(transfusionRequestDTO.getDiagnosis());
         transfusionRequestEntity.setRequestReason(transfusionRequestDTO.getRequestReason());
+        transfusionRequestEntity.setPriority(transfusionRequestDTO.getPriority());
         transfusionRequestEntity.setStatus(TransfusionStatus.PENDIENTE.getLabel());
         transfusionRequestEntity.setDate(LocalDate.now());
 

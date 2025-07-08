@@ -36,12 +36,6 @@ public class TransfusionRequestEntity {
     @JoinColumn(name = "id_attending_doctor", nullable = false)
     private UserEntity attendingDoctor;
 
-//    @Column(name = "requested_blood_type", nullable = false, length = 10)
-//    private String requestedBloodType;
-//
-//    @Column(name = "requested_rh_factor", nullable = false, length = 10)
-//    private String requestedRhFactor;
-
     @Column(name = "has_crossmatch", nullable = false)
     private Boolean hasCrossmatch;
 
@@ -59,8 +53,8 @@ public class TransfusionRequestEntity {
     @Column(name = "request_reason", nullable = false, columnDefinition = "TEXT")
     private String requestReason;
 
-//    @Column(name = "priority", nullable = false, length = 20)
-//    private String priority;
+    @Column(name = "priority", length = 20)
+    private String priority;
 
     @Column(name = "status", nullable = false, length = 20)
     private String status;

@@ -3,6 +3,8 @@ package com.yawarSoft.Modules.Storage.Service.Implemetations;
 import com.yawarSoft.Core.Entities.*;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Modules.Admin.Dto.GlobalVariableDTO;
+import com.yawarSoft.Modules.Laboratory.Dto.HematologicalTestDTO;
+import com.yawarSoft.Modules.Laboratory.Services.Interfaces.HematologicalTestService;
 import com.yawarSoft.Modules.Storage.Service.Interfaces.BloodStorageService;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.GlobalVariableService;
 import com.yawarSoft.Modules.Donation.Services.Interfaces.DonationService;
@@ -207,7 +209,16 @@ public class UnitServiceImpl implements UnitService {
         UnitEntity unit = unitRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Unidad no encontrada con id: " + id));
 
-        return unitMapper.toDTO(unit);
+        HematologicalTestEntity test = unit.getDonation().getHematologicalTest();
+
+        UnitDTO result = unitMapper.toDTO(unit);
+        if (test != null) {
+            result.setPhenotype(test.getPhenotype());
+            result.setGenotype(test.getGenotype());
+            result.setIrregularAntibodies(test.getIrregularAntibodies());
+        }
+
+        return result;
     }
 
 
@@ -375,6 +386,7 @@ public class UnitServiceImpl implements UnitService {
 
         UnitEntity unitEntityGenerated = unitMapper.toEntityByExtractionDTO(unit);
         unitEntityGenerated.setDonation(unitEntityOrigin.getDonation());
+        unitEntityGenerated.setStampPronahebas(unitEntityOrigin.getStampPronahebas());
         unitEntityGenerated.setExpirationDate(dateExpiration);
         unitEntityGenerated.setBloodType(unitEntityOrigin.getBloodType());
         unitEntityGenerated.setDonation(unitEntityOrigin.getDonation());
@@ -382,9 +394,8 @@ public class UnitServiceImpl implements UnitService {
         unitEntityGenerated.setCreatedBy(userAuthenticated);
         unitEntityGenerated.setBloodBank(userAuthenticated.getBloodBank());
         unitEntityGenerated.setEntryDate(date);
-        unitEntityGenerated.setStatus(UnitStatus.NO_STAMP.getLabel());
+        unitEntityGenerated.setStatus(UnitStatus.SUITABLE.getLabel());
         unitEntityGenerated.setSerologyResult(unitEntityOrigin.getSerologyResult());
-        unitEntityGenerated.setStampPronahebas(null);
         unitEntityGenerated.setFromDonation(false);
 
         UnitEntity result = unitRepository.save(unitEntityGenerated);

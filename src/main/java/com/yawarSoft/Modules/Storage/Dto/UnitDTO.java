@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class UnitDTO {
 
     private Long id;
+    private String stampPronahebas;
     private Integer donationId;
     private String unitType;
     private BigDecimal volume;
@@ -22,4 +23,8 @@ public class UnitDTO {
     private String bagType;
     private LocalDate expirationDate;
     private String status;
+
+    private String phenotype;
+    private String genotype;
+    private String irregularAntibodies;
 }

@@ -25,5 +25,6 @@ public class TransfusionRequestDTO {
     private Boolean hasCrossmatch;
     private String diagnosis;
     private String requestReason;
+    private String priority;
     private List<TransfusionRequestDetailDTO> request;
 }
