@@ -369,4 +369,13 @@ public class ShipmentRequestServiceImpl implements ShipmentRequestService {
         return idShipment;
     }
 
+    @Override
+    public Integer declineShipment(Integer idShipment) {
+        ShipmentRequestEntity shipmentRequest = shipmentRequestRepository
+                .findById(idShipment).orElseThrow(()->new IllegalArgumentException("Solicitud de transferencia no encontrada"));
+        shipmentRequest.setStatus(ShipmentRequestStatus.REFUSED.getLabel());
+        shipmentRequestRepository.save(shipmentRequest);
+        return idShipment;
+    }
+
 }

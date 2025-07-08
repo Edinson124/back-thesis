@@ -34,4 +34,6 @@ public interface ShipmentRequestService {
     Integer freeUnits(Integer idShipment);
 
     Integer confirmReception(Integer idShipment);
+
+    Integer declineShipment(Integer idShipment);
 }

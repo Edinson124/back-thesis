@@ -114,7 +114,15 @@ public class ShipmentRequestController {
         Integer id = shipmentRequestService.confirmReception(idShipment);
         Map<String, Object> payload = Map.of("id", id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new ApiResponse(HttpStatus.OK, "Liberacipon de unidades exitosa", payload));
+                .body(new ApiResponse(HttpStatus.OK, "Liberación de unidades exitosa", payload));
+    }
+
+    @PutMapping("/decline/{idShipment}")
+    public ResponseEntity<ApiResponse> declineShipment(@PathVariable Integer idShipment) {
+        Integer id =  shipmentRequestService.declineShipment(idShipment);
+        Map<String, Object> payload = Map.of("id", id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new ApiResponse(HttpStatus.OK, "Rechazo de solicitud exitosa", payload));
     }
 
 }
