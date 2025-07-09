@@ -44,7 +44,7 @@ public class RoleController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public RoleDTO getBloodBankById(@PathVariable Integer id) {
+    public RoleDTO getRoleById(@PathVariable Integer id) {
         return roleService.getRoleById(id);
     }
 

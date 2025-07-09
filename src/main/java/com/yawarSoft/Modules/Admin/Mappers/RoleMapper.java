@@ -20,7 +20,7 @@ public interface RoleMapper {
 
     RoleSelectDTO toSelectDTO(RoleEntity roleEntity);
 
-    @Mapping(source = "permissionList", target = "permissionList", qualifiedByName = "mapPermissionsToIds")
+    @Mapping(source = "permissionList", target = "permissions", qualifiedByName = "mapPermissionsToIds")
     RoleDTO toDto(RoleEntity roleEntity);
 
     @Named("mapPermissionsToIds")
@@ -33,7 +33,7 @@ public interface RoleMapper {
                 .collect(Collectors.toSet());
     }
 
-    @Mapping(source = "permissionList", target = "permissionList", qualifiedByName = "mapIdsToPermissions")
+    @Mapping(source = "permissions", target = "permissionList", qualifiedByName = "mapIdsToPermissions")
     RoleEntity toEntity(RoleDTO roleDto);
 
     @Named("mapIdsToPermissions")

@@ -3,6 +3,7 @@ package com.yawarSoft.Modules.Login.Controllers;
 import com.yawarSoft.Core.Utils.Constants;
 import com.yawarSoft.Modules.Login.Dto.AuthLoginRequest;
 import com.yawarSoft.Modules.Login.Dto.AuthResponse;
+import com.yawarSoft.Modules.Login.Dto.UserRoleDTO;
 import com.yawarSoft.Modules.Login.Services.Implementations.UserDetailServiceImpl;
 import com.yawarSoft.Modules.Login.Services.Interfaces.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -65,4 +66,12 @@ public class AuthenticationController {
         response.setHeader(HttpHeaders.SET_COOKIE, expiredCookie.toString());
         return ResponseEntity.noContent().build(); // Devuelve 204 No Content
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> meRoleAndPermission(){
+        UserRoleDTO userRoleDTO = authService.meRoleAndPermission();
+        return ResponseEntity.ok()
+                .body(userRoleDTO);
+    }
+
 }

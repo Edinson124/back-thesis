@@ -11,5 +11,6 @@ public class PermissionDTO {
 
     private Integer id;
     private String name;
+    private String description;
     private Boolean allBloodBankType;
 }

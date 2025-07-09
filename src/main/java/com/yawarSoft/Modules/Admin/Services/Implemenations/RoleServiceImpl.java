@@ -8,6 +8,7 @@ import com.yawarSoft.Modules.Admin.Dto.RoleSelectDTO;
 import com.yawarSoft.Modules.Admin.Enums.RoleStatus;
 import com.yawarSoft.Modules.Admin.Enums.UserStatus;
 import com.yawarSoft.Modules.Admin.Mappers.RoleMapper;
+import com.yawarSoft.Modules.Admin.Repositories.PermissionRepository;
 import com.yawarSoft.Modules.Admin.Repositories.RoleRepository;
 import com.yawarSoft.Modules.Admin.Services.Interfaces.RoleService;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,10 +24,12 @@ import java.util.stream.Collectors;
 @Service
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
+    private final PermissionRepository permissionRepository;
     private final RoleMapper roleMapper;
 
-    public RoleServiceImpl(RoleRepository roleRepository, RoleMapper roleMapper) {
+    public RoleServiceImpl(RoleRepository roleRepository, PermissionRepository permissionRepository, RoleMapper roleMapper) {
         this.roleRepository = roleRepository;
+        this.permissionRepository = permissionRepository;
         this.roleMapper = roleMapper;
     }
 
@@ -91,16 +95,15 @@ public class RoleServiceImpl implements RoleService {
         existingRole.setName(roleDTO.getName());
         existingRole.setDescription(roleDTO.getDescription());
 
-        Set<PermissionEntity> updatedPermissions = roleDTO.getPermissionList().stream()
-                .map(permissionId -> {
-                    PermissionEntity permission = new PermissionEntity();
-                    permission.setId(permissionId);
-                    return permission;
-                })
-                .collect(Collectors.toSet());
+        // Obtener permisos reales desde la base de datos
+        Set<PermissionEntity> updatedPermissions = new HashSet<>(
+                permissionRepository.findAllById(roleDTO.getPermissions())
+        );
 
         existingRole.setPermissionList(updatedPermissions);
+
         RoleEntity savedRole = roleRepository.save(existingRole);
+
         roleDTO.setId(savedRole.getId());
         return roleDTO;
     }

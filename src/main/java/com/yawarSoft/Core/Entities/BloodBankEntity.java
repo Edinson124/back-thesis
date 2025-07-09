@@ -28,7 +28,7 @@ public class BloodBankEntity {
     private Boolean isInternal = true;
     @Column(name = "profile_image_url")
     private String profileImageUrl;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_blood_bank_type", nullable = false)
     private BloodBankTypeEntity bloodBankType;
 
