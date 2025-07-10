@@ -92,6 +92,7 @@ public class TransfusionAssignmentServiceImpl implements TransfusionAssignmentSe
         TransfusionAssignmentEntity transfusionAssignment = transfusionAssignmentRepository.findById(idTransfusionAssignment)
                 .orElseThrow(() -> new IllegalArgumentException("Transfusión no encontrada con ID: " + idTransfusionAssignment));
 
+        String resultInitial = transfusionAssignment.getValidateResult();
         String resultString = request.getType()
                 ? TransfusionAssingmentResult.COMPATIBLE.getLabel()
                 : TransfusionAssingmentResult.INCOMPATIBLE.getLabel();
@@ -112,7 +113,9 @@ public class TransfusionAssignmentServiceImpl implements TransfusionAssignmentSe
         if (request.getType()) {
             unitService.updateStatusUnit(idUnit, UnitStatus.RESERVED.getLabel());
             unitEntity.setStatus(UnitStatus.RESERVED.getLabel());
-            bloodStorageService.minusBloodStorage(userAuth.getBloodBank().getId(), unitEntity.getUnitType(),1);
+            if(resultInitial!= null) {
+                bloodStorageService.minusBloodStorage(userAuth.getBloodBank().getId(), unitEntity.getUnitType(), 1);
+            }
         } else {
             unitService.updateStatusUnit(idUnit, UnitStatus.SUITABLE.getLabel());
             unitEntity.setStatus(UnitStatus.SUITABLE.getLabel());

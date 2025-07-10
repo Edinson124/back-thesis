@@ -408,6 +408,8 @@ public class UnitServiceImpl implements UnitService {
         unitTransformation.setCreatedBy(userAuthenticated);
         unitTransformation.setCreatedAt(LocalDateTime.now());
         unitTransformationRepository.save(unitTransformation);
+        bloodStorageService.addBloodStorage(userAuthenticated.getBloodBank().getId(),
+                unitEntityGenerated.getUnitType(),1);
         int rowsUpdate = unitRepository.updateStatusTransformation(unitEntityOrigin.getId(), UnitStatus.FRACTIONATED.getLabel(),UnitStatus.FRACTIONATED.getLabel());
         if (rowsUpdate > 0) {// solo si se hizo la transformación, descontamos del inventario
             bloodStorageService.minusBloodStorage(userAuthenticated.getBloodBank().getId(),
