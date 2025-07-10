@@ -1,5 +1,6 @@
 package com.yawarSoft.Core.Config;
 
+import com.yawarSoft.Core.Errors.EmailAlreadyExistsException;
 import com.yawarSoft.Core.Errors.ResourceNotFoundException;
 import com.yawarSoft.Core.Dto.ApiResponse;
 import com.yawarSoft.Core.Errors.UserInactiveException;
@@ -71,4 +72,11 @@ public class GlobalExceptionHandler {
         ApiResponse response = new ApiResponse(HttpStatus.FORBIDDEN, "Usuario sin banco asignado");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ApiResponse> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
+        ApiResponse response = new ApiResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
 }

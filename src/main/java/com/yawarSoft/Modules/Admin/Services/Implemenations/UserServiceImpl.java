@@ -1,4 +1,5 @@
 package com.yawarSoft.Modules.Admin.Services.Implemenations;
+import com.yawarSoft.Core.Errors.EmailAlreadyExistsException;
 import com.yawarSoft.Core.Services.Implementations.EmailService;
 import com.yawarSoft.Core.Services.Interfaces.AuthenticatedUserService;
 import com.yawarSoft.Core.Services.Interfaces.ImageStorageService;
@@ -128,6 +129,10 @@ public class UserServiceImpl implements UserService {
 
         if (userRepository.existsByDocumentNumber(userDto.getDocumentNumber())) {
             throw new IllegalArgumentException("El número de documento ya está registrado con otro usuario.");
+        }
+
+        if (userRepository.existsByEmail(userDto.getEmail())) {
+            throw new EmailAlreadyExistsException("El correo electrónico ya está registrado con otro usuario.");
         }
 
         UserEntity user = userMapper.toEntityByUserDTO(userDto);

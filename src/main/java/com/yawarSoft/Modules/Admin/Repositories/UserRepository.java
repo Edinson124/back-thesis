@@ -25,6 +25,7 @@ public interface UserRepository extends JpaRepository<UserEntity,Integer> {
     Page<UserEntity> findAll(Pageable pageable);
     boolean existsByDocumentNumberAndIdNot(String documentNumber, Integer id);
     boolean existsByDocumentNumber(String documentNumber);
+    boolean existsByEmail(String email);
 
         @Query("SELECT u.id AS id, " +
                 "u.firstName AS firstName, " +
